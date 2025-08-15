@@ -34,12 +34,30 @@ if (isset($_SESSION['user'])) {
     </script>
 <?php endif; ?>
 
+
+<div class="background">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</div>
 <form action="sign-inHandler.php" method="POST" onsubmit="return showLoading()">
     <div class="login-wrapper">
         <div class="dashboard_login">
             <div class="form-input-login">
                 <!-- <div style="display: flex; flex-direction:row; justify-content:space-between;"> -->
-                <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to My-logistic</div>
+                <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
                 <!-- </div> -->
                 <p class="" style="font-size: 10px;">Masukkan username sesuai dengan kode uker</p>
                 <div class="input-mail">

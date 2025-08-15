@@ -35,7 +35,7 @@ if (!in_array($status, $allowedStatuses)) {
 }
 
 // Update status
-$stmt = $conn->prepare("UPDATE pengajuan SET status = ? WHERE kode_pengajuan = ?");
+$stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
 $stmt->bind_param("ss", $status, $kode_pengajuan);
 
 if ($stmt->execute()) {

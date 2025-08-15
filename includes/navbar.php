@@ -12,7 +12,7 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
     <div class="isinavbar">
         <!-- Bagian Kiri -->
         <div class="nav-left">
-            <h3 class="nav-title">Dashboard My Logistic</h3>
+            <img src="../assets/img/logo.png" alt="bri" style="height:50px">
         </div>
         <div class="nav-right">
             <div class="dropdown">
@@ -20,8 +20,8 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
                     Pengajuan
                 </button>
                 <div class="dropdown-content" id="dropdownContent">
-                    <a href="index.php?page=form-mail-in" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
-                    <a href="index.php?page=form-mail-out" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
+                    <a href="index.php?page=submission-out" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
+                    <a href="index.php?page=submission-in" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
                 </div>
             </div>
             <!-- Dropdown Barang -->

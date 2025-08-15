@@ -18,10 +18,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSIO
 $result = $conn->query($query);
 ?>
 
-<div class="dashboard-mailin">
-    <div class="mail-in">
+<div class="menu-submission-out">
+    <div class="sub-submission-out">
         <div class="sub-menu">
-            <h4>Log Pengajuan</h4>
+            <h4 style="font-weight: 800; font-size:32px;">List Pengajuan</h4>
             <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
         </div>
 

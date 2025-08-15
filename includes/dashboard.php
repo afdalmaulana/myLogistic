@@ -17,6 +17,11 @@ if ($isAdminOrCabang) {
     $whereClause = "kode_uker = '$kode_uker'";
 }
 
+$queryRecent = "SELECT * FROM pengajuan WHERE $whereClause ORDER BY updated_at DESC LIMIT 5";
+
+$resultRecent = $conn->query($queryRecent);
+
+
 // Gunakan $whereClause untuk semua query pengajuan
 $queryAll = "SELECT * FROM pengajuan WHERE $whereClause ORDER BY kode_pengajuan DESC";
 $tampung = $conn->query($queryAll);
@@ -44,18 +49,27 @@ $instocks = $conn->query($query);
 
 $query = "SELECT * FROM barang_keluar WHERE $whereClause ORDER BY nama_barang ASC";
 $outstocks = $conn->query($query);
-$dashboardStats = [
+
+$dashboardRecent = [
     [
-        'title' => 'Semua Pengajuan',
-        'result' => $tampung,
-        'icon' => 'fa-archive',
-        'color' => '',
-        'link' => 'index.php?page=submission-out',
+        'heading' => 'Quick Actions',
+        'title' => [
+            'Pengajuan Baru',
+            'Tambah Barang'
+        ],
+        'link' => 'index.php?page=submission-in'
     ],
     [
-        'title' => 'Pengajuan Approved',
-        'result' => $approvedPengajuan,
-        'icon' => 'fa-envelope-open-o',
+        'heading' => 'LogiTrack Update Pengajuan',
+        'title' => '',
+        'link' => '',
+    ]
+];
+$dashboardStats = [
+    [
+        'title' => 'Total Pengajuan',
+        'result' => $tampung,
+        'icon' => 'fa-archive',
         'color' => '',
         'link' => 'index.php?page=submission-out',
     ],
@@ -65,27 +79,6 @@ $dashboardStats = [
         'icon' => 'fa-bell-o',
         'color' => 'orange',
         'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=mail-out',
-    ],
-    [
-        'title' => 'Pengajuan Rejected',
-        'result' => $rejectedPengajuan,
-        'icon' => 'fa-minus-circle',
-        'color' => 'red',
-        'link' => 'index.php?page=submission-out',
-    ],
-    [
-        'title' => 'Pengajuan Forward',
-        'result' => $forwardPengajuan,
-        'icon' => 'fa-envelope-open-o',
-        'color' => '',
-        'link' => 'index.php?page=submission-out',
-    ],
-    [
-        'title' => 'Stock Barang',
-        'result' => $stocks,
-        'icon' => 'fa-envelope-open-o',
-        'color' => '',
-        'link' => 'index.php?page=submission-out',
     ],
     [
         'title' => 'Barang Keluar',
@@ -105,27 +98,79 @@ $dashboardStats = [
 
 ?>
 
-<div class="dashboard-grid">
-    <?php foreach ($dashboardStats as $item): ?>
-        <?php
-        $count = $item['result']->num_rows;
-        $icon = $item['icon'];
-        $colorClass = $item['color'];
-        $title = $item['title'];
-        $link = $item['link'];
-        ?>
-        <a href="<?php echo $link; ?>" class="dashboard-card-link">
-            <div class="dashboard-card">
-                <div class="card-contents">
-                    <div class="dashboard-icon <?php echo $colorClass; ?>">
-                        <i class="fa <?php echo $icon; ?>"></i>
+<div class="dashboard-menu">
+    <div class="dashboard-heading" style="font-weight: 800; font-size:32px;">
+        Dashboard LogiTrack
+    </div>
+    <div>Welcome back! Here what's happening with your activity today</div>
+    <div class="dashboard-grid">
+
+        <?php foreach ($dashboardStats as $item): ?>
+            <?php
+            $count = $item['result']->num_rows;
+            $icon = $item['icon'];
+            $colorClass = $item['color'];
+            $title = $item['title'];
+            $link = $item['link'];
+            ?>
+            <a href="<?php echo $link; ?>" class="dashboard-card-link">
+                <div class="dashboard-card">
+                    <div class="card-contents">
+                        <div class="card-left">
+                            <div class="dashboard-title"><?php echo $title; ?></div>
+                            <div class="dashboard-count"><?php echo $count; ?></div>
+                        </div>
+                        <div class="card-right">
+                            <div class="dashboard-icon <?php echo $colorClass; ?>">
+                                <i class="fa <?php echo $icon; ?>"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-itemss">
-                        <div class="dashboard-count"><?php echo $count; ?></div>
-                        <div class="dashboard-title"><?php echo $title; ?></div>
+                    <div>
+                        Activity
+                    </div>
+                </div>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <div class="dashboard-recent">
+        <?php foreach ($dashboardRecent as $item): ?>
+            <?php
+            $titles = $item['title']; // bisa array atau string
+            $heading = $item['heading'];
+            $link = $item['link'];
+            ?>
+            <div class="card-recent">
+                <div class="recent-content">
+                    <div>
+                        <div class="dashboard-title"><?php echo $heading; ?></div>
+                        <?php if (is_array($titles)): ?>
+                            <?php foreach ($titles as $t): ?>
+                                <a href="<?php echo $link; ?>" class="dashboard-title btnRecent"><?php echo $t; ?></a>
+                            <?php endforeach; ?>
+                        <?php elseif (!empty($titles)): ?>
+                            <a href="<?php echo $link; ?>" class="dashboard-title btnRecent"><?php echo $titles; ?></a>
+                        <?php else: ?>
+                            <div class="">
+                                <?php if ($resultRecent->num_rows > 0): ?>
+                                    <?php while ($row = $resultRecent->fetch_assoc()): ?>
+                                        <div class="recent-update">
+                                            Pengajuan <strong><?php echo $row['kode_pengajuan']; ?></strong>
+                                            status <span class="status-<?php echo strtolower($row['status']); ?>">
+                                                <?php echo $row['status']; ?>
+                                            </span>
+                                            (<?php echo date("d M Y", strtotime($row['updated_at'])); ?>)
+                                        </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <div>Tidak ada update terbaru.</div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
-        </a>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
+
 </div>
