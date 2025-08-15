@@ -332,4 +332,30 @@
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function(e) {
+                e.preventDefault(); // Mencegah link langsung dijalankan
+
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Arahkan ke logout.php
+                        window.location.href = logoutBtn.getAttribute("href");
+                    }
+                });
+            });
+        }
+    });
 </script>

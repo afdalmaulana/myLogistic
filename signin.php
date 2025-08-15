@@ -21,8 +21,8 @@ if (isset($_SESSION['user'])) {
         <?php elseif ($_GET['status'] === 'error'): ?>
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal',
-                text: 'Terjadi kesalahan dalam form, mohon di ulangi'
+                title: 'Login Gagal',
+                text: 'Kombinasi username dan password salah'
             })
         <?php elseif ($_GET['status'] === 'incomplete'): ?>
             Swal.fire({

@@ -18,7 +18,7 @@
         html,
         body {
             height: 100%;
-            overflow: hidden;
+            overflow: auto;
             background-image: linear-gradient(to bottom left, rgba(14, 36, 112, 1), rgba(28, 29, 35, 0.95));
             /* jika kamu ingin mencegah scroll sama sekali */
         }
@@ -47,51 +47,60 @@
         /* Card */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            /* 5 kolom */
+            gap: 32px;
+            padding: 40px;
+        }
+
+
+        .card-contents {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
         }
 
         .dashboard-card {
-            background-color: #ffffff;
+            background: rgba(218, 218, 227, 0.88);
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: transform 0.2s ease;
-            box-shadow: ;
+            height: 180px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            cursor: pointer;
         }
 
         .dashboard-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-16px);
         }
 
         .dashboard-icon {
             font-size: 48px;
-            margin-bottom: 10px;
+            /* margin-bottom: 10px; */
         }
 
         .dashboard-count {
             font-size: 36px;
             font-weight: bold;
-            margin-bottom: 5px;
+            /* margin-top: 10px; */
+            /* margin-bottom: 5px; */
         }
 
         .dashboard-title {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 800px;
+            color: #282525ff;
+            margin-top: 16px;
+            /* margin-bottom: 15px; */
         }
 
-        .dashboard-link {
-            margin-top: auto;
-            text-align: right;
-        }
 
         .dashboard-link a {
-            background-color: #007bff;
+            background-image: linear-gradient(to bottom left, rgba(14, 36, 112, 1), rgba(28, 29, 35, 0.95));
             color: #fff;
             padding: 8px 16px;
             border-radius: 6px;
@@ -100,7 +109,8 @@
         }
 
         .dashboard-link a:hover {
-            background-color: #0056b3;
+            background-image: linear-gradient(to bottom left, rgba(14, 112, 47, 1), rgba(56, 141, 33, 0.95));
+            color: white;
         }
 
         .orange {
@@ -110,6 +120,58 @@
         .red {
             color: red;
         }
+
+        /* PROFILE */
+        .profile-container {
+            /* position: absolute; */
+            top: 5px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            font-size: 32px;
+            color: #bdbbbbff;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            width: 140px;
+            z-index: 999;
+        }
+
+        .profile-container:hover .profile-dropdown {
+            display: block;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .logout-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
 
         /* BATAS CARD */
         .logoutBtn {
@@ -776,6 +838,24 @@
             .dash-list {
                 flex: 1 1 100%;
                 /* 1 per baris */
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(1, 1fr);
             }
         }
     </style>

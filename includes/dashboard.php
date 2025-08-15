@@ -115,13 +115,17 @@ $dashboardStats = [
         $link = $item['link'];
         ?>
         <div class="dashboard-card">
-            <div class="dashboard-icon <?php echo $colorClass; ?>">
-                <i class="fa <?php echo $icon; ?>"></i>
+            <div class="card-contents">
+                <div class="dashboard-icon <?php echo $colorClass; ?>">
+                    <i class="fa <?php echo $icon; ?>"></i>
+                </div>
+                <div class="dashboard-count"><?php echo $count; ?></div>
+                <div class="dashboard-title"><?php echo $title; ?></div>
             </div>
-            <div class="dashboard-count"><?php echo $count; ?></div>
-            <div class="dashboard-title"><?php echo $title; ?></div>
-            <div class="dashboard-link">
-                <a href="<?php echo $link; ?>">Lihat Semua</a>
+            <div>
+                <div class="dashboard-link">
+                    <a href="<?php echo $link; ?>">Lihat Semua</a>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>

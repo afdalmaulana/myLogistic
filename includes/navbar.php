@@ -1,3 +1,13 @@
+<?php
+// Pastikan session dimulai
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Ambil nama user dari session
+$namaUker = isset($_SESSION['nama_uker']) ? $_SESSION['nama_uker'] : 'Nama Uker';
+$kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker';
+?>
 <div class="nav">
     <div class="isinavbar">
         <!-- Bagian Kiri -->
@@ -25,10 +35,20 @@
                     <a href="index.php?page=stock-out" onclick="return loadingLink(this, event)">Barang Keluar</a>
                 </div>
             </div>
-            <div id="menu-logout">
-                <a href="logout.php" class="logoutBtn" onclick="return confirm('Yakin ingin logout?')">LOG OUT</a>
+            <div class="profile-container">
+                <div class="profile-icon">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                <div class="profile-dropdown">
+                    <div class="profile-name"><?php echo $kodeUker; ?></div>
+                    <div class="profile-name"><?php echo $namaUker; ?></div>
+                    <form action="logout.php" method="post">
+                        <a href="logout.php" class="logoutBtn" id="logoutBtn">LOG OUT</a>
+                    </form>
+                </div>
             </div>
         </div>
+
 
         <!-- <a href="index.php?page=formInMail" class="menu-item">Tulis Surat Masuk</a>
             <a href="index.php?page=formOutMail" class="menu-item">Tulis Surat Keluar</a> -->

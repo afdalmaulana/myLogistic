@@ -1,0 +1,1 @@
+<div>Copyright by Afdal Ganteng</div>
