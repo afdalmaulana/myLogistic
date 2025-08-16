@@ -74,7 +74,7 @@ $dashboardStats = [
         'link' => 'index.php?page=submission-out',
     ],
     [
-        'title' => $isAdminOrCabang ? 'Jumlah Pengajuan Masuk' : 'Pengajuan Terkirim',
+        'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Terkirim',
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
@@ -92,7 +92,7 @@ $dashboardStats = [
         'result' => $instocks,
         'icon' => 'fa-envelope-open-o',
         'color' => '',
-        'link' => 'index.php?page=submission-out',
+        'link' => 'index.php?page=log-stock-in',
     ],
 ];
 
@@ -155,6 +155,7 @@ $dashboardStats = [
                                 <?php if ($resultRecent->num_rows > 0): ?>
                                     <?php while ($row = $resultRecent->fetch_assoc()): ?>
                                         <div class="recent-update">
+                                            <strong><?php echo $row['kode_uker']; ?></strong>
                                             Pengajuan <strong><?php echo $row['kode_pengajuan']; ?></strong>
                                             status <span class="status-<?php echo strtolower($row['status']); ?>">
                                                 <?php echo $row['status']; ?>

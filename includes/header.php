@@ -361,8 +361,6 @@
         }
 
 
-
-
         .isinavbar {
             width: 100%;
             display: flex;
@@ -799,7 +797,7 @@
 
         .table-container {
             /* border: 3px solid #2460a3ff; */
-            color: white;
+            color: black;
             width: 100%;
             /* border-collapse: collapse; */
             table-layout: fixed;
@@ -863,15 +861,19 @@
         }
 
         .form-input {
-            color: white;
+            color: black;
             border: 6px solid #aeb6bcff;
             padding: 12px;
             /* max-height: 550px; */
             overflow-y: auto;
             border-radius: 8px;
             /* text-align: center; */
-            justify-content: center;
-            width: 50%;
+            /* justify-content: center; */
+            /* width: 50%; */
+            width: 100%;
+            gap: 68px;
+            display: flex;
+            flex-direction: row;
         }
 
         .sub-menuInput a {
@@ -884,27 +886,9 @@
             width: 100%;
         }
 
-        /* .sub-menu:hover {
-            background: black;
-            color: white;
-        } */
-
-        .menu-left {
-            padding: 10px;
-            border-radius: 8px;
-            width: 20%;
-            background-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(163, 157, 157, 0.74));
-        }
-
         .dashboard-wrapper {
-            padding: 30px;
-        }
-
-        .dashboard-input {
-            display: flex;
-            flex-direction: row;
-            gap: 50px;
-            /* border-radius: 20px; */
+            /* padding: 30px; */
+            margin-top: 84px;
         }
 
         /* FORM LOGIN */
@@ -958,45 +942,44 @@
         }
 
         /* BATAS FORM LOGIN */
-
-
         .status-pending {
-            /* merah muda */
             color: #eb7e02ff;
-            /* teks merah gelap */
             font-weight: bold;
         }
 
         .status-approved {
-            /* hijau muda */
             color: #155724;
-            /* teks hijau gelap */
             font-weight: bold;
         }
 
         .status-rejected {
-            /* abu-abu */
             color: #ff0000ff;
-            /* teks abu gelap */
             font-weight: bold;
         }
 
         .status-forward {
-            color: #ffee00ff;
-            /* teks abu gelap */
+            color: #4e4e4eff;
             font-weight: bold;
         }
 
-        .input-mail {
+
+        .submission-left {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
+            width: 50%;
+        }
+
+        .submission-right {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            gap: 22px;
         }
 
         .list-input {
             padding: 8px 12px;
             border-radius: 10px;
-            /* background-color: #00529c; */
             color: black;
             border: 2px solid black;
             cursor: pointer;
