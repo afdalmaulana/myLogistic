@@ -572,6 +572,32 @@
 
 
         /*CSS BUTTON */
+.button-invent-group{
+    display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            padding: 40px 10px 4px 0;
+            text-align: center;
+            align-items: center;
+}
+
+        .button-invent-group button {
+            border: none;
+            background: #ffffffff;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-decoration: none;
+            text-align: center;
+            align-items: center;
+        }
+.button-invent-group button:hover {
+            color: white;
+            background: #153E76;
+            transition: 0.3s ease-in-out;
+}
+
+
         .button-list {
             border: none;
             border: #31373e;
@@ -860,21 +886,42 @@
             justify-content: space-between;
         }
 
-        .form-input {
+        .body-content {
             color: black;
-            border: 6px solid #aeb6bcff;
-            padding: 12px;
-            /* max-height: 550px; */
+            box-shadow: 0 10px 30px rgba(71, 71, 71, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            background: #fffdfdff;
             overflow-y: auto;
             border-radius: 8px;
-            /* text-align: center; */
-            /* justify-content: center; */
-            /* width: 50%; */
             width: 100%;
-            /* gap: 68px; */
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
+
+        .form-input {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.submission-left,
+.submission-right {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 
         .sub-menuInput a {
             display: flex;
@@ -886,10 +933,25 @@
             width: 100%;
         }
 
-        .dashboard-wrapper {
-            /* padding: 30px; */
-            margin-top: 84px;
+        .content-wrapper {
+            /* box-shadow: 0 10px 30px rgba(71, 71, 71, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05); */
+            /* background:rgb(43, 27, 27); */
+            display: flex;
+            flex-direction: column;
+            margin-top: 50px;
+            padding: 20px 20px 40px 20px;
+            border-radius: 8px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
+
+        .content-heading {
+            font-weight: 800; font-size:32px;
+        }
+
+        .section-container {
+    padding: 20px;
+    background-color: #fff;
+}
 
         .wrapper-sub{
             padding-top: 20px;
@@ -957,21 +1019,6 @@
         .status-forward {
             color: #4e4e4eff;
             font-weight: bold;
-        }
-
-
-        .submission-left {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 50%;
-        }
-
-        .submission-right {
-            display: flex;
-            flex-direction: column;
-            width: 50%;
-            gap: 22px;
         }
 
         .list-input {

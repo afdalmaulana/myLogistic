@@ -42,7 +42,7 @@ require 'db_connect.php';
 </script>
 
 
-<div class="content-wrapper">
+<div class="content-wrapper2">
     <div class="content-heading">
         Inventory Management
     </div>

@@ -1,7 +1,8 @@
 <?php
-session_start();
-include 'db_connect.php';
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require 'db_connect.php';
 // Ambil data form
 $tanggal = $_POST['tanggal'] ?? '';
 $tanggal_nota = $_POST['tanggal_nota'] ?? '';
@@ -31,8 +32,8 @@ if ($stmt->execute()) {
 
     if ($cek->num_rows > 0) {
         // Barang sudah ada → update jumlah
-        $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ?");
-        $update->bind_param("iss", $jumlah, $nama_barang, $kode_uker);
+        $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ?, harga_barang + ? WHERE nama_barang = ?");
+        $update->bind_param("isss", $jumlah, $harga_barang, $nama_barang, $kode_uker);
         $update->execute();
     } else {
         // Barang belum ada → insert baru

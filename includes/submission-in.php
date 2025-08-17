@@ -39,15 +39,14 @@
         document.getElementById('tanggal_pengajuan').value = formattedDate;
     });
 </script>
-<div class="dashboard-wrapper">
+<div class="content-wrapper">
     <div>
-        <div class="sub-menu">
+        <div class="sub-content">
             <h4 style="font-weight: 800; font-size:32px;">Form Pengajuan</h4>
         </div>
     </div>
     <form action="submission-inHandler.php" method="POST" enctype="multipart/form-data" onsubmit="return showLoading()">
-        <div class="dashboard-input">
-            <div class="form-input">
+            <div class="body-content">
                 <div class="submission-left">
                     <label for="">Tanggal Hari ini</label>
                     <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
@@ -61,6 +60,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </form>
 </div>

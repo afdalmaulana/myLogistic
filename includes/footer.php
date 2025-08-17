@@ -1,5 +1,4 @@
 <script src="../js/sweetalert.all.min.js"></script>
-<script src="../js/pengirim.js"></script>
 
 <script>
     function deleteRow(button, id) {
@@ -124,16 +123,6 @@
 
     //fitur dropdown tanpa scroll
 
-
-
-    // batas fitur
-
-    // function deleteRow(button, id) {
-    //     if (confirm("Apakah Anda yakin ingin menghapus surat ini?")) {
-    //         window.location.href = "index.php?page=inMail&delete_id=" + id;
-    //     }
-    // }
-
     function showLoading() {
         const btn = document.getElementById("submitBtn");
         btn.disabled = true;
@@ -165,88 +154,6 @@
 
     let currentlyEditingRow = null;
 
-    function editRowInline(button, id) {
-        const row = button.closest("tr");
-
-        // Cek apakah sudah ada baris lain yang sedang diedit
-        if (currentlyEditingRow && currentlyEditingRow !== row) {
-            Swal.fire("Peringatan", "Selesaikan pengeditan sebelumnya dulu.", "warning");
-            return;
-        }
-
-        currentlyEditingRow = row;
-
-        const pengirimCell = row.children[2];
-        const tujuanCell = row.children[3];
-        const perihalCell = row.children[4];
-
-        const pengirim = pengirimCell.textContent.trim();
-        const tujuan = tujuanCell.textContent.trim();
-        const perihal = perihalCell.textContent.trim();
-
-        pengirimCell.innerHTML = `
-        <select name="pengirim" required>
-            <option value="OPS" ${pengirim === "OPS" ? "selected" : ""}>Operasional</option>
-            <option value="HC" ${pengirim === "HC" ? "selected" : ""}>Human Capital</option>
-            <option value="LOG" ${pengirim === "LOG" ? "selected" : ""}>Logistik</option>
-            <option value="ADK" ${pengirim === "ADK" ? "selected" : ""}>Administrasi Keuangan</option>
-            <option value="RMFT" ${pengirim === "RMFT" ? "selected" : ""}>RMFT</option>
-        </select>
-    `;
-
-        tujuanCell.innerHTML = `<input type="text" name="tujuan_surat" value="${tujuan}" required>`;
-        perihalCell.innerHTML = `<input type="text" name="perihal" value="${perihal}" required>`;
-
-        button.innerHTML = 'Simpan <i class="fa fa-save"></i>';
-        button.classList.remove("button-trash");
-        button.classList.add("button-save");
-        button.onclick = function() {
-            saveRowInline(this, id);
-        };
-    }
-
-    function saveRowInline(button, id) {
-        const row = button.closest("tr");
-
-        const pengirim = row.children[2].querySelector("select").value;
-        const tujuan = row.children[3].querySelector("input").value;
-        const perihal = row.children[4].querySelector("input").value;
-
-        button.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Menyimpan...`;
-        button.disabled = true;
-
-        fetch("update_surat.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `id=${id}&pengirim=${encodeURIComponent(pengirim)}&tujuan_surat=${encodeURIComponent(tujuan)}&perihal=${encodeURIComponent(perihal)}`
-            })
-            .then(response => response.text())
-            .then(data => {
-                row.children[2].textContent = pengirim;
-                row.children[3].textContent = tujuan;
-                row.children[4].textContent = perihal;
-
-                button.innerHTML = 'Edit <i class="fa fa-pencil-square-o"></i>';
-                button.classList.remove("button-save");
-                button.classList.add("button-trash");
-                button.disabled = false;
-
-                button.onclick = function() {
-                    editRowInline(this, id);
-                };
-
-                currentlyEditingRow = null;
-
-                Swal.fire('Berhasil!', 'Data berhasil diperbarui.', 'success');
-            })
-            .catch(error => {
-                console.error("Update gagal", error);
-                Swal.fire('Gagal!', 'Terjadi kesalahan saat memperbarui data.', 'error');
-                button.disabled = false;
-            });
-    }
 
 
     //update status
@@ -358,4 +265,21 @@
             });
         }
     });
+
+    // Slide
+    function loadSection(file) {
+    fetch(file)
+        .then(response => response.text())
+        .then(html => {
+            const contentArea = document.getElementById('content-area');
+            contentArea.style.opacity = 0;
+            setTimeout(() => {
+                contentArea.innerHTML = html;
+                contentArea.style.opacity = 1;
+            }, 150);
+        })
+        .catch(error => {
+            console.error('Gagal memuat konten:', error);
+        });
+}
 </script>

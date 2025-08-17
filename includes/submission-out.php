@@ -18,13 +18,11 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSIO
 $result = $conn->query($query);
 ?>
 
-<div class="menu-submission-out">
-    <div class="sub-submission-out">
-        <div class="sub-menu">
-            <h4 style="font-weight: 800; font-size:32px;">List Pengajuan</h4>
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
-        </div>
-
+<div class="content-wrapper">
+    <div class="sub-content">
+        <h4 style="font-weight: 800; font-size:32px;">List Pengajuan</h4>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+        <div class="body-content">
         <div class="table-container">
             <table id="dataTable" style="width:100%;">
                 <thead>
@@ -95,6 +93,7 @@ $result = $conn->query($query);
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 </div>

@@ -29,7 +29,9 @@ if (!isset($_SESSION['user'])) {
                 'stock-out',
                 'add-user',
                 'submission-in',
-                'submission-out'
+                'submission-out',
+                'inventory-management',
+                'test-stockin'
             ];
 
             if (in_array($page, $allowed_pages)) {

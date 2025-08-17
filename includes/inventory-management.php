@@ -47,42 +47,12 @@ require 'db_connect.php';
         Inventory Management
     </div>
     <div>Manage your inventory, track incoming, and outgoing</div>
-<form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
-        <div class="body-content">
-            <p>Record Barang Masuk</p>
-            <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
-            <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
-            <div class="form-input">
-    <div class="submission-left">
-        <div class="form-group">
-            <label>Nomor Nota</label>
-            <input type="text" name="nomor_nota" class="list-input">
-        </div>
-        <div class="form-group">
-            <label>Tanggal Nota</label>
-            <input type="date" name="tanggal_nota" class="list-input">
-        </div>
-        <div class="form-group">
-            <label>Nama Barang</label>
-            <input type="text" name="nama_barang" class="list-input">
-        </div>
+    <div class="button-invent-group">
+        <button onclick="loadSection('index.php?page=stocks')">STOCK</button>
+        <button onclick="loadSection('index.php?page=stock-in')">Barang Masuk</button>
+        <button onclick="loadSection('stock-out.php')">Barang Keluar</button>
     </div>
-    <div class="submission-right">
-        <div class="form-group">
-            <label>Harga Barang</label>
-            <input type="text" name="harga_barang" class="list-input">
-        </div>
-        <div class="form-group">
-            <label>Jumlah</label>
-            <input type="number" name="jumlah" class="list-input">
-        </div>
-        <div class="form-group">
-            <button type="submit" class="button-send">Kirim</button>
-        </div>
+    <div id="content-area">
+        <?php include 'includes/stocks.php'; ?>
     </div>
 </div>
-
-        </div>
-    </form>
-</div>
-<!-- <?php include 'includes/log-stock-in.php'; ?> -->

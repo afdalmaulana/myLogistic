@@ -38,9 +38,6 @@ $forwardPengajuan = $conn->query($queryForward);
 $queryRejected = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Rejected'";
 $rejectedPengajuan = $conn->query($queryRejected);
 
-// Query lainnya (surat keluar, stok) tidak perlu difilter
-// $query = "SELECT * FROM surat_keluar ORDER BY pengirim DESC";
-// $resultSuratKeluar = $conn->query($query);
 $query = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY nama_barang ASC";
 $stocks = $conn->query($query);
 
@@ -99,7 +96,7 @@ $dashboardStats = [
 ?>
 
 <div class="dashboard-menu">
-    <div class="dashboard-heading" style="font-weight: 800; font-size:32px;">
+    <div class="content-heading">
         Dashboard LogiTrack
     </div>
     <div>Welcome back! Here what's happening with your activity today</div>

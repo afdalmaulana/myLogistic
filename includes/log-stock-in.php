@@ -49,7 +49,7 @@ $result = $conn->query($query)
                 </thead>
                 <tbody>
                     <?php if ($stocksIn->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <?php while ($row = $stocksIn->fetch_assoc()): ?>
                             <tr>
                                 <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                 <td><?= htmlspecialchars($row['tanggal']) ?></td>
