@@ -27,7 +27,7 @@ $query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
 $result = $conn->query($query)
 ?>
 
-<div class="dashboard-mailin">
+<div class="dashboard-wrapper">
     <div class="mail-in">
         <div class="sub-menu">
             <h4>Log Barang Masuk</h4>

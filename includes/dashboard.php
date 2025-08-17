@@ -85,7 +85,7 @@ $dashboardStats = [
         'result' => $outstocks,
         'icon' => 'fa-envelope-open-o',
         'color' => '',
-        'link' => 'index.php?page=submission-out',
+        'link' => 'index.php?page=log-stock-out',
     ],
     [
         'title' => 'Barang Masuk',

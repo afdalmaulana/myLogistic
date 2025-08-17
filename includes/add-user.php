@@ -52,8 +52,8 @@ $result = $conn->query($query);
 <?php endif; ?>
 
 <form action="add_userHandler.php" method="POST" onsubmit="return showLoading()">
-    <div class="signup-wrapper">
-        <div class="dashboard_login">
+    <div class="dashboard-wrapper">
+        <div class="">
             <div class="form-input-login">
                 <div style="font-size: 32px; margin-top: 12px; font-weight:700">Tambah Akun</div>
                 <!-- </div> -->

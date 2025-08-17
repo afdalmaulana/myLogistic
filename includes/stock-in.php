@@ -42,15 +42,12 @@ require 'db_connect.php';
 </script>
 
 <form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
-    <div class="dashboard-mailin">
+    <div class="dashboard-wrapper">
         <div class="form-input">
-            <div style="display: flex; flex-direction:row; justify-content:space-between;">
+            <div style="display: flex; flex-direction:column;">
                 <div style="font-size: 32px; margin-top: 12px; font-weight:700">Formulir Barang Masuk</div>
-                <a href="index.php?page=log-stock-in" class="button-log">
-                    <i class="fa fa-trash-o" aria-hidden="true"></i> Lihat Log
-                </a>
+                <p>Masukkan sesuai dengan ketentuan yang berlaku</p>
             </div>
-            <p>Masukkan sesuai dengan ketentuan yang berlaku</p>
             <div class="input-mail">
                 <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
                 <div style="display: flex; flex-direction:column">
