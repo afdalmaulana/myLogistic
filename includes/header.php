@@ -313,6 +313,8 @@
             z-index: 999;
         }
 
+
+
         .profile-container:hover .profile-dropdown {
             display: block;
         }
@@ -543,6 +545,31 @@
             transition: 0.2s ease-in-out;
         }
 
+        .actions {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-action {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: -10px;
+            background: #2460a3ff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            /* width: 150px; */
+            z-index: 999;
+            cursor: pointer;
+        }
+
+        .actions:hover .dropdown-action {
+            display: block;
+            transition: 0.5s ease-in-out;
+            cursor: pointer;
+        }
+
         #dropdownMenuButton {
             /* background: orange; */
             color: black;
@@ -572,14 +599,14 @@
 
 
         /*CSS BUTTON */
-.button-invent-group{
-    display: grid;
+        .button-invent-group {
+            display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 18px;
             padding: 40px 10px 4px 0;
             text-align: center;
             align-items: center;
-}
+        }
 
         .button-invent-group button {
             border: none;
@@ -591,11 +618,12 @@
             text-align: center;
             align-items: center;
         }
-.button-invent-group button:hover {
+
+        .button-invent-group button:hover {
             color: white;
             background: #153E76;
             transition: 0.3s ease-in-out;
-}
+        }
 
 
         .button-list {
@@ -644,7 +672,7 @@
             background: none;
             border: none;
             font-size: 16px;
-            color: black;
+            color: white;
             padding: 6px 10px 6px 10px;
             border-radius: 10px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -655,7 +683,7 @@
             background: none;
             border: none;
             font-size: 16px;
-            color: black;
+            color: white;
             padding: 6px 10px 6px 10px;
             border-radius: 10px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -902,26 +930,26 @@
         }
 
         .form-input {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    width: 100%;
-    align-items: flex-start;
-}
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+        }
 
-.submission-left,
-.submission-right {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    gap: 14px;
-}
+        .submission-left,
+        .submission-right {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            gap: 14px;
+        }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
         .sub-menuInput a {
             display: flex;
@@ -945,15 +973,16 @@
         }
 
         .content-heading {
-            font-weight: 800; font-size:32px;
+            font-weight: 800;
+            font-size: 32px;
         }
 
         .section-container {
-    padding: 20px;
-    background-color: #fff;
-}
+            padding: 20px;
+            background-color: #fff;
+        }
 
-        .wrapper-sub{
+        .wrapper-sub {
             padding-top: 20px;
         }
 
@@ -1002,13 +1031,13 @@
 
         /* BATAS FORM LOGIN */
         .status-pending {
-            color: #eb7e02ff;
+            color: #ff8800ff;
             font-weight: bold;
         }
 
         .status-approved {
-            color: #155724;
-            font-weight: bold;
+            color: #0cb834ff;
+            font-weight: 800;
         }
 
         .status-rejected {
@@ -1017,7 +1046,7 @@
         }
 
         .status-forward {
-            color: #4e4e4eff;
+            color: #28a4b9ff;
             font-weight: bold;
         }
 

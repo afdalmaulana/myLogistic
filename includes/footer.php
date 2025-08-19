@@ -158,53 +158,90 @@
 
     //update status
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil semua tombol dengan class approve atau reject
         const buttons = document.querySelectorAll('.button-approve, .button-reject');
 
         buttons.forEach(button => {
             button.addEventListener('click', function() {
                 const kodePengajuan = this.getAttribute('data-kode');
-                const status = this.getAttribute('data-status'); // expected: forward, approved, rejected
+                const status = this.getAttribute('data-status');
 
                 if (!kodePengajuan || !status) return;
 
-                // Buat teks konfirmasi yang lebih natural
-                let actionText = '';
-                switch (status) {
-                    case 'forward':
-                        actionText = 'meneruskan';
-                        break;
-                    case 'approved':
-                        actionText = 'menyetujui';
-                        break;
-                    case 'rejected':
-                        actionText = 'menolak';
-                        break;
-                    default:
-                        actionText = `mengubah status menjadi ${status}`;
-                }
+                if (status === 'forward') {
+                    // Gunakan SweetAlert2 untuk input nomor surat
+                    Swal.fire({
+                        title: 'Masukkan Nomor Surat',
+                        input: 'text',
+                        inputLabel: 'Nomor Surat',
+                        inputPlaceholder: 'Contoh: 123/XYZ/2025',
+                        showCancelButton: true,
+                        confirmButtonText: 'Kirim',
+                        cancelButtonText: 'Batal',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'Nomor surat wajib diisi!';
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const nomorSurat = result.value;
 
-                if (!confirm(`Yakin ingin ${actionText} pengajuan ${kodePengajuan}?`)) return;
-
-                fetch('update-submissionHandler.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `kode_pengajuan=${encodeURIComponent(kodePengajuan)}&status=${encodeURIComponent(status)}`
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Terjadi kesalahan pada server.');
-                        return response.text();
-                    })
-                    .then(data => {
-                        alert(data); // tampilkan respon dari handler PHP
-                        location.reload(); // reload agar tampilan terbaru muncul
-                    })
-                    .catch(error => {
-                        alert("Gagal memperbarui status.");
-                        console.error('Error:', error);
+                            fetch('update-submissionHandler.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: `kode_pengajuan=${encodeURIComponent(kodePengajuan)}&status=forward&nomor_surat=${encodeURIComponent(nomorSurat)}`
+                                })
+                                .then(response => {
+                                    if (!response.ok) throw new Error('Terjadi kesalahan pada server.');
+                                    return response.text();
+                                })
+                                .then(data => {
+                                    Swal.fire('Sukses!', data, 'success').then(() => location.reload());
+                                })
+                                .catch(error => {
+                                    Swal.fire('Gagal!', 'Gagal memperbarui status.', 'error');
+                                    console.error('Error:', error);
+                                });
+                        }
                     });
+                } else {
+                    // Untuk status approved atau rejected biasa
+                    const actionText = {
+                        approved: 'menyetujui',
+                        rejected: 'menolak'
+                    } [status] || `mengubah status menjadi ${status}`;
+
+                    Swal.fire({
+                        title: `Yakin ingin ${actionText} pengajuan ${kodePengajuan}?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('update-submissionHandler.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: `kode_pengajuan=${encodeURIComponent(kodePengajuan)}&status=${encodeURIComponent(status)}`
+                                })
+                                .then(response => {
+                                    if (!response.ok) throw new Error('Terjadi kesalahan pada server.');
+                                    return response.text();
+                                })
+                                .then(data => {
+                                    Swal.fire('Sukses!', data, 'success').then(() => location.reload());
+                                })
+                                .catch(error => {
+                                    Swal.fire('Gagal!', 'Gagal memperbarui status.', 'error');
+                                    console.error('Error:', error);
+                                });
+                        }
+                    });
+                }
             });
         });
     });
@@ -268,18 +305,18 @@
 
     // Slide
     function loadSection(file) {
-    fetch(file)
-        .then(response => response.text())
-        .then(html => {
-            const contentArea = document.getElementById('content-area');
-            contentArea.style.opacity = 0;
-            setTimeout(() => {
-                contentArea.innerHTML = html;
-                contentArea.style.opacity = 1;
-            }, 150);
-        })
-        .catch(error => {
-            console.error('Gagal memuat konten:', error);
-        });
-}
+        fetch(file)
+            .then(response => response.text())
+            .then(html => {
+                const contentArea = document.getElementById('content-area');
+                contentArea.style.opacity = 0;
+                setTimeout(() => {
+                    contentArea.innerHTML = html;
+                    contentArea.style.opacity = 1;
+                }, 150);
+            })
+            .catch(error => {
+                console.error('Gagal memuat konten:', error);
+            });
+    }
 </script>

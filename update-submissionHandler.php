@@ -3,6 +3,7 @@ require 'db_connect.php';
 
 $kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $status = $_POST['status'] ?? '';
+$nomor_surat = $_POST['nomor_surat'] ?? null;
 
 // Validasi kode_pengajuan
 if (!$kode_pengajuan) {
@@ -11,7 +12,7 @@ if (!$kode_pengajuan) {
     exit;
 }
 
-// Proses hapus
+// Proses hapus (jika ada fitur delete)
 if ($status === 'delete') {
     $stmt = $conn->prepare("DELETE FROM pengajuan WHERE kode_pengajuan = ?");
     $stmt->bind_param("s", $kode_pengajuan);
@@ -34,9 +35,21 @@ if (!in_array($status, $allowedStatuses)) {
     exit;
 }
 
-// Update status
-$stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-$stmt->bind_param("ss", $status, $kode_pengajuan);
+// Update query berbeda jika forward (tambahkan nomor surat)
+if ($status === 'forward') {
+    if (!$nomor_surat) {
+        http_response_code(400);
+        echo "Nomor surat wajib diisi untuk status forward.";
+        exit;
+    }
+
+    $stmt = $conn->prepare("UPDATE pengajuan SET status = ?, nomor_surat = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
+    $stmt->bind_param("sss", $status, $nomor_surat, $kode_pengajuan);
+} else {
+    // selain forward, hanya update status
+    $stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
+    $stmt->bind_param("ss", $status, $kode_pengajuan);
+}
 
 if ($stmt->execute()) {
     echo "Status berhasil diperbarui menjadi " . ucfirst($status) . ".";
