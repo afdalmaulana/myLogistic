@@ -15,35 +15,6 @@ if (!isset($_SESSION['user'])) {
 <?php include 'includes/navbar.php'; ?>
 
 
-<?php if (isset($_GET['status'])): ?>
-    <script src="../js/sweetalert.all.min.js"></script>
-    <script>
-        window.onload = function () {
-            <?php if ($_GET['status'] === 'success'): ?>
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Selamat Datang",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            <?php elseif ($_GET['status'] === 'error'): ?>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login Gagal',
-                    text: 'Kombinasi username dan password salah'
-                });
-            <?php elseif ($_GET['status'] === 'incomplete'): ?>
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Data tidak lengkap',
-                    text: 'Harap lengkapi semua form.'
-                });
-            <?php endif; ?>
-        };
-    </script>
-<?php endif; ?>
-
 <div class="main-wrapper">
     <?php include 'includes/sidebar.php'; ?>
 
