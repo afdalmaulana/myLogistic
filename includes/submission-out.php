@@ -55,10 +55,10 @@ $result = $conn->query($query);
             <td><?= htmlspecialchars($row['kode_uker']) ?></td>
             <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
             <td><?= htmlspecialchars($row['perihal']) ?></td>
-            <td class="<?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
-            <td><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
-            <td><?php if ($row['status'] === 'Pending'): ?>
-                        <div style="font-size:12px">Menuggu Approval KC</div>
+            <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
+            <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
+            <td style="background: none;"><?php if ($row['status'] === 'Pending'): ?>
+                        <div style="font-size:12px;">Menuggu Approval KC</div>
                     <?php elseif ($row['status'] === 'Forward'): ?>
                         <div style="font-size:12px">Pengajuan dikirim ke Kanwil</div>
                     <?php elseif($row['status'] === 'Approved'): ?>
@@ -68,31 +68,17 @@ $result = $conn->query($query);
                     <?php endif; ?></td>
             <td>
                 <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
-                    <div class="actions" style="position: relative;">
-                        <?php if ($row['status'] === 'Approved' || $row['status'] === 'Rejected'): ?>
-                            <button style="font-size:24px; background: none; padding:10px; border:none" disabled>
-                                <i class="fa fa-ellipsis-v"></i>
-                            </button>
-                        <?php else: ?>
-                            <button style="font-size:24px; background: none; padding:10px; border:none">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-action">
-                                <?php if ($row['status'] === 'Pending'): ?>
-                                    <button class="button-approve" data-kode="<?= $row['kode_pengajuan'] ?>" data-status="forward">Forward</button>
-                                    <button class="button-reject" data-kode="<?= $row['kode_pengajuan'] ?>" data-status="rejected">Reject</button>
-                                <?php elseif ($row['status'] === 'Forward'): ?>
-                                    <button class="button-approve" data-kode="<?= $row['kode_pengajuan'] ?>" data-status="approved">Approve</button>
-                                    <button class="button-reject" data-kode="<?= $row['kode_pengajuan'] ?>" data-status="rejected">Reject</button>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php elseif ($row['status'] === 'Pending'): ?>
-                        <button class="button-trash" data-kode="<?= htmlspecialchars($row['kode_pengajuan']) ?>">
-                            Hapus <i class="fa fa-trash-o"></i>
-                        </button>
-                <?php endif; ?>
+        <button class="btn-action"
+                data-kode="<?= $row['kode_pengajuan'] ?>"
+                data-status="<?= strtolower($row['status']) ?>"
+                style="font-size:24px; background: none; padding:10px; border:none">
+            <i class="fa fa-ellipsis-v"></i>
+        </button>
+    <?php elseif ($row['status'] === 'Pending'): ?>
+        <button class="button-trash" data-kode="<?= htmlspecialchars($row['kode_pengajuan']) ?>">
+            Hapus <i class="fa fa-trash-o"></i>
+        </button>
+    <?php endif; ?>
             </td>
         </tr>
     <?php endwhile; ?>
@@ -106,4 +92,9 @@ $result = $conn->query($query);
             </div>
         </div>
     </div>
+</div>
+<div id="global-actions" class="dropdown-action" style="display:none; position:absolute; z-index:9999;">
+    <button id="btn-forward" class="button-approve">Forward</button>
+    <button id="btn-approve" class="button-approve">Approve</button>
+    <button id="btn-reject" class="button-reject">Reject</button>
 </div>

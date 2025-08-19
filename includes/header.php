@@ -597,22 +597,20 @@
 
         .actions {
             position: relative;
-            display: inline-block;
+    z-index: 1000;
         }
 
         .dropdown-action {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: -10px;
-            background: #2460a3ff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            /* width: 150px; */
-            z-index: 999;
-            cursor: pointer;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #2460a3ff;
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 9999;  /* tambahin biar paling atas */
         }
+
 
         .actions:hover .dropdown-action {
             display: block;
@@ -903,17 +901,19 @@
             color: black;
         }
 
+
         .table-container {
-            /* border: 3px solid #2460a3ff; */
-            color: black;
-            width: 100%;
-            /* border-collapse: collapse; */
-            table-layout: fixed;
-            max-height: 350px;
-            overflow-x: auto;
-            overflow-y: auto;
-            z-index: 0;
-        }
+             overflow: visible;  /* supaya dropdown nggak kepotong */
+    max-height: 350px;
+    overflow-x: auto;
+    overflow-y: auto; /* scroll tabel tetap ada */
+    border: 1px solid #ddd;
+}
+
+.table-container td:nth-child(7) {
+    background: transparent !important;
+    pointer-events: none; /* biar gak nutupin hover dropdown */
+}
 
         /* Sticky header agar tetap terlihat saat scroll */
         .table-container thead th {
@@ -924,7 +924,6 @@
             z-index: 2;
             padding: 12px;
             /* box-sizing: border-box; */
-
         }
 
         .table-container table th,

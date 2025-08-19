@@ -247,6 +247,197 @@
         });
     });
 
+    /**BUTTON ACITION */
+document.addEventListener("DOMContentLoaded", () => {
+    const globalMenu = document.getElementById("global-actions");
+
+    document.querySelectorAll(".btn-action").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const kode = btn.dataset.kode;
+            const status = btn.dataset.status;
+
+            // Posisi menu di bawah tombol
+            const rect = btn.getBoundingClientRect();
+            globalMenu.style.top = (window.scrollY + rect.bottom) + "px";
+            globalMenu.style.left = (window.scrollX + rect.left) + "px";
+            globalMenu.style.display = "block";
+
+            // Atur tombol yang muncul sesuai status
+            document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
+            document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
+            document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
+
+            // Inject data kode
+            ["btn-forward","btn-approve","btn-reject"].forEach(id=>{
+                const el = document.getElementById(id);
+                if(el) el.setAttribute("data-kode", kode);
+            });
+        });
+    });
+
+    // Klik luar = close
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".btn-action") && !e.target.closest("#global-actions")) {
+            globalMenu.style.display = "none";
+        }
+    });
+});
+
+
+/**BUTTON ACTION LANJUTAN */
+document.addEventListener("DOMContentLoaded", () => {
+    const globalMenu = document.getElementById("global-actions");
+
+    // === Buka menu global saat titik tiga diklik ===
+    document.querySelectorAll(".btn-action").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const kode = btn.dataset.kode;
+            const status = btn.dataset.status;
+
+            const rect = btn.getBoundingClientRect();
+            globalMenu.style.top = (window.scrollY + rect.bottom) + "px";
+            globalMenu.style.left = (window.scrollX + rect.left) + "px";
+            globalMenu.style.display = "block";
+
+            ["btn-forward","btn-approve","btn-reject"].forEach(id=>{
+                const el = document.getElementById(id);
+                if(el) el.dataset.kode = kode;
+            });
+
+            document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
+            document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
+            document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
+        });
+    });
+
+    // === Tombol Forward ===
+    document.getElementById("btn-forward").addEventListener("click", () => {
+        const kode = document.getElementById("btn-forward").dataset.kode;
+
+        Swal.fire({
+            title: 'Masukkan Nomor Surat',
+            input: 'text',
+            inputPlaceholder: 'Contoh: 123/ABC/2025',
+            showCancelButton: true,
+            confirmButtonText: 'Kirim',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Nomor surat wajib diisi!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("update-submissionHandler.php", {
+                    method: "POST",
+                headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+        kode_pengajuan: kode,
+        status: "forward",
+        nomor_surat: result.value
+    })})
+                .then(res => res.text())
+                .then(msg => {
+                    Swal.fire('Sukses', msg, 'success');
+
+    // cari baris tabel sesuai kode pengajuan
+    const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+
+    // update kolom nomor_surat
+    row.querySelector(".nomor-surat-cell").innerText = result.value;
+
+    // update kolom status
+    row.querySelector(".status-cell").innerText = "Forward";
+
+    // update atribut data-status biar menu global ikut menyesuaikan
+    row.querySelector(".btn-action").dataset.status = "forward";
+                }).then(() => {
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                });
+            }
+        });
+    });
+
+    // === Tombol Approve ===
+    document.getElementById("btn-approve").addEventListener("click", () => {
+        const kode = document.getElementById("btn-approve").dataset.kode;
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: "Setujui pengajuan ini?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Approve',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("update-submissionHandler.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: new URLSearchParams({
+        kode_pengajuan: kode,
+        status: "approved",
+        nomor_surat: result.value
+    })})
+                .then(msg => {
+    Swal.fire('Sukses', msg, 'success').then(() => {
+        // reload setelah user klik OK swal
+        location.reload();
+    });
+
+    const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+    row.querySelector(".status-cell").innerText = "Approved"; // perbaiki typo
+    row.querySelector(".btn-action").dataset.status = "approved";
+}).catch(err => {
+                    console.error(err);
+                    Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                })
+            }
+        });
+    });
+
+    // === Tombol Reject ===
+    document.getElementById("btn-reject").addEventListener("click", () => {
+        const kode = document.getElementById("btn-reject").dataset.kode;
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: "Tolak pengajuan ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Reject',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("submission-update.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: `kode_pengajuan=${encodeURIComponent(kode)}&status=rejected`
+                })
+                .then(res => res.text())
+                .then(msg => {
+                    Swal.fire('Sukses', msg, 'success').then(()=>location.reload());
+                });
+            }
+        });
+    });
+
+    // === Klik luar untuk nutup menu global ===
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".btn-action") && !e.target.closest("#global-actions")) {
+            globalMenu.style.display = "none";
+        }
+    });
+});
+
+/**BATAS ACTION TOMBOL */
+
     //Hapus Pengajuan
     document.addEventListener('DOMContentLoaded', function() {
         const deleteButtons = document.querySelectorAll('.button-trash');
