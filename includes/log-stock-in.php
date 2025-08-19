@@ -1,4 +1,5 @@
 <?php
+echo "<!-- Loaded log-stock-in.php -->";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,9 +18,6 @@ if ($isAdminOrCabang) {
 }
 
 // PROSES HAPUS (ditangani sebelum output HTML)
-$successMessage = '';
-$errorMessage = '';
-
 $query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
 $stocksIn = $conn->query($query);
 

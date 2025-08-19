@@ -332,12 +332,12 @@
             .then(html => {
                 contentArea.innerHTML = html;
 
-                // Panggil setTanggalHariIni hanya jika file adalah stock-in atau stock-out
-                if (file === 'stock-in' || file === 'stock-out') {
-                    if (typeof setTanggalHariIni === 'function') {
-                        setTanggalHariIni();
-                    }
-                }
+                // Panggil setTanggalHariIni hanya jika file adalah stock - in atau stock - out
+                // if (file === 'stock-in' || file === 'stock-out') {
+                //     if (typeof setTanggalHariIni === 'function') {
+                //         setTanggalHariIni();
+                //     }
+                // }
             })
             .catch(error => {
                 contentArea.innerHTML = `<p style="color:red;">Terjadi kesalahan saat memuat konten.</p>`;
@@ -366,5 +366,46 @@
         if (tanggalInput) {
             tanggalInput.value = formattedDate;
         }
+    }
+
+    function loadLog(file, btn) {
+        const contentArea = document.getElementById('content-areas'); // Cek element id ini sesuai HTML-mu
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // Hapus class active dari semua tombol
+        const buttons = document.querySelectorAll('.button-invent-group button');
+        buttons.forEach(button => button.classList.remove('active'));
+
+        // Tambahkan class active ke tombol yang diklik
+        if (btn) {
+            btn.classList.add('active');
+            btn.originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memuat...';
+            btn.style.pointerEvents = 'none';
+        }
+
+        loadingIndicator.style.display = 'block';
+        contentArea.style.opacity = 0.5;
+
+        fetch('includes/' + file + '.php')
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal memuat halaman: ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                contentArea.innerHTML = html;
+            })
+            .catch(error => {
+                contentArea.innerHTML = `<p style="color:red;">Terjadi kesalahan saat memuat konten.<br>${error.message}</p>`;
+                console.error(error);
+            })
+            .finally(() => {
+                loadingIndicator.style.display = 'none';
+                contentArea.style.opacity = 1;
+                if (btn) {
+                    btn.innerHTML = btn.originalHTML;
+                    btn.style.pointerEvents = 'auto';
+                }
+            });
     }
 </script>

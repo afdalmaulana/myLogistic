@@ -50,7 +50,7 @@ if ($stmt->execute()) {
             echo '
             <script>
                 setTimeout(function() {
-                    window.location.href = "index.php?page=logLogisticOut";
+                    window.location.href = "index.php?page=log-stock-out";
                 }, 3000);
             </script>
             ';

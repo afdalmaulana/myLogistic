@@ -976,8 +976,15 @@
         }
 
         .content-wrapper {
-            /* box-shadow: 0 10px 30px rgba(71, 71, 71, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05); */
-            /* background:rgb(43, 27, 27); */
+            display: flex;
+            flex-direction: column;
+            margin-top: 50px;
+            padding: 20px 20px 40px 20px;
+            border-radius: 8px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        .content-wrappers {
             display: flex;
             flex-direction: column;
             margin-top: 50px;

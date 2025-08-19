@@ -1,10 +1,9 @@
 <?php
+echo "<!-- Loaded log-stock-out.php -->";
+
 require __DIR__ . '/../db_connect.php';
 
 // PROSES HAPUS (ditangani sebelum output HTML)
-$successMessage = '';
-$errorMessage = '';
-
 $query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
 $result = $conn->query($query);
 ?>

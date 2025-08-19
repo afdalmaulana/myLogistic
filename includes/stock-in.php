@@ -71,4 +71,3 @@ require __DIR__ . '/../db_connect.php';
     </div>
 </form>
 <!-- </div> -->
-<!-- <?php include 'includes/log-stock-in.php'; ?> -->
