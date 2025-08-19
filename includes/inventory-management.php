@@ -43,16 +43,19 @@ require 'db_connect.php';
 
 
 <div class="content-wrapper">
-    <div class="content-heading">
-        Inventory Management
-    </div>
+    <div class="content-heading">Inventory Management</div>
     <div>Manage your inventory, track incoming, and outgoing</div>
     <div class="button-invent-group">
-        <button onclick="loadSection('index.php?page=stocks')">STOCK</button>
-        <button onclick="loadSection('index.php?page=stock-in')">Barang Masuk</button>
-        <button onclick="loadSection('stock-out.php')">Barang Keluar</button>
+        <button class="active" onclick="loadSection('stocks', this)">Stok Barang</button>
+        <button onclick="loadSection('stock-in', this)">Barang Masuk</button>
+        <button onclick="loadSection('stock-out', this)">Barang Keluar</button>
     </div>
     <div id="content-area">
-        <?php include 'includes/stocks.php'; ?>
+        <?php include 'includes/stocks.php'; // default konten 
+        ?>
     </div>
+    <div id="loading-indicator" style="display: none; text-align:center; margin: 10px;">
+        <div class="spinner"></div>
+    </div>
+
 </div>

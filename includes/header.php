@@ -36,6 +36,16 @@
             background-color: #f5f6fa;
             min-height: 100vh;
             box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .dashboard-wrapper {
+            width: 100%;
+            background: green;
+            padding: 0;
+            /* atau sesuaikan */
+            margin: 0;
+            box-sizing: border-box;
         }
 
         .nav {
@@ -603,20 +613,19 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 18px;
-            padding: 40px 10px 4px 0;
+            padding: 10px 10px 4px 0;
             text-align: center;
             align-items: center;
         }
 
         .button-invent-group button {
             border: none;
-            background: #ffffffff;
-            padding: 10px;
-            border-radius: 10px;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            text-decoration: none;
-            text-align: center;
-            align-items: center;
+            background: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
         }
 
         .button-invent-group button:hover {
@@ -625,6 +634,11 @@
             transition: 0.3s ease-in-out;
         }
 
+        .button-invent-group button.active {
+            border-bottom: 3px solid #3498db;
+            /* garis bawah biru */
+            color: #3498db;
+        }
 
         .button-list {
             border: none;
@@ -925,7 +939,7 @@
             flex-direction: column;
             padding: 20px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 10px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
@@ -1112,6 +1126,7 @@
                 border-radius: 50%;
             }
         }
+
 
         .background {
             position: fixed;

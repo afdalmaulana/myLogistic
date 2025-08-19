@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require __DIR__ . '/../db_connect.php';
 
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
     (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
@@ -23,37 +23,36 @@ $query = "SELECT * FROM stok_barang ORDER BY nama_barang ASC";
 $result = $conn->query($query);
 ?>
 
-<div class="dashboard-wrapper">
-    <div class="mail-count">
-        <div> <?php echo $stocks->num_rows ?> </div>
-        <div class="">Jenis Barang yang Tersedia</div>
-    </div>
 
-    <div class="wrapper-sub">
-        <h4>Daftar Stok Barang</h4>
-        <div class="table-container">
-            <table id="dataTable" style="width:100%; border-collapse:collapse;">
-                <thead>
-                    <tr>
-                        <th>Nama Barang</th>
-                        <th>Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($stocks->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
+<div class="mail-count">
+    <div> <?php echo $stocks->num_rows ?> </div>
+    <div class="">Jenis Barang yang Tersedia</div>
+</div>
+
+<div class="wrapper-sub">
+    <h4>Daftar Stok Barang</h4>
+    <div class="table-container">
+        <table id="dataTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Nama Barang</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($stocks->num_rows > 0): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td colspan="2" style="text-align:center;">Belum ada data stok barang</td>
+                            <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                            <td><?= htmlspecialchars($row['jumlah']) ?></td>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="2" style="text-align:center;">Belum ada data stok barang</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 </div>

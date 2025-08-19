@@ -1,5 +1,5 @@
 <?php
-require 'db_connect.php';
+require __DIR__ . '/../db_connect.php';
 
 $stokQuery = "SELECT nama_barang FROM stok_barang ORDER BY nama_barang ASC";
 $stokResult = $conn->query($stokQuery);
@@ -42,43 +42,43 @@ $stokResult = $conn->query($stokQuery);
     });
 </script>
 <form action="stockOut_connect.php" method="POST" onsubmit="return showLoading()">
-    <div class="dashboard-mailin">
+    <div class="body-content">
+        <p>Record Barang Keluar</p>
+        <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
+        <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
         <div class="form-input">
-            <div style="display: flex; flex-direction:row; justify-content:space-between;">
-                <div style="font-size: 32px; margin-top: 12px; font-weight:700">Formulir Barang Keluar</div>
-                <a href="index.php?page=log-stock-out" class="button-log">
-                    <i class="fa fa-trash-o" aria-hidden="true" onclick="return loadingLink(this, event)"></i> Lihat Log
-                </a>
-            </div>
-            <p>Masukkan sesuai dengan ketentuan yang berlaku</p>
-            <div class="input-mail">
-                <!-- <input type="date" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required> -->
-                <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
-
-                <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
-                    <option value="" disabled selected hidden>Pilih Nama Barang</option>
-                    <?php
-                    if ($stokResult->num_rows > 0) {
-                        while ($row = $stokResult->fetch_assoc()) {
-                            echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
+            <div class="submission-left">
+                <div class="form-group">
+                    <label>Pilih Nama Barang</label>
+                    <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
+                        <option value="" disabled selected hidden>Pilih Nama Barang</option>
+                        <?php
+                        if ($stokResult->num_rows > 0) {
+                            while ($row = $stokResult->fetch_assoc()) {
+                                echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
+                            }
+                        } else {
+                            echo '<option value="" disabled>Belum ada barang tersedia</option>';
                         }
-                    } else {
-                        echo '<option value="" disabled>Belum ada barang tersedia</option>';
-                    }
-                    ?>
-                </select>
-
-                <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" style="border-radius: 10px;" required>
-                <select name="divisi" class="list-input" required style="border-radius: 10px;">
-                    <option value="" disabled selected hidden>Pilih Departemen</option>
-                    <option value="OPS">Operasional</option>
-                    <option value="HC">Human Capital</option>
-                    <option value="LOG">Logistik</option>
-                    <option value="ADK">Administrasi Keuangan</option>
-                    <option value="RMFT">RMFT</option>
-                </select>
-                <div>
-                    <button type="submit" id="submitBtn" class="button-send">Kirim</button>
+                        ?>
+                    </select>
+                    <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" style="border-radius: 10px;" required>
+                </div>
+            </div>
+            <div class="submission-right">
+                <div class="form-group">
+                    <label>Departemen</label>
+                    <select name="divisi" class="list-input" required style="border-radius: 10px;">
+                        <option value="" disabled selected hidden>Pilih Departemen</option>
+                        <option value="OPS">Operasional</option>
+                        <option value="HC">Human Capital</option>
+                        <option value="LOG">Logistik</option>
+                        <option value="ADK">Administrasi Keuangan</option>
+                        <option value="RMFT">RMFT</option>
+                    </select>
+                    <div>
+                        <button type="submit" id="submitBtn" class="button-send">Kirim</button>
+                    </div>
                 </div>
             </div>
         </div>

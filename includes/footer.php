@@ -154,6 +154,7 @@
 
     let currentlyEditingRow = null;
 
+    /**Tanggal */
 
 
     //update status
@@ -304,19 +305,59 @@
     });
 
     // Slide
-    function loadSection(file) {
-        fetch(file)
-            .then(response => response.text())
+    function loadSection(file, btn) {
+        const contentArea = document.getElementById('content-area');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // Hapus class active dari semua tombol
+        const buttons = document.querySelectorAll('.button-invent-group button');
+        buttons.forEach(button => button.classList.remove('active'));
+
+        // Tambahkan class active ke tombol yang diklik
+        if (btn) {
+            btn.classList.add('active');
+            btn.originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memuat...';
+            btn.style.pointerEvents = 'none';
+        }
+
+        loadingIndicator.style.display = 'block';
+        contentArea.style.opacity = 0.5;
+
+        fetch('includes/' + file + '.php')
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal memuat halaman: ' + response.status);
+                return response.text();
+            })
             .then(html => {
-                const contentArea = document.getElementById('content-area');
-                contentArea.style.opacity = 0;
-                setTimeout(() => {
-                    contentArea.innerHTML = html;
-                    contentArea.style.opacity = 1;
-                }, 150);
+                contentArea.innerHTML = html;
+                if (file === 'stock-in' || 'stock-out') {
+                    setTanggalHariIni();
+                }
             })
             .catch(error => {
-                console.error('Gagal memuat konten:', error);
+                contentArea.innerHTML = `<p style="color:red;">Terjadi kesalahan saat memuat konten.</p>`;
+                console.error(error);
+            })
+            .finally(() => {
+                loadingIndicator.style.display = 'none';
+                contentArea.style.opacity = 1;
+
+                if (btn) {
+                    btn.innerHTML = btn.originalHTML;
+                    btn.style.pointerEvents = 'auto';
+                }
             });
+    }
+
+    function setTanggalHariIni() {
+        const tanggalInput = document.getElementById('tanggal');
+        if (tanggalInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            tanggalInput.value = `${yyyy}-${mm}-${dd}`;
+        }
     }
 </script>
