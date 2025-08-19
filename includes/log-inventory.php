@@ -3,23 +3,118 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require 'db_connect.php';
+
+$isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
+    (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
+
+if ($isAdminOrCabang) {
+    // Admin atau Kanwil melihat semua data
+    $whereClause = "1"; // tidak ada filter
+} else {
+    // Selain itu, hanya melihat data berdasarkan kode_uker
+    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
+    $whereClause = "kode_uker = '$kode_uker'";
+}
+
+$query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
+$stocksIn = $conn->query($query);
+
+$query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
+$result = $conn->query($query);
+
+$query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
+$resultOut = $conn->query($query);
 ?>
-
-
 
 <div class="content-wrappers">
     <div class="content-heading">Log Inventory Management</div>
     <div>Track incoming, and outgoing inventory</div>
-    <div class="button-invent-group">
-        <button onclick="loadLog('log-stock-in', this)">Log Barang Masuk</button>
-        <button onclick="loadLog('log-stock-out', this)">Log Barang Keluar</button>
+    <div class="tab">
+  <button class="tablinks active" onclick="openCity(event, 'barang_masuk')">Barang Masuk</button>
+  <button class="tablinks" onclick="openCity(event, 'barang_keluar')">Barang Keluar</button>
+</div>
+
+<div id="barang_masuk" class="tabcontent" style="display: block;">
+  <div class="body-content">
+    <div class="sub-menu">
+        <p>Log Barang Masuk</p>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
     </div>
 
-    <div id="content-areas">
-        <?php include 'includes/log-stock-in.php'; ?>
+    <div class="table-container">
+        <table id="dataTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Nomor Nota</th>
+                    <th>Tanggal Input</th>
+                    <th>Tanggal Nota</th>
+                    <th>Nama Barang</th>
+                    <th>Harga Barang Satuan</th>
+                    <th>Jumlah</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($stocksIn->num_rows > 0): ?>
+                    <?php while ($row = $stocksIn->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
+                            <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                            <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
+                            <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                            <td><?= htmlspecialchars($row['harga_barang']) ?></td>
+                            <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                            <td></td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" style="text-align:center;">Belum ada data barang masuk</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<div id="barang_keluar" class="tabcontent">
+  <div class="body-content">
+    <div class="sub-menu">
+        <p>Log Barang Keluar</p>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
     </div>
 
-    <div id="loading-indicator" style="display: none;">
-        <div class="spinner"></div>
+    <div class="table-container">
+        <table id="dataTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Nama Barang</th>
+                    <th>Jumlah</th>
+                    <th>Divisi</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($resultOut->num_rows > 0) {
+                    while ($row = $resultOut->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['tanggal']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['nama_barang']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['divisi']) . "</td>";
+                        echo "<td></td>"; // kolom kosong terakhir
+                        echo "</tr>";
+                    }
+                } else {
+                    echo '<tr><td colspan="5" style="text-align:center;">Belum ada data barang keluar</td></tr>';
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
+</div>
+</div>
 </div>

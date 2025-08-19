@@ -304,6 +304,22 @@
         }
     });
 
+    /**Password */
+    function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    }
+}
+
     // Slide
     function loadSection(file, btn) {
         const contentArea = document.getElementById('content-area');
@@ -368,44 +384,49 @@
         }
     }
 
-    function loadLog(file, btn) {
-        const contentArea = document.getElementById('content-areas'); // Cek element id ini sesuai HTML-mu
-        const loadingIndicator = document.getElementById('loading-indicator');
-
-        // Hapus class active dari semua tombol
-        const buttons = document.querySelectorAll('.button-invent-group button');
-        buttons.forEach(button => button.classList.remove('active'));
-
-        // Tambahkan class active ke tombol yang diklik
-        if (btn) {
-            btn.classList.add('active');
-            btn.originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memuat...';
-            btn.style.pointerEvents = 'none';
-        }
-
-        loadingIndicator.style.display = 'block';
-        contentArea.style.opacity = 0.5;
-
-        fetch('includes/' + file + '.php')
-            .then(response => {
-                if (!response.ok) throw new Error('Gagal memuat halaman: ' + response.status);
-                return response.text();
-            })
-            .then(html => {
-                contentArea.innerHTML = html;
-            })
-            .catch(error => {
-                contentArea.innerHTML = `<p style="color:red;">Terjadi kesalahan saat memuat konten.<br>${error.message}</p>`;
-                console.error(error);
-            })
-            .finally(() => {
-                loadingIndicator.style.display = 'none';
-                contentArea.style.opacity = 1;
-                if (btn) {
-                    btn.innerHTML = btn.originalHTML;
-                    btn.style.pointerEvents = 'auto';
-                }
-            });
-    }
+    /* TABS */
+    function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
 </script>
+
+
+/**SWALL SIGNIN */
+<?php if (isset($_GET['status'])): ?>
+    <script>
+        window.onload = function () {
+            <?php if ($_GET['status'] === 'success'): ?>
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Selamat Datang",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            <?php elseif ($_GET['status'] === 'error'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: 'Kombinasi username dan password salah'
+                });
+            <?php elseif ($_GET['status'] === 'incomplete'): ?>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data tidak lengkap',
+                    text: 'Harap lengkapi semua form.'
+                });
+            <?php endif; ?>
+        };
+          window.history.replaceState(null, null, window.location.pathname);
+    </script>
+<?php endif; ?>

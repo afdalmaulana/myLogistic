@@ -8,9 +8,41 @@ if (!isset($_SESSION['user'])) {
 }
 ?>
 
+
+        
 <!-- ✅ Layout hanya ditampilkan jika user sudah login -->
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/navbar.php'; ?>
+
+
+<?php if (isset($_GET['status'])): ?>
+    <script src="../js/sweetalert.all.min.js"></script>
+    <script>
+        window.onload = function () {
+            <?php if ($_GET['status'] === 'success'): ?>
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Selamat Datang",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            <?php elseif ($_GET['status'] === 'error'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: 'Kombinasi username dan password salah'
+                });
+            <?php elseif ($_GET['status'] === 'incomplete'): ?>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data tidak lengkap',
+                    text: 'Harap lengkapi semua form.'
+                });
+            <?php endif; ?>
+        };
+    </script>
+<?php endif; ?>
 
 <div class="main-wrapper">
     <?php include 'includes/sidebar.php'; ?>
@@ -20,10 +52,6 @@ if (!isset($_SESSION['user'])) {
         if (isset($_GET['page'])) {
             $page = $_GET['page'];
             $allowed_pages = [
-                'form-mail-in',
-                'form-mail-out',
-                'log-stock-in',
-                'log-stock-out',
                 'stocks',
                 'stock-in',
                 'stock-out',

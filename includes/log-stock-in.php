@@ -28,7 +28,6 @@ $result = $conn->query($query);
 <!-- <div class="content-wrapper"> -->
 <div class="mail-in">
     <div class="sub-menu">
-        <h4>Log Barang Masuk</h4>
         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
     </div>
 

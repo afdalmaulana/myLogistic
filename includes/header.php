@@ -510,7 +510,47 @@
             height: 180px;
             /* atur sesuai seberapa "memanjang" yang kamu mau */
         }
+/* TABS */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  /* background-color: #f1f1f1; */
+  border: none;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
 
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  margin-top: 12px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  border-bottom: 3px solid #3498db;
+            /* garis bawah biru */
+            /* color: #3498db; */
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  /* border: 1px solid #ccc; */
+  border-top: none;
+}
 
         /* Dropdown  */
         .dropdown {
@@ -1011,8 +1051,8 @@
         .form-input-login {
             /* border: 6px solid #dbe5edff; */
             padding: 10px 40px 10px 40px;
-            min-height: 400px;
-            min-width: 400px;
+            min-height: 420px;
+            min-width: 320px;
             color: white;
             overflow-y: auto;
             border-radius: 20px;
@@ -1026,13 +1066,29 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
-        .dashboard_login {
-            padding: 30px;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        .form-input-login p {
+            font-size: 10px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .login-heading {
+            font-size: 22px; 
+            margin-top: 12px; 
+            font-weight:700;
+            justify-content: center;
+            align-items: center;
+            justify-items: center;
+        }
+        .login-heading p {
+            font-size: 10px;
+        }
+
+        .input-login {
+            margin-top: 60px;
             display: flex;
             flex-direction: column;
-            /* gap: 5px; */
-            max-width: 600px;
+            gap: 20px;
         }
 
         .login-wrapper {

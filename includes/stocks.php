@@ -27,10 +27,12 @@ $result = $conn->query($query);
 <!-- <div class="mail-count"></div> -->
 <!-- <div> <?php echo $stocks->num_rows ?> </div> -->
 <!-- <div class="">Jenis Barang yang Tersedia</div> -->
-<input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
 
-<div class="wrapper-sub">
-    <h4>Daftar Stok Barang</h4>
+<div class="body-content">
+    <div class="sub-menu">
+        <p>Daftar Stok Barang</p>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+    </div>
     <div class="table-container">
         <table id="dataTable" style="width:100%; border-collapse:collapse;">
             <thead>

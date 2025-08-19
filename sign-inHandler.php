@@ -26,7 +26,7 @@ if ($result->num_rows === 1) {
         $_SESSION['nama_uker'] = $user['nama_uker'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['kode_uker'] = $user['kode_uker'];
-        header("Location: index.php");
+        header("Location: index.php?status=success");
         exit;
     }
 }
