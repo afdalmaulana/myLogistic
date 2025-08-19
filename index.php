@@ -31,7 +31,7 @@ if (!isset($_SESSION['user'])) {
                 'submission-in',
                 'submission-out',
                 'inventory-management',
-                'test-stockin'
+                'log-inventory',
             ];
 
             if (in_array($page, $allowed_pages)) {

@@ -217,7 +217,7 @@
             justify-content: space-between;
             transition: transform 0.2s ease;
             /* height: 180px; */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(158, 158, 158, 0.87), inset 0 0 0 1px rgba(154, 154, 154, 0.05);
             cursor: pointer;
         }
 
@@ -225,14 +225,14 @@
             text-decoration: none;
             background: rgba(218, 218, 227, 0.88);
             border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(158, 158, 158, 0.87), inset 0 0 0 1px rgba(154, 154, 154, 0.05);
             padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: transform 0.2s ease;
             /* height: 180px; */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.87), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(158, 158, 158, 0.87), inset 0 0 0 1px rgba(154, 154, 154, 0.05);
         }
 
         .dashboard-card:hover {

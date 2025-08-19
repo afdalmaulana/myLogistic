@@ -46,19 +46,30 @@
         </div>
     </div>
     <form action="submission-inHandler.php" method="POST" enctype="multipart/form-data" onsubmit="return showLoading()">
-            <div class="body-content">
+        <div class="body-content">
+            <div class="form-input">
                 <div class="submission-left">
-                    <label for="">Tanggal Hari ini</label>
-                    <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
-                    <label for="">Nomor Pengajuan / Surat</label>
-                    <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input disini ... " style="border-radius: 10px;">
+                    <div class="form-group">
+                        <label for="">Tanggal Hari ini</label>
+                        <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Nomor Pengajuan / Surat</label>
+                        <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input disini ... " style="border-radius: 10px;">
+                    </div>
                 </div>
                 <div class="submission-right">
-                    <input type="text" name="perihal" class="list-input" placeholder="Perihal" style="border-radius: 10px; height:90px; margin-top:36px;">
+                    <div class="form-group">
+                        <label>Perihal</label>
+                        <input type="text" name="perihal" class="list-input" placeholder="Perihal" style="border-radius: 10px;">
+                    </div>
                     <div>
                         <button type="submit" id="submitBtn" class="button-send">Kirim</button>
                     </div>
                 </div>
             </div>
+
+
+        </div>
     </form>
 </div>

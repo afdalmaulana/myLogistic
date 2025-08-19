@@ -15,7 +15,7 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
             <img src="../assets/img/logo.png" alt="bri" style="height:50px">
         </div>
         <div class="nav-right">
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <button class="button-dropdown dropdown-toggle" onclick="toggleDropdown('dropdownContent')">
                     Pengajuan
                 </button>
@@ -23,9 +23,9 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
                     <a href="index.php?page=submission-out" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
                     <a href="index.php?page=submission-in" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
                 </div>
-            </div>
+            </div> -->
             <!-- Dropdown Barang -->
-            <div class="dropdown">
+            <!-- <div class="dropdown">
                 <button class="button-dropdown dropdown-toggle">
                     Barang
                 </button>
@@ -34,7 +34,7 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
                     <a href="index.php?page=stock-in" onclick="return loadingLink(this, event)">Barang Masuk</a>
                     <a href="index.php?page=stock-out" onclick="return loadingLink(this, event)">Barang Keluar</a>
                 </div>
-            </div>
+            </div> -->
             <div class="profile-container">
                 <div class="profile-icon">
                     <i class="fa fa-user-circle"></i>

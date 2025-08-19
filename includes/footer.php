@@ -331,8 +331,12 @@
             })
             .then(html => {
                 contentArea.innerHTML = html;
-                if (file === 'stock-in' || 'stock-out') {
-                    setTanggalHariIni();
+
+                // Panggil setTanggalHariIni hanya jika file adalah stock-in atau stock-out
+                if (file === 'stock-in' || file === 'stock-out') {
+                    if (typeof setTanggalHariIni === 'function') {
+                        setTanggalHariIni();
+                    }
                 }
             })
             .catch(error => {
@@ -351,13 +355,16 @@
     }
 
     function setTanggalHariIni() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+        // Asumsikan input tanggal ada id="tanggal"
         const tanggalInput = document.getElementById('tanggal');
         if (tanggalInput) {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            tanggalInput.value = `${yyyy}-${mm}-${dd}`;
+            tanggalInput.value = formattedDate;
         }
     }
 </script>

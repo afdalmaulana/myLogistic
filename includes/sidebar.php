@@ -17,7 +17,8 @@ if (session_status() === PHP_SESSION_NONE) {
         <div id="menu-logistik">
             <div class="menu-label" style="font-size: 12px;">INFORMASI BARANG</div>
             <!-- <a href="index.php?page=log-stock-in" class="menu-item" onclick="return loadingLink(this, event)">Barang Masuk</a> -->
-            <a href="index.php?page=inventory-management" class="menu-item" onclick="return loadingLink(this, event)">Barang</a>
+            <a href="index.php?page=inventory-management" class="menu-item" onclick="return loadingLink(this, event)">Inventory Management</a>
+            <a href="index.php?page=log-inventory" class="menu-item" onclick="return loadingLink(this, event)">Log Inventory</a>
             <!-- <a href="index.php?page=log-stock-out" class="menu-item" onclick="return loadingLink(this, event)">Barang Keluar</a> -->
             <!-- <a href="index.php?page=stocks" class="menu-item" onclick="return loadingLink(this, event)">Stok Barang</a> -->
         </div>
