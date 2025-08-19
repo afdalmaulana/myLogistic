@@ -32,7 +32,7 @@ $result = $conn->query($query);
                             <th>Tanggal Pengajuan</th>
                             <th>Perihal</th>
                             <th>Status</th>
-                            <th>Nomor Surat</th>
+                            <th>No. Surat</th>
                             <th></th>
                         </tr>
                     </thead>
