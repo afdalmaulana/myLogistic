@@ -70,7 +70,7 @@ $dashboardStats = [
         'link' => 'index.php?page=submission-out',
     ],
     [
-        'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Terkirim',
+        'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Pending',
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
