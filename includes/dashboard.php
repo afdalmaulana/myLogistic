@@ -75,21 +75,21 @@ $dashboardStats = [
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
-        'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=mail-out',
+        'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=submission-out#forward',
     ],
     [
         'title' => 'Barang Keluar',
         'result' => $outstocks,
         'icon' => 'fa-envelope-open-o',
         'color' => '',
-        'link' => 'index.php?page=log-stock-out',
+        'link' => 'index.php?page=log-inventory#barang_keluar',
     ],
     [
         'title' => 'Barang Masuk',
         'result' => $instocks,
         'icon' => 'fa-envelope-open-o',
         'color' => '',
-        'link' => 'index.php?page=log-stock-in',
+        'link' => 'index.php?page=log-inventory#barang_masuk',
     ],
 ];
 

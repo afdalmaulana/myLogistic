@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 ?>
 
 
-        
+
 <!-- ✅ Layout hanya ditampilkan jika user sudah login -->
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/navbar.php'; ?>
@@ -36,7 +36,8 @@ if (!isset($_SESSION['user'])) {
             if (in_array($page, $allowed_pages)) {
                 include "includes/$page.php";
             } else {
-                echo "<h3>Halaman tidak ditemukan.</h3>";
+                // tampilkan halaman error khusus
+                include 'includes/403.php';
             }
         } else {
             include 'includes/dashboard.php';

@@ -12,20 +12,12 @@ if (isset($_SESSION['user'])) {
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
     <script>
-        <?php if ($_GET['status'] === 'success'): ?>
-            Swal.fire({
-                position: "top-end",
-  icon: "success",
-  title: "Selamat Datang",
-  showConfirmButton: false,
-  timer: 1500
-            });
-        <?php elseif ($_GET['status'] === 'error'): ?>
+        <?php if ($_GET['status'] === 'error'): ?>
             Swal.fire({
                 icon: 'error',
                 title: 'Login Gagal',
                 text: 'Kombinasi username dan password salah'
-            })
+            });
         <?php elseif ($_GET['status'] === 'incomplete'): ?>
             Swal.fire({
                 icon: 'warning',
@@ -56,27 +48,27 @@ if (isset($_SESSION['user'])) {
 </div>
 <form action="sign-inHandler.php" method="POST" onsubmit="return showLoading()">
     <div class="login-wrapper">
-            <div class="form-input-login">
-                <div class="login-heading">
-                    <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
-                    <p>Masukkan username sesuai dengan kode uker</p>
+        <div class="form-input-login">
+            <div class="login-heading">
+                <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
+                <p>Masukkan username sesuai dengan kode uker</p>
+            </div>
+            <div class="input-login">
+                <div style="display: flex; flex-direction:column">
+                    <label style="display: flex; left:0">Username</label>
+                    <input type="text" name="username" class="list-input" placeholder="Masukkan Username" style="border-radius: 10px;">
                 </div>
-                <div class="input-login">
-                    <div style="display: flex; flex-direction:column">
-                        <label style="display: flex; left:0">Username</label>
-                        <input type="text" name="username" class="list-input" placeholder="Masukkan Username" style="border-radius: 10px;">
-                    </div>
-                    <div style="display: flex; flex-direction:column; position:relative">
-                        <label>Password</label>
-                        <input type="password" name="password" id="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
-                        <span onclick="togglePassword()" style="position: absolute; right: 10px; top: 34px; cursor: pointer; color:black">
+                <div style="display: flex; flex-direction:column; position:relative">
+                    <label>Password</label>
+                    <input type="password" name="password" id="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
+                    <span onclick="togglePassword()" style="position: absolute; right: 10px; top: 34px; cursor: pointer; color:black">
                         <i class="fa fa-eye-slash" id="toggleIcon"></i>
                     </span>
-                    </div>
-                    
-                    <div class="">
-                        <button type="submit" id="submitBtn" class="button-signin">Sign in</button>
-                    </div>
+                </div>
+
+                <div class="">
+                    <button type="submit" id="signinBtn" class="button-signin">Sign in</button>
+                </div>
             </div>
             <p>Forget Your Password ? Contact Admin</p>
         </div>

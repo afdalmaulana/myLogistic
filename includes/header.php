@@ -48,6 +48,17 @@
             box-sizing: border-box;
         }
 
+        .unauthorized {
+            padding: 60px;
+            margin: 50px auto;
+            text-align: center;
+            background-color: #fff4f4;
+            border: 1px solid #ffa1a1;
+            border-radius: 10px;
+            max-width: 600px;
+        }
+
+
         .nav {
             position: fixed;
             /* agar selalu di atas */
@@ -116,10 +127,17 @@
         }
 
         .menu-item:hover {
-            background: #2460a3ff;
-            color: #ffffffff;
-            transition: 0.2s ease-in-out;
+            /* border: 2px solid #2460a3ff; */
+            color: #2460a3ff;
+            /* transition: 0.2s ease-in-out; */
             font-weight: 800;
+        }
+
+        .menu-item.active {
+            background-color: #2460a3ff;
+            /* Warna biru */
+            color: white;
+            border-radius: 10px;
         }
 
         .menu-label {
@@ -510,47 +528,130 @@
             height: 180px;
             /* atur sesuai seberapa "memanjang" yang kamu mau */
         }
-/* TABS */
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  /* background-color: #f1f1f1; */
-  border: none;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
 
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-  margin-top: 12px;
-}
+        /* TABS */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            /* background-color: #f1f1f1; */
+            border: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #3498db;
-  color: white;
-}
+        .tabs {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            /* background-color: #f1f1f1; */
+            border: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
 
-/* Create an active/current tablink class */
-.tab button.active {
-  border-bottom: 3px solid #3498db;
+        .tabs button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            margin-top: 12px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tabs button:hover {
+            background-color: #2460a3ff;
+            color: white;
+        }
+
+        .tabs button.active {
+            border-bottom: 3px solid #2460a3ff;
             /* garis bawah biru */
             /* color: #3498db; */
-}
+        }
 
-/* Style the tab content */
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  /* border: 1px solid #ccc; */
-  border-top: none;
-}
+        /* Style the tab content */
+        .tabscontent {
+            display: none;
+            padding: 6px 12px;
+            /* border: 1px solid #ccc; */
+            border-top: none;
+        }
+
+
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            margin-top: 12px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            border-bottom: 3px solid #3498db;
+            /* garis bawah biru */
+            /* color: #3498db; */
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            /* border: 1px solid #ccc; */
+            border-top: none;
+        }
+
+        /**TAB INVENT */
+        .tab-invent button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            margin-top: 12px;
+        }
+
+        .tab-invent {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            /* background-color: #f1f1f1; */
+            border: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab-invent button:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Create an active/current tablink class */
+        .tab-invent button.active {
+            border-bottom: 3px solid #3498db;
+            /* garis bawah biru */
+            /* color: #3498db; */
+        }
+
+        /* Style the tab content */
+        .tabcontent-invent {
+            display: none;
+            padding: 6px 12px;
+            /* border: 1px solid #ccc; */
+            border-top: none;
+        }
 
         /* Dropdown  */
         .dropdown {
@@ -597,18 +698,19 @@
 
         .actions {
             position: relative;
-    z-index: 1000;
+            z-index: 1000;
         }
 
         .dropdown-action {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: #2460a3ff;
-    border-radius: 8px;
-    padding: 10px;
-    z-index: 9999;  /* tambahin biar paling atas */
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: #2460a3ff;
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 9999;
+            /* tambahin biar paling atas */
         }
 
 
@@ -903,17 +1005,20 @@
 
 
         .table-container {
-             overflow: visible;  /* supaya dropdown nggak kepotong */
-    max-height: 350px;
-    overflow-x: auto;
-    overflow-y: auto; /* scroll tabel tetap ada */
-    border: 1px solid #ddd;
-}
+            overflow: visible;
+            /* supaya dropdown nggak kepotong */
+            max-height: 350px;
+            overflow-x: auto;
+            overflow-y: auto;
+            /* scroll tabel tetap ada */
+            border: 1px solid #ddd;
+        }
 
-.table-container td:nth-child(7) {
-    background: transparent !important;
-    pointer-events: none; /* biar gak nutupin hover dropdown */
-}
+        .table-container td:nth-child(7) {
+            background: transparent !important;
+            pointer-events: none;
+            /* biar gak nutupin hover dropdown */
+        }
 
         /* Sticky header agar tetap terlihat saat scroll */
         .table-container thead th {
@@ -1072,13 +1177,14 @@
         }
 
         .login-heading {
-            font-size: 22px; 
-            margin-top: 12px; 
-            font-weight:700;
+            font-size: 22px;
+            margin-top: 12px;
+            font-weight: 700;
             justify-content: center;
             align-items: center;
             justify-items: center;
         }
+
         .login-heading p {
             font-size: 10px;
         }

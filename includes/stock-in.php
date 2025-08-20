@@ -29,14 +29,24 @@ require __DIR__ . '/../db_connect.php';
     </script>
 <?php endif; ?>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
 
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('tanggal_stockin').value = formattedDate;
+    });
+</script>
 
 
 <!-- <div class="content-wrapper"> -->
 <form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
     <div class="body-content">
         <p>Record Barang Masuk</p>
-        <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
+        <input type="date" id="tanggal_stockin" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
         <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
         <div class="form-input">
             <div class="submission-left">
