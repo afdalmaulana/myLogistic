@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require 'db_connect.php';
 // Ambil data form
-$tanggal = $_POST['tanggal'] ?? '';
+$tanggal = date('Y-m-d') ?? '';
 $tanggal_nota = $_POST['tanggal_nota'] ?? '';
 $nomor_nota = $_POST['nomor_nota'] ?? '';
 $nama_barang = $_POST['nama_barang'] ?? '';
@@ -12,7 +12,7 @@ $harga_barang = $_POST['harga_barang'] ?? '';
 $jumlah = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
 $kode_uker = $_SESSION['kode_uker'] ?? null;
 // Validasi sederhana
-if (empty($tanggal) || empty($tanggal_nota) || empty($nomor_nota) || empty($nama_barang) || empty($harga_barang) || $jumlah <= 0 || empty($kode_uker)) {
+if (empty($tanggal_nota) || empty($nomor_nota) || empty($nama_barang) || empty($harga_barang) || $jumlah <= 0 || empty($kode_uker)) {
     header("Location: index.php?page=stock-in&status=incomplete");
     exit;
 }
@@ -44,9 +44,9 @@ if ($stmt->execute()) {
     // ==== END update stok_barang ====
 
     // Tampilkan pesan sukses
-    header("Location: index.php?page=stock-in&status=success");;
+    header("Location: index.php?page=inventory-management&status=success");;
 } else {
-    header("Location: index.php?page=stock-in&status=error");
+    header("Location: index.php?page=inventory-management&status=error");
 }
 
 $stmt->close();

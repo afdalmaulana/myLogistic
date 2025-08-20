@@ -50,11 +50,10 @@ $outstocks = $conn->query($query);
 $dashboardRecent = [
     [
         'heading' => 'Quick Actions',
-        'title' => [
-            'Pengajuan Baru',
-            'Tambah Barang'
-        ],
-        'link' => 'index.php?page=submission-in'
+        'actions' => [
+            ['title' => 'Pengajuan Baru', 'link' => 'index.php?page=submission-in'],
+            ['title' => 'Tambah Barang', 'link' => 'index.php?page=inventory-management'],
+        ]
     ],
     [
         'heading' => 'LogiTrack Update Pengajuan',
@@ -133,20 +132,19 @@ $dashboardStats = [
     <div class="dashboard-recent">
         <?php foreach ($dashboardRecent as $item): ?>
             <?php
-            $titles = $item['title']; // bisa array atau string
             $heading = $item['heading'];
-            $link = $item['link'];
+            $actions = isset($item['actions']) ? $item['actions'] : null;
             ?>
             <div class="card-recent">
                 <div class="recent-content">
                     <div>
                         <div class="dashboard-title"><?php echo $heading; ?></div>
-                        <?php if (is_array($titles)): ?>
-                            <?php foreach ($titles as $t): ?>
-                                <a href="<?php echo $link; ?>" class="dashboard-title btnRecent"><?php echo $t; ?></a>
+                        <?php if ($actions): ?>
+                            <?php foreach ($actions as $a): ?>
+                                <a href="<?php echo $a['link']; ?>" class="dashboard-title btnRecent"><?php echo $a['title']; ?></a>
                             <?php endforeach; ?>
                         <?php elseif (!empty($titles)): ?>
-                            <a href="<?php echo $link; ?>" class="dashboard-title btnRecent"><?php echo $titles; ?></a>
+                            <a href="<?php echo $a; ?>" class="dashboard-title btnRecent"><?php echo $a['link']; ?></a>
                         <?php else: ?>
                             <div class="">
                                 <?php if ($resultRecent->num_rows > 0): ?>

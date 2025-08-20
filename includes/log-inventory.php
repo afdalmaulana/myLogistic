@@ -27,7 +27,6 @@ $resultOut = $conn->query($query);
 ?>
 
 
-
 <div class="content-wrappers">
     <div class="content-heading">Log Inventory Management</div>
     <div>Track incoming, and outgoing inventory</div>

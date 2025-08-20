@@ -31,7 +31,7 @@
 
         #main-content {
             margin-left: 250px;
-            padding: 40px;
+            padding: 40px 20px;
             flex-grow: 1;
             background-color: #f5f6fa;
             min-height: 100vh;
@@ -704,8 +704,8 @@
         .dropdown-action {
             display: none;
             position: absolute;
-            right: 0;
-            top: 0;
+            /* right: 30px; */
+            /* top: 0; */
             background: #2460a3ff;
             border-radius: 8px;
             padding: 10px;
@@ -1012,6 +1012,7 @@
             overflow-y: auto;
             /* scroll tabel tetap ada */
             border: 1px solid #ddd;
+            font-size: 12px;
         }
 
         .table-container td:nth-child(7) {
@@ -1123,7 +1124,7 @@
             display: flex;
             flex-direction: column;
             margin-top: 50px;
-            padding: 20px 20px 40px 20px;
+            padding: 20px 2px 40px 2px;
             border-radius: 8px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
