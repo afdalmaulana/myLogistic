@@ -5,8 +5,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Ambil nama user dari session
-$namaUker = isset($_SESSION['nama_uker']) ? $_SESSION['nama_uker'] : 'Nama Uker';
+$username = isset($_SESSION['user']) ? $_SESSION['user'] : 'Username';
 $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker';
+$namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
 ?>
 <div class="nav">
     <div class="isinavbar">
@@ -41,7 +42,8 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
                 </div>
                 <div class="profile-dropdown">
                     <div class="profile-name"><?php echo $kodeUker; ?></div>
-                    <div class="profile-name"><?php echo $namaUker; ?></div>
+                    <div class="profile-name"><?php echo $username; ?></div>
+                    <div class="profile-name"><?php echo $namaPekerja; ?></div>
                     <form action="logout.php" method="post">
                         <a href="logout.php" class="logoutBtn" id="logoutBtn">LOG OUT</a>
                     </form>

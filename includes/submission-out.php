@@ -25,14 +25,14 @@ $result = $conn->query($query);
         <div class="tabs">
             <button class="tabslinks active" onclick="openTab(event, 'incomplete')">Pending</button>
             <button class="tabslinks" onclick="openTab(event, 'forward')">Forward</button>
-            <button class="tabslinks" onclick="openTab(event, 'complete')">Complete</button>
+            <button class="tabslinks" onclick="openTab(event, 'approved')">Complete</button>
             <button class="tabslinks" onclick="openTab(event, 'rejected')">Rejected</button>
         </div>
 
         <div id="incomplete" class="tabscontent" style="display: block;">
             <div class="body-content">
                 <div class="table-container">
-                    <table id="dataTable" style="width:100%;">
+                    <table id="dataTable-incomplete" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Kode Pengajuan</th>
@@ -102,7 +102,7 @@ $result = $conn->query($query);
         <div id="forward" class="tabscontent">
             <div class="body-content">
                 <div class="table-container">
-                    <table id="dataTable" style="width:100%;">
+                    <table id="dataTable-forward" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Kode Pengajuan</th>
@@ -166,11 +166,10 @@ $result = $conn->query($query);
                 </div>
             </div>
         </div>
-
-        <div id="complete" class="tabscontent">
+        <div id="approved" class="tabscontent">
             <div class="body-content">
                 <div class="table-container">
-                    <table id="dataTable" style="width:100%;">
+                    <table id="dataTable-complete" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Kode Pengajuan</th>
@@ -234,10 +233,11 @@ $result = $conn->query($query);
                 </div>
             </div>
         </div>
+
         <div id="rejected" class="tabscontent">
             <div class="body-content">
                 <div class="table-container">
-                    <table id="dataTable" style="width:100%;">
+                    <table id="dataTable-rejected" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Kode Pengajuan</th>

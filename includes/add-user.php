@@ -52,19 +52,18 @@ $result = $conn->query($query);
 <?php endif; ?>
 
 <form action="add_userHandler.php" method="POST" onsubmit="return showLoading()">
-    <div class="dashboard-wrapper">
-        <div class="">
-            <div class="form-input-login">
-                <div style="font-size: 32px; margin-top: 12px; font-weight:700">Tambah Akun</div>
-                <!-- </div> -->
-                <p>Masukkan username sesuai dengan kode uker</p>
-                <div class="input-mail">
-                    <div style="display: flex; flex-direction:column">
-                        <label style="display: flex; left:0">Username</label>
+    <div class="content-wrapper">
+        <div style="font-size: 32px; margin-top: 12px; font-weight:700">Tambah Akun</div>
+        <p>Masukkan username sesuai dengan kode uker</p>
+        <div class="body-content">
+            <div class="form-input">
+                <div class="submission-left">
+                    <div class="form-group">
+                        <label>Username</label>
                         <input type="text" name="username" class="list-input" placeholder="Masukkan Kode Uker" style="border-radius: 10px;">
                     </div>
-                    <div style="display: flex; flex-direction:column">
-                        <label style="display: flex; left:0">Nama Unit Kerja</label>
+                    <div class="form-group">
+                        <label for="">Nama Unit Kerja</label>
                         <select name="kode_uker" class="list-input" required style="border-radius: 10px;">
                             <option value="" disabled selected hidden>Pilih Unit Kerja</option>
                             <?php while ($row = $result->fetch_assoc()): ?>
@@ -73,23 +72,29 @@ $result = $conn->query($query);
                                 </option>
                             <?php endwhile; ?>
                         </select>
-                        <div style="display: flex; flex-direction:column">
-                            <label style="display: flex; left:0">Password</label>
-                            <input type="password" name="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
-                        </div>
-                        <div style="display: flex; flex-direction:column">
-                            <select name="role" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Role</option>
-                                <option value="user">user</option>
-                                <option value="admin">admin</option>
-
-                            </select>
-                        </div>
-
-                        <div class="">
-                            <button type="submit" id="submitBtn" class="button-send">Kirim</button>
-                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        <input type="password" name="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
+                    </div>
+                </div>
+                <div class="submission-right">
+                    <div class="form-group">
+                        <label>Nama Pekerja</label>
+                        <input type="text" name="nama_pekerja" class="list-input" placeholder="Masukkan Kode Uker" style="border-radius: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Role</label>
+                        <select name="role" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Pilih Role</option>
+                            <option value="user">user</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                    <div class="">
+                        <button type="submit" id="submitBtn" class="button-send">Kirim</button>
                     </div>
                 </div>
             </div>
+        </div>
 </form>

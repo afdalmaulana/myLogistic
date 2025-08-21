@@ -67,7 +67,7 @@ $dashboardStats = [
         'result' => $tampung,
         'icon' => 'fa-archive',
         'color' => '',
-        'link' => 'index.php?page=submission-out',
+        'link' => 'index.php?page=submission-out#approved',
     ],
     [
         'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Pending',

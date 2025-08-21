@@ -23,6 +23,12 @@
                 title: 'Data tidak lengkap',
                 text: 'Harap lengkapi semua form.'
             });
+        <?php elseif ($_GET['status'] === 'duplicate'): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Kode Pengajuan Sudah Ada',
+                text: 'Harap masukkan kode pengajuan yang berbeda'
+            });
         <?php endif; ?>
     </script>
 <?php endif; ?>

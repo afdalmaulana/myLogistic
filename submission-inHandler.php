@@ -2,8 +2,8 @@
 session_start();
 include 'db_connect.php';
 
-$kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $tanggal_pengajuan = $_POST['tanggal_pengajuan'] ?? '';
+$kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $perihal = $_POST['perihal'] ?? '';
 $kode_uker = $_SESSION['kode_uker'] ?? null; // ambil dari session
 
@@ -29,8 +29,15 @@ try {
     header("Location: index.php?page=submission-in&status=success");
     exit;
 } catch (Exception $e) {
-    // Simpan pesan error supaya bisa tampil di Swal
-    $errorMsg = urlencode($e->getMessage());
+    $errorMsg = $e->getMessage();
+
+    // Tangani error jika kode_pengajuan sudah ada (Duplicate entry)
+    if (strpos($errorMsg, 'Duplicate entry') !== false) {
+        header("Location: index.php?page=submission-in&status=duplicate");
+        exit;
+    }
+
+    // Error lain
     header("Location: index.php?page=submission-in&status=error");
     exit;
 }
