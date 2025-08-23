@@ -25,10 +25,11 @@ $result = $conn->query($query);
 $query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
 $resultOut = $conn->query($query);
 
-$queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY nama_barang ASC";
+$queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
 $stocks = $conn->query($queryStock);
 
-?>
+$stokQuery = "SELECT nama_barang FROM stok_barang ORDER BY nama_barang ASC";
+$stokResult = $conn->query($stokQuery);
 
 ?>
 
@@ -61,10 +62,10 @@ $stocks = $conn->query($queryStock);
                     </thead>
                     <tbody>
                         <?php if ($stocks->num_rows > 0): ?>
-                            <?php while ($stocks = $result->fetch_assoc()): ?>
+                            <?php while ($row = $stocks->fetch_assoc()): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($stocks['nama_barang']) ?></td>
-                                    <td><?= htmlspecialchars($stocks['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
@@ -121,7 +122,7 @@ $stocks = $conn->query($queryStock);
         <form action="stockOut_connect.php" method="POST" onsubmit="return showLoading()">
             <div class="body-content">
                 <p>Record Barang Keluar</p>
-                <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
+                <!-- <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly> -->
                 <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
                 <div class="form-input">
                     <div class="submission-left">

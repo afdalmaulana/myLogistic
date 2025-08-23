@@ -19,6 +19,23 @@ $query = "SELECT kode_uker, nama_uker FROM unit_kerja ORDER BY nama_uker";
 $result = $conn->query($query);
 ?>
 
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        }
+    }
+</script>
+
 
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
@@ -60,7 +77,7 @@ $result = $conn->query($query);
                 <div class="submission-left">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" name="username" class="list-input" placeholder="Masukkan Kode Uker" style="border-radius: 10px;">
+                        <input type="text" name="username" class="list-input" placeholder="Masukkan PN Pekerja" style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label for="">Nama Unit Kerja</label>
@@ -73,15 +90,18 @@ $result = $conn->query($query);
                             <?php endwhile; ?>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="position: relative;">
                         <label for="">Password</label>
-                        <input type="password" name="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
+                        <input type="password" name="password" id="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
+                        <span onclick="togglePassword()" style="position: absolute; right:10px; top:29px; font-size:26px; cursor:pointer">
+                            <i class="fa fa-eye-slash" id="toggleIcon"></i>
+                        </span>
                     </div>
                 </div>
                 <div class="submission-right">
                     <div class="form-group">
                         <label>Nama Pekerja</label>
-                        <input type="text" name="nama_pekerja" class="list-input" placeholder="Masukkan Kode Uker" style="border-radius: 10px;">
+                        <input type="text" name="nama_pekerja" class="list-input" placeholder="Masukkan Nama Pekerja" style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label for="">Role</label>
@@ -91,10 +111,15 @@ $result = $conn->query($query);
                             <option value="admin">admin</option>
                         </select>
                     </div>
-                    <div class="">
-                        <button type="submit" id="submitBtn" class="button-send">Kirim</button>
+                    <div class="form-group">
+                        <label>Jabatan Pekerja</label>
+                        <input type="text" name="jabatan" class="list-input" placeholder="Masukkan Jabatan" style="border-radius: 10px;">
                     </div>
                 </div>
             </div>
+            <div class="">
+                <button type="submit" id="submitBtn" class="button-send" style="margin-top:10px">Kirim</button>
+            </div>
         </div>
 </form>
+

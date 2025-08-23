@@ -24,6 +24,7 @@ if ($result->num_rows === 1) {
         $_SESSION['role'] = $user['role'];
         $_SESSION['kode_uker'] = $user['kode_uker'];
         $_SESSION['nama_pekerja'] = $user['nama_pekerja'];
+        $_SESSION['jabatan'] = $user['jabatan'];
 
         // ✅ TANDAI LOGIN BERHASIL DENGAN SESSION
         $_SESSION['login_success'] = true;

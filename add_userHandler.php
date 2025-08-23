@@ -3,12 +3,14 @@ session_start();
 include 'db_connect.php';
 
 $username = $_POST['username'] ?? '';
-$nama_pekerja = $_POST['nama_pekerja'] ?? '';
 $kode_uker = $_POST['kode_uker'] ?? '';
 $password = $_POST['password'] ?? '';
+$nama_pekerja = $_POST['nama_pekerja'] ?? '';
 $role = $_POST['role'] ?? '';
+$jabatan = $_POST['jabatan'] ?? '';
 
-if (empty($username) || empty($nama_pekerja) || empty($kode_uker) || empty($password) || empty($role)) {
+
+if (empty($username) || empty($nama_pekerja) || empty($kode_uker) || empty($password) || empty($role) || empty($jabatan)) {
     header("Location: index.php?page=add-user&status=incomplete");
     exit;
 }
@@ -43,9 +45,9 @@ $stmt2->close();
 
 // 🔐 Hash password dan simpan user
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-$sql = "INSERT INTO users (username, nama_pekerja, password, role, kode_uker) VALUES (?, ?, ?, ?, ?)";
+$sql = "INSERT INTO users (username, nama_pekerja, password, role, kode_uker, jabatan) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssss", $username, $nama_pekerja, $hashed_password, $role, $kode_uker);
+$stmt->bind_param("ssssss", $username, $nama_pekerja, $hashed_password, $role, $kode_uker, $jabatan);
 
 if ($stmt->execute()) {
     header("Location: index.php?page=add-user&status=success");

@@ -8,6 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $username = isset($_SESSION['user']) ? $_SESSION['user'] : 'Username';
 $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker';
 $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
+$jabatan = isset($_SESSION['jabatan']) ? $_SESSION['jabatan'] : '';
 ?>
 <div class="nav">
     <div class="isinavbar">
@@ -16,26 +17,6 @@ $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'B
             <img src="../assets/img/logo.png" alt="bri" style="height:50px">
         </div>
         <div class="nav-right">
-            <!-- <div class="dropdown">
-                <button class="button-dropdown dropdown-toggle" onclick="toggleDropdown('dropdownContent')">
-                    Pengajuan
-                </button>
-                <div class="dropdown-content" id="dropdownContent">
-                    <a href="index.php?page=submission-out" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
-                    <a href="index.php?page=submission-in" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
-                </div>
-            </div> -->
-            <!-- Dropdown Barang -->
-            <!-- <div class="dropdown">
-                <button class="button-dropdown dropdown-toggle">
-                    Barang
-                </button>
-                <div class="dropdown-content" id="dropdownContentLogistic">
-                    <a href="index.php?page=stocks" onclick="return loadingLink(this, event)">Stock</a>
-                    <a href="index.php?page=stock-in" onclick="return loadingLink(this, event)">Barang Masuk</a>
-                    <a href="index.php?page=stock-out" onclick="return loadingLink(this, event)">Barang Keluar</a>
-                </div>
-            </div> -->
             <div class="profile-container">
                 <div class="profile-icon">
                     <i class="fa fa-user-circle"></i>
@@ -44,6 +25,7 @@ $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'B
                     <div class="profile-name"><?php echo $kodeUker; ?></div>
                     <div class="profile-name"><?php echo $username; ?></div>
                     <div class="profile-name"><?php echo $namaPekerja; ?></div>
+                    <div class="profile-name"><?php echo $jabatan; ?></div>
                     <form action="logout.php" method="post">
                         <a href="logout.php" class="logoutBtn" id="logoutBtn">LOG OUT</a>
                     </form>

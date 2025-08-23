@@ -1,20 +1,25 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require 'db_connect.php';
 
-$tanggal = $_POST['tanggal'] ?? '';
+$tanggal = date("Y-m-d") ?? '';
 $nama_barang = $_POST['nama_barang'] ?? '';
 $jumlah = $_POST['jumlah'] ?? '';
 $divisi = $_POST['divisi'] ?? '';
+$kode_uker = $_SESSION['kode_uker'] ?? null; // ambil dari session
 
 // Validasi input
-if (!$tanggal || !$nama_barang || !$jumlah || !$divisi) {
-    die("Mohon lengkapi semua data.");
+if (empty($tanggal) || empty($nama_barang) || empty($jumlah) || empty($divisi) || empty($kode_uker)) {
+    header("Location: index.php?page=stock-in&status=incomplete");
+    exit;
 }
 
 // Insert ke barang_keluar
-$sql = "INSERT INTO barang_keluar (tanggal, nama_barang, jumlah, divisi) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO barang_keluar (tanggal, nama_barang, jumlah, divisi, kode_uker) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $tanggal, $nama_barang, $jumlah, $divisi);
+$stmt->bind_param("sssss", $tanggal, $nama_barang, $jumlah, $divisi, $kode_uker);
 
 if ($stmt->execute()) {
 
