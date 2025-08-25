@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $username = isset($_SESSION['user']) ? $_SESSION['user'] : 'Username';
 $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker';
 $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
-$jabatan = isset($_SESSION['jabatan']) ? $_SESSION['jabatan'] : '';
+$jabatan = isset($_SESSION['nama_jabatan']) ? $_SESSION['nama_jabatan'] : '';
 ?>
 <div class="nav">
     <div class="isinavbar">
@@ -22,10 +22,13 @@ $jabatan = isset($_SESSION['jabatan']) ? $_SESSION['jabatan'] : '';
                     <i class="fa fa-user-circle"></i>
                 </div>
                 <div class="profile-dropdown">
-                    <div class="profile-name"><?php echo $kodeUker; ?></div>
+                    <div class="profile-groups">
+                        <div class="profile-name"><?php echo $kodeUker; ?></div>
+                        <div style="font-size: 32px; margin-top:-16px; color:black;"> - </div>
+                        <div class="profile-name"><?php echo $jabatan; ?></div>
+                    </div>
                     <div class="profile-name"><?php echo $username; ?></div>
                     <div class="profile-name"><?php echo $namaPekerja; ?></div>
-                    <div class="profile-name"><?php echo $jabatan; ?></div>
                     <form action="logout.php" method="post">
                         <a href="logout.php" class="logoutBtn" id="logoutBtn">LOG OUT</a>
                     </form>

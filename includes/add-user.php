@@ -17,6 +17,9 @@ if (!isset($_SESSION['user']) || $_SESSION['role'] !== 'admin') {
 include 'db_connect.php';
 $query = "SELECT kode_uker, nama_uker FROM unit_kerja ORDER BY nama_uker";
 $result = $conn->query($query);
+
+$queryJabatan = "SELECT * FROM jabatan ORDER BY id_jabatan";
+$jabatanResult = $conn->query($queryJabatan)
 ?>
 
 <script>
@@ -112,8 +115,15 @@ $result = $conn->query($query);
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jabatan Pekerja</label>
-                        <input type="text" name="jabatan" class="list-input" placeholder="Masukkan Jabatan" style="border-radius: 10px;">
+                        <label for="">Jabatan</label>
+                        <select name="id_jabatan" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Pilih Jabatan</option>
+                            <?php while ($row = $jabatanResult->fetch_assoc()): ?>
+                                <option value="<?= $row['id_jabatan']; ?>">
+                                    <?= htmlspecialchars($row['nama_jabatan']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -122,4 +132,3 @@ $result = $conn->query($query);
             </div>
         </div>
 </form>
-

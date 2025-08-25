@@ -34,5 +34,10 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
                 <a href="index.php?page=add-user" class="menu-item">Tambah Akun</a>
             </div>
         <?php endif; ?>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <div>
+                <a href="index.php?page=list-users" class="menu-item">Daftar User</a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

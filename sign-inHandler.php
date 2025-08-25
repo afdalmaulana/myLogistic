@@ -10,7 +10,18 @@ if (empty($username) || empty($password)) {
     exit;
 }
 
-$query = $conn->prepare("SELECT * FROM users WHERE username = ?");
+$query = $conn->prepare("
+    SELECT 
+        users.*, 
+        jabatan.nama_jabatan 
+    FROM 
+        users 
+    JOIN 
+        jabatan ON users.id_jabatan = jabatan.id_jabatan
+    WHERE 
+        users.username = ?
+");
+
 $query->bind_param("s", $username);
 $query->execute();
 $result = $query->get_result();
@@ -24,7 +35,8 @@ if ($result->num_rows === 1) {
         $_SESSION['role'] = $user['role'];
         $_SESSION['kode_uker'] = $user['kode_uker'];
         $_SESSION['nama_pekerja'] = $user['nama_pekerja'];
-        $_SESSION['jabatan'] = $user['jabatan'];
+        $_SESSION['id_jabatan'] = $user['id_jabatan'];
+        $_SESSION['nama_jabatan'] = $user['nama_jabatan'];
 
         // ✅ TANDAI LOGIN BERHASIL DENGAN SESSION
         $_SESSION['login_success'] = true;

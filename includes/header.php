@@ -713,6 +713,11 @@
             /* tambahin biar paling atas */
         }
 
+        .profile-groups {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
 
         .actions:hover .dropdown-action {
             display: block;

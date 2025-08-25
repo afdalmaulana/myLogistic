@@ -23,14 +23,13 @@ if (!isset($_SESSION['user'])) {
         if (isset($_GET['page'])) {
             $page = $_GET['page'];
             $allowed_pages = [
-                'stocks',
-                'stock-in',
-                'stock-out',
                 'add-user',
                 'submission-in',
                 'submission-out',
                 'inventory-management',
                 'log-inventory',
+                'list-users',
+
             ];
 
             if (in_array($page, $allowed_pages)) {
