@@ -13,7 +13,11 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
         <a href="index.php" class="menu-item <?= $currentPage === 'home' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Home</a>
         <div id="menu-surat">
             <div class="menu-label" style="font-size: 12px;">PENGAJUAN</div>
-            <a href="index.php?page=submission-in" class="menu-item <?= $currentPage === 'submission-in' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
+            <?php if (isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB4' || $_SESSION['id_jabatan'] === 'JB7')): ?>
+                <a href="index.php?page=submission-in" class="menu-item <?= $currentPage === 'submission-in' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
+            <?php else: ?>
+                <div></div>
+            <?php endif; ?>
             <a href="index.php?page=submission-out" class="menu-item <?= $currentPage === 'submission-out' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
         </div>
         <div id="menu-logistik">
