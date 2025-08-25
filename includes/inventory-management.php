@@ -32,9 +32,29 @@ $stokQuery = "SELECT nama_barang FROM stok_barang ORDER BY nama_barang ASC";
 $stokResult = $conn->query($stokQuery);
 
 ?>
-
-
-
+<?php if (isset($_GET['status'])): ?>
+    <script src="../js/sweetalert.all.min.js"></script>
+    <script>
+        <?php if ($_GET['status'] === 'success'): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data Berhasil disimpan'
+            });
+        <?php elseif ($_GET['status'] === 'error'): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: 'Terjadi kesalahan dalam form, mohon di ulangi'
+            })
+        <?php elseif ($_GET['status'] === 'outstock'): ?>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock tidak mencukupi',
+            });
+        <?php endif; ?>
+    </script>
+<?php endif; ?>
 
 
 <div class="content-wrappers">

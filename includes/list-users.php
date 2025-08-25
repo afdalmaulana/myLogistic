@@ -33,12 +33,6 @@ $list = $conn->query($query);
 
 <div class="content-wrappers">
     <div class="content-heading">User List Management</div>
-    <!-- <div>Track incoming, and outgoing inventory</div> -->
-    <!-- <div class="tab">
-        <button class="tablinks active" onclick="openCity(event, 'barang_masuk')">Barang Masuk</button>
-        <button class="tablinks" onclick="openCity(event, 'barang_keluar')">Barang Keluar</button>
-    </div> -->
-
     <div id="list-user" style="display: block;">
         <div class="body-content">
             <div class="sub-menu">

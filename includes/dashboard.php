@@ -74,7 +74,7 @@ $dashboardStats = [
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
-        'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=submission-out#forward',
+        'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=submission-out#incomplete',
     ],
     [
         'title' => 'Barang Keluar',
