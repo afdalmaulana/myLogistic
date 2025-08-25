@@ -63,11 +63,19 @@
                         <label for="">Nomor Pengajuan / Surat</label>
                         <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input disini ... " style="border-radius: 10px;">
                     </div>
+                    <div class="form-group">
+                        <label>Nama Barang</label>
+                        <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang" style="border-radius: 10px;">
+                    </div>
                 </div>
                 <div class="submission-right">
                     <div class="form-group">
-                        <label>Perihal</label>
-                        <input type="text" name="perihal" class="list-input" placeholder="Perihal" style="border-radius: 10px;">
+                        <label>Harga Barang</label>
+                        <input type="text" name="harga_barang" class="list-input" placeholder="Jumlah Barang" style="border-radius: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah</label>
+                        <input type="number" name="jumlah" class="list-input" placeholder="Jumlah Barang" style="border-radius: 10px;">
                     </div>
                     <div>
                         <button type="submit" id="submitBtn" class="button-send">Kirim</button>

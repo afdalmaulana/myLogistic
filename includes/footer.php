@@ -220,16 +220,27 @@
         // === Tombol Forward ===
         document.getElementById("btn-forward").addEventListener("click", () => {
             const kode = document.getElementById("btn-forward").dataset.kode;
+            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const totalJumlah = parseInt(row.children[5].innerText);
 
             Swal.fire({
-                title: 'Masukkan Nomor Surat',
-                input: 'text',
-                inputPlaceholder: 'Contoh: 123/KC/2025',
+                title: 'Forward Pengajuan',
+                html: `<input id="swal-input1" class="swal2-input" placeholder="Nomor Surat">` +
+                    `<input id="swal-input2" type="number" min="1" max="${totalJumlah}" class="swal2-input" placeholder="Jumlah yang di-forward (maks: ${totalJumlah})">`,
+                focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Kirim',
                 cancelButtonText: 'Batal',
-                inputValidator: (value) => {
-                    if (!value) return 'Nomor surat wajib diisi!';
+                preConfirm: () => {
+                    const nomorSurat = document.getElementById('swal-input1').value;
+                    const jumlahForward = parseInt(document.getElementById('swal-input2').value);
+
+                    if (!nomorSurat) return Swal.showValidationMessage('Nomor surat wajib diisi!');
+                    if (!jumlahForward || jumlahForward <= 0 || jumlahForward > totalJumlah) return Swal.showValidationMessage(`Jumlah harus antara 1 dan ${totalJumlah}`);
+                    return {
+                        nomorSurat,
+                        jumlahForward
+                    };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -241,25 +252,13 @@
                             body: new URLSearchParams({
                                 kode_pengajuan: kode,
                                 status: "forward",
-                                nomor_surat: result.value
+                                nomor_surat: result.value.nomorSurat,
+                                jumlah: result.value.jumlahForward
                             })
                         })
                         .then(res => res.text())
                         .then(msg => {
-                            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
-                            row.querySelector(".nomor-surat-cell").innerText = result.value;
-                            row.querySelector(".status-cell").innerText = "Forward";
-                            row.querySelector(".btn-action").dataset.status = "forward";
-
-                            return Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Pengajuan berhasil diforward!',
-                                confirmButtonText: 'OK'
-                            });
-                        })
-                        .then(() => {
-                            location.reload();
+                            Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
                         })
                         .catch(err => {
                             console.error(err);
@@ -323,14 +322,16 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch("submission-update.php", {
+                    fetch("update-submissionHandler.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
-                            body: `kode_pengajuan=${encodeURIComponent(kode)}&status=rejected`
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "rejected",
+                            })
                         })
-                        .then(res => res.text())
                         .then(msg => {
                             Swal.fire('Sukses', msg, 'success').then(() => location.reload());
                         });
@@ -607,4 +608,33 @@
         // Optional: expose openTab ke global (jika dipakai di HTML onclick)
         window.openCity = openCity;
     });
+
+    // SORT
+    let sortAsc = true;
+
+    function toggleSortStatus() {
+        const table = document.getElementById("dataTable-incomplete");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+            const statusA = a.cells[4].innerText.trim().toLowerCase();
+            const statusB = b.cells[4].innerText.trim().toLowerCase();
+
+            if (sortAsc) {
+                // Forward sebelum Pending
+                return (statusA === "forward" ? -1 : 1) - (statusB === "forward" ? -1 : 1);
+            } else {
+                // Pending sebelum Forward
+                return (statusA === "pending" ? -1 : 1) - (statusB === "pending" ? -1 : 1);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row)); // re-append sorted rows
+
+        // Ubah arah panah
+        document.getElementById("sortArrow").textContent = sortAsc ? "↑" : "↓";
+
+        sortAsc = !sortAsc;
+    }
 </script>

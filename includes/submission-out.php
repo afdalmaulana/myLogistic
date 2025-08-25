@@ -37,11 +37,15 @@ $result = $conn->query($query);
                                 <th>Kode Pengajuan</th>
                                 <th>Kode Uker</th>
                                 <th>Tanggal Pengajuan</th>
-                                <th>Perihal</th>
-                                <th>Status</th>
+                                <th>Nama Barang</th>
+                                <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
+                                <th>Jumlah</th>
+                                <th>Harga Barang</th>
                                 <th>No. Surat</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
+                                <th>Sisa</th>
+                                <th>Proses</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,16 +68,19 @@ $result = $conn->query($query);
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
-                                    <td><?= htmlspecialchars($row['perihal']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['harga_barang']) ?></td>
                                     <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
-                                    <td style="background: none;">
+                                    <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                    <!-- <td style="background: none;">
                                         <?php if ($status === 'pending'): ?>
                                             <div style="font-size:12px;">Menunggu Approval KC</div>
                                         <?php elseif ($status === 'forward'): ?>
                                             <div style="font-size:12px;">Menunggu Approval Kanwil</div>
                                         <?php endif; ?>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
                                             <button class="btn-action"
@@ -92,6 +99,10 @@ $result = $conn->query($query);
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
+                                    <?php if ($status === 'forward'): ?>
+                                        <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
+                                    <?php endif; ?>
+                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
@@ -116,9 +127,11 @@ $result = $conn->query($query);
                                 <th>Tanggal Pengajuan</th>
                                 <th>Perihal</th>
                                 <th>Status</th>
+                                <th>Jumlah</th>
                                 <th>No. Surat</th>
                                 <th>Keterangan</th>
-                                <th>Aksi</th>
+                                <th>Sisa</th>
+                                <th>Proses</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,8 +154,9 @@ $result = $conn->query($query);
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
-                                    <td><?= htmlspecialchars($row['perihal']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
                                     <td style="background: none;">
                                         <?php if ($status === 'approved'): ?>
@@ -151,18 +165,9 @@ $result = $conn->query($query);
                                             <div style="font-size:12px;">Pengajuan ditolak</div>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
-                                        <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
-                                            <button class="btn-action"
-                                                data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                data-status="<?= $status ?>"
-                                                style="font-size:24px; background: none; padding:10px; border:none">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
-                                        <?php else: ?>
-                                            <div></div>
-                                        <?php endif; ?>
-                                    </td>
+                                    <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
+
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
