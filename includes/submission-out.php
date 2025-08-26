@@ -44,8 +44,6 @@ $result = $conn->query($query);
                                 <th>No. Surat</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
-                                <th>Sisa</th>
-                                <th>Proses</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,10 +97,6 @@ $result = $conn->query($query);
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
-                                    <?php if ($status === 'forward'): ?>
-                                        <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
-                                    <?php endif; ?>
-                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
@@ -142,13 +136,17 @@ $result = $conn->query($query);
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-                                if (!in_array($status, ['approved', 'forward'])) continue;
+                                $status_sisa = strtolower($row['status_sisa'] ?? '');
+
+                                // Cek apakah status termasuk approved atau forward, dan status_sisa not done
+                                if (!in_array($status, ['approved', 'forward']) || $status_sisa !== 'not done') continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
                                     'approved' => 'status-approved',
                                     'rejected' => 'status-rejected',
                                     'forward' => 'status-forward',
+                                    'not done' => 'status-notdone',
                                     default => '',
                                 };
                             ?>
@@ -164,8 +162,7 @@ $result = $conn->query($query);
                                     <td><?= htmlspecialchars($row['harga_barang']) ?></td>
                                     <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
-
-                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
+                                    <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
                                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
                                             <button class="btn-action"

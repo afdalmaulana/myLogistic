@@ -179,7 +179,7 @@
             document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
 
             // Tombol selesaikan muncul jika status approved, sisa_jumlah > 0 dan proses pending
-            document.getElementById("btn-selesaikan").style.display = (status === "approved" && sisaJumlah > 0 && proses === "pending") ? "block" : "none";
+            document.getElementById("btn-selesaikan").style.display = (status === "approved" && sisaJumlah > 0 && proses === "not done") ? "block" : "none";
 
             // Inject data kode ke semua tombol aksi
             ["btn-forward", "btn-approve", "btn-reject", "btn-selesaikan"].forEach(id => {

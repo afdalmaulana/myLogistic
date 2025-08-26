@@ -704,17 +704,11 @@
         .dropdown-action {
             display: none;
             position: absolute;
-            /* right: 40px; */
-            /* left: 200px; */
-            /* digeser agak ke kiri dari 30px */
             background: #2460a3ff;
             border-radius: 8px;
             padding: 10px 15px;
-            /* tambah padding kanan kiri */
             z-index: 9999;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* min-width: 140px; */
-            /* biar tombol nggak terlalu ngepas */
         }
 
         /* tombol */
@@ -742,7 +736,7 @@
         }
 
         .button-complete:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(89, 197, 18, 0.66);
         }
 
         .button-reject:hover {
@@ -1238,6 +1232,11 @@
 
         /* BATAS FORM LOGIN */
         .status-pending {
+            color: #ff8800ff;
+            font-weight: bold;
+        }
+
+        .status-notdone {
             color: #ff8800ff;
             font-weight: bold;
         }
