@@ -46,6 +46,7 @@ $resultOut = $conn->query($query);
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
+                            <th>Kode Uker</th>
                             <th>Nomor Nota</th>
                             <th>Tanggal Input</th>
                             <th>Tanggal Nota</th>
@@ -59,6 +60,7 @@ $resultOut = $conn->query($query);
                         <?php if ($stocksIn->num_rows > 0): ?>
                             <?php while ($row = $stocksIn->fetch_assoc()): ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>

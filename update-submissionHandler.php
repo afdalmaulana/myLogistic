@@ -1,10 +1,16 @@
 <?php
 require 'db_connect.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $status = $_POST['status'] ?? '';
 $nomor_surat = $_POST['nomor_surat'] ?? null;
 $jumlah = intval($_POST['jumlah'] ?? 0); // jumlah yang akan diforward atau disetujui
+$PNpekerja = isset($_SESSION['user']) ? $_SESSION['user'] : "";
+$namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
 
 if (!$kode_pengajuan) {
     http_response_code(400);
@@ -72,7 +78,7 @@ if ($status === 'forward') {
 
     $sisa = max(0, $jumlah_asli - $jumlah);
     $status_sisa = $sisa > 0 ? 'not done' : null;
-    $keterangan = "Disetujui sejumlah " . number_format($jumlah, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.');
+    $keterangan = "Disetujui sejumlah " . number_format($jumlah, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.') . " Oleh " . $PNpekerja;
 
     $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, nomor_surat = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
     $stmtUpdate->bind_param("ssissss", $status, $nomor_surat, $jumlah, $sisa, $status_sisa, $keterangan, $kode_pengajuan);
