@@ -20,7 +20,7 @@ $result = $conn->query($query);
 
 <div class="content-wrapper">
     <div class="sub-content">
-        <h4 style="font-weight: 800; font-size:32px;">List Pengajuan</h4>
+        <h4 style="font-weight: 800; font-size:32px;">Submission Overview</h4>
         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
         <div class="tabs">
             <button class="tabslinks active" onclick="openTab(event, 'request')">Request</button>
@@ -54,7 +54,7 @@ $result = $conn->query($query);
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-                                if (!in_array($status, ['pending', 'forward'])) continue;
+                                if (!in_array($status, ['pending'])) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
@@ -128,12 +128,12 @@ $result = $conn->query($query);
                                 <th>Nama Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
+                                <th>Sisa</th>
                                 <th>Harga Barang</th>
                                 <th>No. Surat</th>
                                 <th>Keterangan</th>
-                                <th>Aksi</th>
-                                <th>Sisa</th>
                                 <th>Proses</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,7 +142,7 @@ $result = $conn->query($query);
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-                                if (!in_array($status, ['approved'])) continue;
+                                if (!in_array($status, ['approved', 'forward'])) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
@@ -152,16 +152,20 @@ $result = $conn->query($query);
                                     default => '',
                                 };
                             ?>
-                                <tr>
+                                <tr data-sisa-jumlah="<?= htmlspecialchars($row['sisa_jumlah']) ?>"
+                                    data-proses="<?= htmlspecialchars($row['status_sisa']) ?>">
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['harga_barang']) ?></td>
                                     <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
+
+                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
                                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
                                             <button class="btn-action"
@@ -180,8 +184,8 @@ $result = $conn->query($query);
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
+
+
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
@@ -209,8 +213,6 @@ $result = $conn->query($query);
                                 <th>Jumlah</th>
                                 <th>No. Surat</th>
                                 <th>Keterangan</th>
-                                <th>Sisa</th>
-                                <th>Proses</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -219,7 +221,10 @@ $result = $conn->query($query);
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-                                if (!in_array($status, ['approved', 'rejected'])) continue;
+                                if (
+                                    ($status === 'approved' && (int)$row['sisa_jumlah'] > 0) ||
+                                    (!in_array($status, ['approved', 'rejected']))
+                                ) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
@@ -244,8 +249,6 @@ $result = $conn->query($query);
                                             <div style="font-size:12px;">Pengajuan ditolak</div>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
 
                                 </tr>
                             <?php endwhile; ?>
@@ -271,4 +274,5 @@ $result = $conn->query($query);
     <button id="btn-forward" class="button-approve">Forward</button>
     <button id="btn-approve" class="button-approve">Approve</button>
     <button id="btn-reject" class="button-reject">Reject</button>
+    <button id="btn-selesaikan" class="button-complete">Selesaikan</button>
 </div>

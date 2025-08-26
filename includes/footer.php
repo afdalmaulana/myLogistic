@@ -158,66 +158,52 @@
     document.addEventListener("DOMContentLoaded", () => {
         const globalMenu = document.getElementById("global-actions");
 
+        // Fungsi untuk update posisi dan tampilkan menu sesuai status dan data tambahan
+        function showGlobalMenu(btn) {
+            const kode = btn.dataset.kode;
+            const status = btn.dataset.status;
+
+            // Ambil row terkait untuk cek data tambahan
+            const row = btn.closest("tr");
+            const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0"); // pastikan ada atribut data-sisa-jumlah di tr
+            const proses = row.dataset.proses || ""; // pastikan ada atribut data-proses di tr
+
+            const rect = btn.getBoundingClientRect();
+            globalMenu.style.top = (window.scrollY + rect.bottom - 50) + "px";
+            globalMenu.style.left = (window.scrollX + rect.left - 60) + "px";
+            globalMenu.style.display = "block";
+
+            // Atur tombol tampil sesuai status dan kondisi tambahan
+            document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
+            document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
+            document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
+
+            // Tombol selesaikan muncul jika status approved, sisa_jumlah > 0 dan proses pending
+            document.getElementById("btn-selesaikan").style.display = (status === "approved" && sisaJumlah > 0 && proses === "pending") ? "block" : "none";
+
+            // Inject data kode ke semua tombol aksi
+            ["btn-forward", "btn-approve", "btn-reject", "btn-selesaikan"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.dataset.kode = kode;
+            });
+        }
+
+        // Pasang event click ke semua tombol action
         document.querySelectorAll(".btn-action").forEach(btn => {
             btn.addEventListener("click", (e) => {
-                const kode = btn.dataset.kode;
-                const status = btn.dataset.status;
-
-                // Posisi menu di bawah tombol
-                const rect = btn.getBoundingClientRect();
-                globalMenu.style.top = (window.scrollY + rect.bottom) + "px";
-                globalMenu.style.left = (window.scrollX + rect.left) + "px";
-                globalMenu.style.display = "block";
-
-                // Atur tombol yang muncul sesuai status
-                document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
-                document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
-                document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
-
-                // Inject data kode
-                ["btn-forward", "btn-approve", "btn-reject"].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.setAttribute("data-kode", kode);
-                });
+                e.stopPropagation(); // agar tidak tertangkap oleh document click di bawah
+                showGlobalMenu(btn);
             });
         });
 
-        // Klik luar = close
+        // Event klik luar untuk menutup menu global
         document.addEventListener("click", (e) => {
             if (!e.target.closest(".btn-action") && !e.target.closest("#global-actions")) {
                 globalMenu.style.display = "none";
             }
         });
-    });
 
-
-    /**BUTTON ACTION LANJUTAN */
-    document.addEventListener("DOMContentLoaded", () => {
-        const globalMenu = document.getElementById("global-actions");
-
-        // === Buka menu global saat titik tiga diklik ===
-        document.querySelectorAll(".btn-action").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const kode = document.getElementById("btn-forward").dataset.kode;
-                const status = btn.dataset.status;
-
-                const rect = btn.getBoundingClientRect();
-                globalMenu.style.top = (window.scrollY + rect.bottom) + "px";
-                globalMenu.style.left = (window.scrollX + rect.left) + "px";
-                globalMenu.style.display = "block";
-
-                ["btn-forward", "btn-approve", "btn-reject"].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.dataset.kode = kode;
-                });
-
-                document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
-                document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
-                document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
-            });
-        });
-
-        // === Tombol Forward ===
+        // Tombol Forward
         document.getElementById("btn-forward").addEventListener("click", () => {
             const kode = document.getElementById("btn-forward").dataset.kode;
             const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
@@ -268,7 +254,7 @@
             });
         });
 
-        // === Tombol Approve ===
+        // Tombol Approve
         document.getElementById("btn-approve").addEventListener("click", () => {
             const kode = document.getElementById("btn-approve").dataset.kode;
 
@@ -289,27 +275,26 @@
                             body: new URLSearchParams({
                                 kode_pengajuan: kode,
                                 status: "approved",
-                                nomor_surat: result.value
                             })
                         })
+                        .then(res => res.text())
                         .then(msg => {
                             Swal.fire('Sukses', msg, 'success').then(() => {
-                                // reload setelah user klik OK swal
                                 location.reload();
                             });
 
                             const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
-                            row.querySelector(".status-cell").innerText = "Approved"; // perbaiki typo
+                            row.querySelector(".status-cell").innerText = "Approved";
                             row.querySelector(".btn-action").dataset.status = "approved";
                         }).catch(err => {
                             console.error(err);
                             Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
-                        })
+                        });
                 }
             });
         });
 
-        // === Tombol Reject ===
+        // Tombol Reject
         document.getElementById("btn-reject").addEventListener("click", () => {
             const kode = document.getElementById("btn-reject").dataset.kode;
 
@@ -332,6 +317,7 @@
                                 status: "rejected",
                             })
                         })
+                        .then(res => res.text())
                         .then(msg => {
                             Swal.fire('Sukses', msg, 'success').then(() => location.reload());
                         });
@@ -339,13 +325,50 @@
             });
         });
 
-        // === Klik luar untuk nutup menu global ===
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".btn-action") && !e.target.closest("#global-actions")) {
-                globalMenu.style.display = "none";
-            }
+        // Tombol Selesaikan (baru)
+        document.getElementById("btn-selesaikan").addEventListener("click", () => {
+            const kode = document.getElementById("btn-selesaikan").dataset.kode;
+            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0");
+
+            Swal.fire({
+                title: 'Selesaikan Pengajuan',
+                html: `<input id="swal-input1" class="swal2-input" type="number" min="1" max="${sisaJumlah}" placeholder="Jumlah yang diselesaikan (maks: ${sisaJumlah})">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Selesaikan',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const jumlahSelesai = parseInt(document.getElementById('swal-input1').value);
+                    if (!jumlahSelesai || jumlahSelesai <= 0 || jumlahSelesai > sisaJumlah) return Swal.showValidationMessage(`Jumlah harus antara 1 dan ${sisaJumlah}`);
+                    return jumlahSelesai;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "completed",
+                                jumlah_selesai: result.value
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                        });
+                }
+            });
         });
     });
+
 
     /**BATAS ACTION TOMBOL */
 

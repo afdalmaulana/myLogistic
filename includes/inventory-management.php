@@ -61,15 +61,15 @@ $stokResult = $conn->query($stokQuery);
     <div class="content-heading">Inventory Management</div>
     <div>Manage your inventory, track incoming, and outgoing</div>
     <div class="tab-invent">
-        <button class="tablink-invent active" onclick="openInvent(event, 'stocks')">Stok Barang</button>
-        <button class="tablink-invent" onclick="openInvent(event, 'formBarang_masuk')">Barang Masuk</button>
-        <button class="tablink-invent" onclick="openInvent(event, 'formBarang_keluar')">Barang Keluar</button>
+        <button class="tablink-invent active" onclick="openInvent(event, 'stocks')">STOCK</button>
+        <button class="tablink-invent" onclick="openInvent(event, 'formBarang_masuk')">RECORD INCOMING</button>
+        <button class="tablink-invent" onclick="openInvent(event, 'formBarang_keluar')">RECORD OUTGOING</button>
     </div>
 
     <div id="stocks" class="tabcontent-invent" style="display: block;">
         <div class="body-content">
             <div class="sub-menu">
-                <p>Daftar Stok Barang</p>
+                <p>Inventory List</p>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
             <div class="table-container">

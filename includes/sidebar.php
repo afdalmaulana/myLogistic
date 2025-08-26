@@ -12,16 +12,16 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
     <div class="menusidebar">
         <a href="index.php" class="menu-item <?= $currentPage === 'home' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Home</a>
         <div id="menu-surat">
-            <div class="menu-label" style="font-size: 12px;">PENGAJUAN</div>
+            <div class="menu-label" style="font-size: 12px;">SUBMISSION</div>
             <?php if (isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB4' || $_SESSION['id_jabatan'] === 'JB7')): ?>
-                <a href="index.php?page=submission-in" class="menu-item <?= $currentPage === 'submission-in' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Buat Pengajuan</a>
+                <a href="index.php?page=submission-in" class="menu-item <?= $currentPage === 'submission-in' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">New Submission </a>
             <?php else: ?>
                 <div></div>
             <?php endif; ?>
-            <a href="index.php?page=submission-out" class="menu-item <?= $currentPage === 'submission-out' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Liat Pengajuan</a>
+            <a href="index.php?page=submission-out" class="menu-item <?= $currentPage === 'submission-out' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Submission List</a>
         </div>
         <div id="menu-logistik">
-            <div class="menu-label" style="font-size: 12px;">INFORMASI BARANG</div>
+            <div class="menu-label" style="font-size: 12px;">APPLICATION RECORD</div>
             <a href="index.php?page=inventory-management " class="menu-item <?= $currentPage === 'inventory-management' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Inventory Management</a>
             <a href="index.php?page=log-inventory" class="menu-item <?= $currentPage === 'log-inventory' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Log Inventory</a>
             <!-- <a href="index.php?page=stocks" class="menu-item" onclick="return loadingLink(this, event)">Stok Barang</a> -->

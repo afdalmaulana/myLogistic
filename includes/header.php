@@ -704,14 +704,51 @@
         .dropdown-action {
             display: none;
             position: absolute;
-            /* right: 30px; */
-            /* top: 0; */
+            /* right: 40px; */
+            /* left: 200px; */
+            /* digeser agak ke kiri dari 30px */
             background: #2460a3ff;
             border-radius: 8px;
-            padding: 10px;
+            padding: 10px 15px;
+            /* tambah padding kanan kiri */
             z-index: 9999;
-            /* tambahin biar paling atas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* min-width: 140px; */
+            /* biar tombol nggak terlalu ngepas */
         }
+
+        /* tombol */
+        .button-approve,
+        .button-complete,
+        .button-reject {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: white;
+            padding: 6px 8px;
+            /* tambahin padding kiri kanan */
+            border-radius: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-approve:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .button-complete:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .button-reject:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
 
         .profile-groups {
             display: flex;
@@ -827,27 +864,9 @@
             text-decoration: none;
         }
 
-        .button-approve {
-            background: none;
-            border: none;
-            font-size: 16px;
-            color: white;
-            padding: 6px 10px 6px 10px;
-            border-radius: 10px;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            text-decoration: none;
-        }
 
-        .button-reject {
-            background: none;
-            border: none;
-            font-size: 16px;
-            color: white;
-            padding: 6px 10px 6px 10px;
-            border-radius: 10px;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            text-decoration: none;
-        }
+
+
 
         .button-save {
             background: none;

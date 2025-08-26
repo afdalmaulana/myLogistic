@@ -26,7 +26,7 @@ $resultRecent = $conn->query($queryRecent);
 $queryAll = "SELECT * FROM pengajuan WHERE $whereClause ORDER BY kode_pengajuan DESC";
 $tampung = $conn->query($queryAll);
 
-$queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Pending'";
+$queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status_sisa = 'pending'";
 $resultPendingPengajuan = $conn->query($queryPending);
 
 $queryApproved = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Approved'";
@@ -67,14 +67,14 @@ $dashboardStats = [
         'result' => $tampung,
         'icon' => 'fa-archive',
         'color' => '',
-        'link' => 'index.php?page=submission-out#approved',
+        'link' => 'index.php?page=submission-out#request',
     ],
     [
         'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Pending',
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
-        'link' => $isAdminOrCabang ? 'index.php?page=submission-out' : 'index.php?page=submission-out#incomplete',
+        'link' => $isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#incomplete',
     ],
     [
         'title' => 'Barang Keluar',

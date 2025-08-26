@@ -31,14 +31,14 @@ $resultOut = $conn->query($query);
     <div class="content-heading">Log Inventory Management</div>
     <div>Track incoming, and outgoing inventory</div>
     <div class="tab">
-        <button class="tablinks active" onclick="openCity(event, 'barang_masuk')">Barang Masuk</button>
-        <button class="tablinks" onclick="openCity(event, 'barang_keluar')">Barang Keluar</button>
+        <button class="tablinks active" onclick="openCity(event, 'barang_masuk')">STOCK IN</button>
+        <button class="tablinks" onclick="openCity(event, 'barang_keluar')">STOCK OUT</button>
     </div>
 
     <div id="barang_masuk" class="tabcontent" style="display: block;">
         <div class="body-content">
             <div class="sub-menu">
-                <p>Log Barang Masuk</p>
+                <p>Log Record</p>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
 
@@ -82,7 +82,7 @@ $resultOut = $conn->query($query);
     <div id="barang_keluar" class="tabcontent">
         <div class="body-content">
             <div class="sub-menu">
-                <p>Log Barang Keluar</p>
+                <p>Log Record</p>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
 
