@@ -27,9 +27,9 @@ $resultOut = $conn->query($query);
 ?>
 
 
-<div class="content-wrappers">
+<div class="dashboard-menu">
     <div class="content-heading">Log Inventory Management</div>
-    <div>Track incoming, and outgoing inventory</div>
+    <div><i>Track log incoming, and outgoing inventory</i></div>
     <div class="tab">
         <button class="tablinks active" onclick="openCity(event, 'barang_masuk')">STOCK IN</button>
         <button class="tablinks" onclick="openCity(event, 'barang_keluar')">STOCK OUT</button>

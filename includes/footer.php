@@ -632,6 +632,53 @@
         window.openCity = openCity;
     });
 
+    //TAB INVENTORY IT
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Fungsi buka tab
+        function openIt(evt, tabName) {
+            var i, tabcontentinvent, tablinks;
+
+            // Sembunyikan semua tab
+            tabcontentinvent = document.getElementsByClassName("tabcontent-it");
+            for (i = 0; i < tabcontentinvent.length; i++) {
+                tabcontentinvent[i].style.display = "none";
+            }
+
+            // Hapus class "active" dari semua tombol
+            tablinks = document.getElementsByClassName("tablink-it");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Tampilkan tab yang diminta
+            document.getElementById(tabName).style.display = "block";
+
+            // Tambahkan class active ke tombol
+            if (evt) {
+                evt.currentTarget.className += " active";
+            } else {
+                // Jika tidak dari klik, cari tombolnya dan aktifkan
+                var autoBtn = document.querySelector('.tablink-it[onclick*="' + tabName + '"]');
+                if (autoBtn) {
+                    autoBtn.className += " active";
+                }
+            }
+        }
+
+        // Cek hash di URL dan buka tab sesuai
+        const hash = window.location.hash;
+        if (hash) {
+            const tabName = hash.substring(1); // hapus #
+            openIt(null, tabName); // buka tab otomatis
+        } else {
+            openIt(null, 'stocks'); // default ke tab "incomplete"
+        }
+
+        // Optional: expose openTab ke global (jika dipakai di HTML onclick)
+        window.openIt = openIt;
+    });
+
     // SORT
     let sortAsc = true;
 

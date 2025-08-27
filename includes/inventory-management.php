@@ -4,32 +4,40 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require 'db_connect.php';
 
-$isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
-    (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
+$kodeUkerSession = $_SESSION['kode_uker'] ?? null;
+$isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || ($kodeUkerSession === '0050');
 
-if ($isAdminOrCabang) {
-    // Admin atau Kanwil melihat semua data
-    $whereClause = "1"; // tidak ada filter
-} else {
-    // Selain itu, hanya melihat data berdasarkan kode_uker
-    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
-    $whereClause = "kode_uker = '$kode_uker'";
-}
+// Untuk kebutuhan tabel stok dan log stok (admin/kanwil bisa lihat semua)
+$whereClause = $isAdminOrCabang ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
 
-$query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
-$stocksIn = $conn->query($query);
-
-$query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
-$result = $conn->query($query);
-
-$query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
-$resultOut = $conn->query($query);
-
+// Tabel stok
 $queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
 $stocks = $conn->query($queryStock);
 
-$stokQuery = "SELECT nama_barang FROM stok_barang ORDER BY nama_barang ASC";
-$stokResult = $conn->query($stokQuery);
+// Barang masuk
+$query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
+$stocksIn = $conn->query($query);
+
+// Barang masuk - full log
+$query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
+$result = $conn->query($query);
+
+// Barang keluar - full log
+$query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
+$resultOut = $conn->query($query);
+
+// ==========================
+// FIX: Stok dropdown HANYA berdasarkan kode_uker login
+// ==========================
+if ($kodeUkerSession) {
+    $stmt = $conn->prepare("SELECT nama_barang FROM stok_barang WHERE kode_uker = ? ORDER BY nama_barang ASC");
+    $stmt->bind_param("s", $kodeUkerSession);
+    $stmt->execute();
+    $stokResult = $stmt->get_result();
+} else {
+    $stokResult = false;
+}
+
 
 ?>
 <?php if (isset($_GET['status'])): ?>
@@ -57,9 +65,9 @@ $stokResult = $conn->query($stokQuery);
 <?php endif; ?>
 
 
-<div class="content-wrappers">
+<div class="dashboard-menu">
     <div class="content-heading">Inventory Management</div>
-    <div>Manage your inventory, track incoming, and outgoing</div>
+    <div><i>Manage your inventory, track incoming, and outgoing</i></div>
     <div class="tab-invent">
         <button class="tablink-invent active" onclick="openInvent(event, 'stocks')">STOCK</button>
         <button class="tablink-invent" onclick="openInvent(event, 'formBarang_masuk')">RECORD INCOMING</button>
@@ -104,32 +112,31 @@ $stokResult = $conn->query($stokQuery);
     <div id="formBarang_masuk" class="tabcontent-invent">
         <form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
             <div class="body-content">
-                <p>Record Barang Masuk</p>
-                <!-- <input type="date" id="tanggal_stockin" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly> -->
-                <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
+                <p>Incoming Stock</p>
+                <!-- <div><i>* Tanggal Otomatis mengikut hari ini</i></div> -->
                 <div class="form-input">
                     <div class="submission-left">
                         <div class="form-group">
                             <label>Nomor Nota</label>
-                            <input type="text" name="nomor_nota" class="list-input">
+                            <input type="text" name="nomor_nota" class="list-input" placeholder="Masukkan Nomor Nota">
                         </div>
                         <div class="form-group">
                             <label>Tanggal Nota</label>
-                            <input type="date" name="tanggal_nota" class="list-input">
+                            <input type="date" name="tanggal_nota" class="list-input" placeholder="Masukkan Tanggal Nota">
                         </div>
                         <div class="form-group">
                             <label>Nama Barang</label>
-                            <input type="text" name="nama_barang" class="list-input">
+                            <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang">
                         </div>
                     </div>
                     <div class="submission-right">
                         <div class="form-group">
                             <label>Harga Barang</label>
-                            <input type="text" name="harga_barang" class="list-input">
+                            <input type="text" name="harga_barang" class="list-input" placeholder="Masukkan Harga">
                         </div>
                         <div class="form-group">
                             <label>Jumlah</label>
-                            <input type="number" name="jumlah" class="list-input">
+                            <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">
                         </div>
                         <div class="form-group">
                             <button type="submit" class="button-send">Kirim</button>
@@ -143,9 +150,8 @@ $stokResult = $conn->query($stokQuery);
     <div id="formBarang_keluar" class="tabcontent-invent">
         <form action="stockOut_connect.php" method="POST" onsubmit="return showLoading()">
             <div class="body-content">
-                <p>Record Barang Keluar</p>
-                <!-- <input type="date" id="tanggal" name="tanggal" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly> -->
-                <div><i>* Tanggal Otomatis mengikut hari ini</i></div>
+                <p>Outgoing Stock</p>
+                <!-- <div><i>* Tanggal Otomatis mengikut hari ini</i></div> -->
                 <div class="form-input">
                     <div class="submission-left">
                         <div class="form-group">
@@ -153,7 +159,7 @@ $stokResult = $conn->query($stokQuery);
                             <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Pilih Nama Barang</option>
                                 <?php
-                                if ($stokResult->num_rows > 0) {
+                                if ($stokResult && $stokResult->num_rows > 0) {
                                     while ($row = $stokResult->fetch_assoc()) {
                                         echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
                                     }
@@ -162,7 +168,10 @@ $stokResult = $conn->query($stokQuery);
                                 }
                                 ?>
                             </select>
-                            <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" style="border-radius: 10px;" required>
+                            <div class="form-group">
+                                <label for="">Jumlah</label>
+                                <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" required>
+                            </div>
                         </div>
                     </div>
                     <div class="submission-right">
@@ -176,9 +185,9 @@ $stokResult = $conn->query($stokQuery);
                                 <option value="ADK">Administrasi Keuangan</option>
                                 <option value="RMFT">RMFT</option>
                             </select>
-                            <div>
-                                <button type="submit" id="submitBtn" class="button-send">Kirim</button>
-                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="submitBtn" class="button-send">Kirim</button>
                         </div>
                     </div>
                 </div>

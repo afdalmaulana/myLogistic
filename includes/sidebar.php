@@ -43,5 +43,10 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
                 <a href="index.php?page=list-users" class="menu-item">Daftar User</a>
             </div>
         <?php endif; ?>
+        <?php if (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6'): ?>
+            <div>
+                <a href="index.php?page=inventory-It" class="menu-item">Inventory IT</a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

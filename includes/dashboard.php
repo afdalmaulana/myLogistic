@@ -51,8 +51,8 @@ $dashboardRecent = [
     [
         'heading' => 'Quick Actions',
         'actions' => [
-            ['title' => 'Pengajuan Baru', 'link' => 'index.php?page=submission-in'],
-            ['title' => 'Tambah Barang', 'link' => 'index.php?page=inventory-management'],
+            ['title' => 'New Submission', 'link' => 'index.php?page=submission-in'],
+            ['title' => 'Add New Item', 'link' => 'index.php?page=inventory-management'],
         ]
     ],
     [
@@ -63,30 +63,30 @@ $dashboardRecent = [
 ];
 $dashboardStats = [
     [
-        'title' => 'Total Pengajuan',
+        'title' => 'Submission Summary',
         'result' => $tampung,
         'icon' => 'fa-archive',
         'color' => '',
         'link' => 'index.php?page=submission-out#request',
     ],
     [
-        'title' => $isAdminOrCabang ? 'Pengajuan Masuk' : 'Pengajuan Pending',
+        'title' => $isAdminOrCabang ? 'Incoming Submission' : 'Pending Request',
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
         'link' => $isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#incomplete',
     ],
     [
-        'title' => 'Barang Keluar',
+        'title' => 'Outgoing Items',
         'result' => $outstocks,
-        'icon' => 'fa-envelope-open-o',
+        'icon' => 'fa fa-mail-forward',
         'color' => '',
         'link' => 'index.php?page=log-inventory#barang_keluar',
     ],
     [
-        'title' => 'Barang Masuk',
+        'title' => 'Incoming Items',
         'result' => $instocks,
-        'icon' => 'fa-envelope-open-o',
+        'icon' => 'fa fa-mail-reply',
         'color' => '',
         'link' => 'index.php?page=log-inventory#barang_masuk',
     ],
@@ -98,7 +98,7 @@ $dashboardStats = [
     <div class="content-heading">
         Dashboard LogiTrack
     </div>
-    <div>Welcome back! Here what's happening with your activity today</div>
+    <div><i>Welcome back! Here what's happening with your activity today</i></div>
     <div class="dashboard-grid">
 
         <?php foreach ($dashboardStats as $item): ?>

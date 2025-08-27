@@ -29,6 +29,7 @@ if (!isset($_SESSION['user'])) {
                 'inventory-management',
                 'log-inventory',
                 'list-users',
+                'inventory-It'
 
             ];
 

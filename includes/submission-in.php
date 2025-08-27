@@ -48,7 +48,8 @@
 <div class="content-wrapper">
     <div>
         <div class="sub-content">
-            <h4 style="font-weight: 800; font-size:32px;">Form Pengajuan</h4>
+            <h4 style="font-weight: 800; font-size:32px;">New Form Entry</h4>
+            <p><i>Create a new submission and track incoming responses efficiently.</i></p>
         </div>
     </div>
     <form action="submission-inHandler.php" method="POST" enctype="multipart/form-data" onsubmit="return showLoading()">
@@ -56,29 +57,29 @@
             <div class="form-input">
                 <div class="submission-left">
                     <div class="form-group">
-                        <label for="">Tanggal Hari ini</label>
+                        <label for="">Submission Date</label>
                         <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
                     </div>
                     <div class="form-group">
                         <label for="">Nomor Pengajuan / Surat</label>
-                        <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input disini ... " style="border-radius: 10px;">
+                        <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input here ... " style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label>Nama Barang</label>
-                        <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang" style="border-radius: 10px;">
+                        <input type="text" name="nama_barang" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                 </div>
                 <div class="submission-right">
                     <div class="form-group">
                         <label>Harga Barang</label>
-                        <input type="text" name="harga_barang" class="list-input" placeholder="Jumlah Barang" style="border-radius: 10px;">
+                        <input type="text" name="harga_barang" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label>Jumlah</label>
-                        <input type="number" name="jumlah" class="list-input" placeholder="Jumlah Barang" style="border-radius: 10px;">
+                        <input type="number" name="jumlah" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div>
-                        <button type="submit" id="submitBtn" class="button-send">Kirim</button>
+                        <button type="submit" id="submitBtn" class="button-send">Submit</button>
                     </div>
                 </div>
             </div>
