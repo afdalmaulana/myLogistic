@@ -100,14 +100,51 @@ if ($status === 'approved') {
         exit;
     }
 
-    // Tambah ke barang_masuk
-    $tanggal = date('Y-m-d');
-    $stmtMasuk = $conn->prepare("INSERT INTO barang_masuk (tanggal, tanggal_nota, nomor_nota, nama_barang, harga_barang, jumlah, kode_uker) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmtMasuk->bind_param("ssssdis", $tanggal, $tanggal, $data['nomor_surat'], $nama_barang, $harga_barang, $jumlah_masuk, $kode_uker);
+    // Ambil tanggal_pengajuan dari tabel pengajuan
+    $stmtTanggal = $conn->prepare("SELECT tanggal_pengajuan FROM pengajuan WHERE kode_pengajuan = ?");
+    $stmtTanggal->bind_param("s", $kode_pengajuan);
+    $stmtTanggal->execute();
+    $stmtTanggal->bind_result($tanggal_pengajuan);
+    $stmtTanggal->fetch();
+    $stmtTanggal->close();
+
+    if (!$tanggal_pengajuan) {
+        http_response_code(400);
+        echo "Tanggal pengajuan tidak ditemukan.";
+        exit;
+    }
+
+    $tanggal_approve = date('Y-m-d'); // hari ini
+    $tanggal_nota = null; // dikosongkan (user uker akan isi nanti)
+
+    // Insert ke barang_masuk
+    $stmtMasuk = $conn->prepare("
+        INSERT INTO barang_masuk (
+            tanggal, 
+            tanggal_approve, 
+            tanggal_nota, 
+            nomor_nota, 
+            nama_barang, 
+            harga_barang, 
+            jumlah, 
+            kode_uker
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmtMasuk->bind_param(
+        "sssssisi",
+        $tanggal_pengajuan,
+        $tanggal_approve,
+        $tanggal_nota,
+        $data['nomor_surat'],
+        $nama_barang,
+        $harga_barang,
+        $jumlah_masuk,
+        $kode_uker
+    );
     $stmtMasuk->execute();
     $stmtMasuk->close();
 
-    // Update atau insert ke stok_barang
+    // Update stok_barang
     $cekStok = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ? AND kode_uker = ?");
     $cekStok->bind_param("ss", $nama_barang, $kode_uker);
     $cekStok->execute();
@@ -125,7 +162,7 @@ if ($status === 'approved') {
         $insertStok->close();
     }
 
-    // Update status ke approved
+    // Update status pengajuan (tidak menyimpan tanggal_approve ke tabel pengajuan)
     $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
     $stmtUpdate->bind_param("ss", $status, $kode_pengajuan);
     $stmtUpdate->execute();
@@ -135,6 +172,9 @@ if ($status === 'approved') {
     $conn->close();
     exit;
 }
+
+
+
 // =============== ✅ SELESAIKAN ===============
 if ($status === 'completed') {
     $jumlah_baru = intval($_POST['jumlah_selesai'] ?? 0); // dari POST jumlah_selesai

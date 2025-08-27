@@ -50,6 +50,7 @@ $resultOut = $conn->query($query);
                             <th>Nomor Nota</th>
                             <th>Tanggal Input</th>
                             <th>Tanggal Nota</th>
+                            <th>Tanggal Approval</th>
                             <th>Nama Barang</th>
                             <th>Harga Barang Satuan</th>
                             <th>Jumlah</th>
@@ -64,6 +65,7 @@ $resultOut = $conn->query($query);
                                     <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
+                                    <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['harga_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
