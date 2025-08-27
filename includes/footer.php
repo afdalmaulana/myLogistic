@@ -660,4 +660,50 @@
 
         sortAsc = !sortAsc;
     }
+
+
+    // button edit tanggal nota
+    document.querySelectorAll('.btn-edit-nota').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const currentDate = this.dataset.current || '';
+
+            Swal.fire({
+                title: 'Edit Tanggal Nota',
+                input: 'date',
+                inputLabel: 'Pilih tanggal baru',
+                inputValue: currentDate,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Tanggal tidak boleh kosong!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim AJAX ke update_tanggal_nota.php
+                    fetch('update_tanggal_nota.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `id=${encodeURIComponent(id)}&tanggal_nota=${encodeURIComponent(result.value)}`
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            Swal.fire('Berhasil!', 'Tanggal nota diperbarui.', 'success')
+                                .then(() => {
+                                    location.reload(); // atau update DOM tanpa reload
+                                });
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            Swal.fire('Gagal!', 'Terjadi kesalahan saat mengupdate.', 'error');
+                        });
+                }
+            });
+        });
+    });
 </script>

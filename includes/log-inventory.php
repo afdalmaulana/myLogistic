@@ -55,16 +55,31 @@ $resultOut = $conn->query($query);
                             <th>Harga Barang Satuan</th>
                             <th>Jumlah</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($stocksIn->num_rows > 0): ?>
                             <?php while ($row = $stocksIn->fetch_assoc()): ?>
                                 <tr>
+                                <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
+
+                                    <?php if ($row['tanggal_nota'] === null): ?>
+                                        <td>
+                                            Input Tanggal Nota
+                                            <button style="background: none; border: none" class="btn-edit-nota"
+                                                data-id="<?= $row['id'] ?>"
+                                                data-current="<?= $row['tanggal_nota'] ?>">
+                                                <i class="fa fa-edit" style="font-size:16px;color:red"></i>
+                                            </button>
+                                        </td>
+                                    <?php else: ?>
+                                        <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
+                                    <?php endif; ?>
+
                                     <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['harga_barang']) ?></td>
