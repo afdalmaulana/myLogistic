@@ -22,6 +22,8 @@ if (!isset($_SESSION['user'])) {
         <?php
         if (isset($_GET['page'])) {
             $page = $_GET['page'];
+
+            // ⛔ Daftar halaman yang diizinkan untuk semua user
             $allowed_pages = [
                 'add-user',
                 'submission-in',
@@ -30,14 +32,18 @@ if (!isset($_SESSION['user'])) {
                 'log-inventory',
                 'list-users',
                 'inventory-It'
-
             ];
 
-            if (in_array($page, $allowed_pages)) {
-                include "includes/$page.php";
+            // ⛔ Batasi akses user tertentu
+            $blocked_user = '90173431';
+            $blocked_pages = ['inventory-management', 'submission-out', 'log-inventory', 'submission-in'];
+
+            if (!in_array($page, $allowed_pages)) {
+                include 'includes/403.php'; // halaman tidak dikenal
+            } elseif ($username === $blocked_user && in_array($page, $blocked_pages)) {
+                include 'includes/403.php'; // user tidak diizinkan akses halaman ini
             } else {
-                // tampilkan halaman error khusus
-                include 'includes/403.php';
+                include "includes/$page.php"; // halaman aman, tampilkan
             }
         } else {
             include 'includes/dashboard.php';
@@ -45,5 +51,6 @@ if (!isset($_SESSION['user'])) {
         ?>
     </div>
 </div>
+
 
 <?php include 'includes/footer.php'; ?>
