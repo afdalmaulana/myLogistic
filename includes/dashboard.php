@@ -26,7 +26,7 @@ $resultRecent = $conn->query($queryRecent);
 $queryAll = "SELECT * FROM pengajuan WHERE $whereClause ORDER BY kode_pengajuan DESC";
 $tampung = $conn->query($queryAll);
 
-$queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status_sisa = 'pending'";
+$queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Pending'";
 $resultPendingPengajuan = $conn->query($queryPending);
 
 $queryApproved = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Approved'";

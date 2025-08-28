@@ -15,7 +15,38 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSIO
     $query = "SELECT * FROM pengajuan WHERE kode_uker = '$kodeUker' ORDER BY kode_pengajuan DESC";
 }
 
+$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB3', 'JB5']);
+
+
+
+
 $result = $conn->query($query);
+$requestCount = 0;
+$incompleteCount = 0;
+$completeCount = 0;
+
+// Reset pointer
+$result->data_seek(0);
+
+// Loop hanya untuk menghitung jumlah tab
+while ($row = $result->fetch_assoc()) {
+    $status = strtolower($row['status']);
+    $status_sisa = strtolower($row['status_sisa'] ?? '');
+    $sisa_jumlah = (int)($row['sisa_jumlah'] ?? 0);
+
+    if ($status === 'pending') {
+        $requestCount++;
+    }
+
+    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done') {
+        $incompleteCount++;
+    }
+
+    if (($status === 'approved' && $sisa_jumlah === 0) || $status === 'rejected') {
+        $completeCount++;
+    }
+}
+
 ?>
 
 <div class="content-wrapper">
@@ -23,9 +54,9 @@ $result = $conn->query($query);
         <h4 style="font-weight: 800; font-size:32px;">Submission Overview</h4>
         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
         <div class="tabs">
-            <button class="tabslinks active" onclick="openTab(event, 'request')">Request</button>
-            <button class="tabslinks active" onclick="openTab(event, 'incomplete')">Incomplete</button>
-            <button class="tabslinks" onclick="openTab(event, 'approved')">Complete</button>
+            <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></button>
+            <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></button>
+            <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
         </div>
 
         <div id="request" class="tabscontent" style="display: block;">
@@ -81,12 +112,17 @@ $result = $conn->query($query);
                                     </td> -->
                                     <td>
                                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
-                                            <button class="btn-action"
-                                                data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                data-status="<?= $status ?>"
-                                                style="font-size:24px; background: none; padding:10px; border:none">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
+
+                                            <?php if ($isBerwenang) : ?>
+                                                <button class="btn-action"
+                                                    data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                    data-status="<?= $status ?>"
+                                                    style="font-size:24px; background: none; padding:10px; border:none">
+                                                    <i class="fa fa-ellipsis-v"></i>
+                                                </button>
+                                            <?php else : ?>
+                                                <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <?php if ($status === 'pending'): ?>
                                                 <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
@@ -110,7 +146,7 @@ $result = $conn->query($query);
             </div>
         </div>
 
-        <div id="incomplete" class="tabscontent" style="display: block;">
+        <div id="incomplete" class="tabscontent">
             <div class="body-content">
                 <div class="table-container">
                     <table id="dataTable-incomplete" style="width:100%;">
@@ -137,8 +173,6 @@ $result = $conn->query($query);
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
                                 $status_sisa = strtolower($row['status_sisa'] ?? '');
-
-                                // Cek apakah status termasuk approved atau forward, dan status_sisa not done
                                 if (!in_array($status, ['approved', 'forward']) || $status_sisa !== 'not done') continue;
                                 $hasData = true;
                                 $class = match ($status) {
@@ -165,12 +199,18 @@ $result = $conn->query($query);
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
                                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
-                                            <button class="btn-action"
-                                                data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                data-status="<?= $status ?>"
-                                                style="font-size:24px; background: none; padding:10px; border:none">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
+                                            <?php if ($isBerwenang) : ?>
+                                                <button class="btn-action"
+                                                    data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                    data-status="<?= $status ?>"
+                                                    style="font-size:24px; background: none; padding:10px; border:none">
+                                                    <i class="fa fa-ellipsis-v"></i>
+                                                </button>
+                                            <?php else : ?>
+                                                <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
+                                            <?php endif; ?>
+
+
                                         <?php else: ?>
                                             <?php if ($status === 'pending'): ?>
                                                 <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">

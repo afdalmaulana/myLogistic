@@ -1156,10 +1156,28 @@
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
+        .btn-disabled {
+            cursor: not-allowed !important;
+            opacity: 0.6;
+            pointer-events: auto;
+            /* Agar cursor bisa tampil walau button disabled */
+        }
+
+
         .content-heading {
             font-weight: 800;
             font-size: 32px;
         }
+
+        .badge {
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
 
         .section-container {
             padding: 20px;
