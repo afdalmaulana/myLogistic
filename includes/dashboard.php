@@ -76,7 +76,7 @@ $dashboardStats = [
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
-        'link' => $isKanwil ? 'index.php?page=submission-out#incomplete' : ($isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#incomplete'),
+        'link' => $isKanwil ? 'index.php?page=submission-out#incomplete' : ($isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#request'),
     ],
     [
         'title' => 'Outgoing Items',
