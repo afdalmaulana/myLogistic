@@ -4,28 +4,37 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require 'db_connect.php';
 
+// Reset filter jika diminta
+if (isset($_GET['reset_filter'])) {
+    unset($_SESSION['filter_uker']);
+    header("Location: index.php?page=log-inventory");
+    exit;
+}
+
+// Simpan filter ke session jika ada perubahan
+if (isset($_GET['filter_uker'])) {
+    $_SESSION['filter_uker'] = $_GET['filter_uker'];
+}
+
+// Ambil filter dari session
+$filterUker = isset($_SESSION['filter_uker']) ? $conn->real_escape_string($_SESSION['filter_uker']) : '';
+
+// Tentukan apakah admin atau kode_uker = 0050
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
     (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
 
+// Tentukan WHERE clause berdasarkan role & filter
 if ($isAdminOrCabang) {
-    // Admin atau Kanwil melihat semua data
-    $whereClause = "1"; // tidak ada filter
+    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
 } else {
-    // Selain itu, hanya melihat data berdasarkan kode_uker
     $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
     $whereClause = "kode_uker = '$kode_uker'";
 }
 
-$query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
-$stocksIn = $conn->query($query);
-
-$query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
-$result = $conn->query($query);
-
-$query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
-$resultOut = $conn->query($query);
+// Ambil data barang masuk dan keluar
+$stocksIn = $conn->query("SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC");
+$resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
 ?>
-
 
 <div class="dashboard-menu">
     <div class="content-heading">Log Inventory Management</div>
@@ -37,9 +46,30 @@ $resultOut = $conn->query($query);
 
     <div id="barang_masuk" class="tabcontent" style="display: block;">
         <div class="body-content">
-            <div class="sub-menu">
-                <p>Log Record</p>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="margin-bottom: 5px;">Log Record</p>
+                    <?php if ($isAdminOrCabang): ?>
+                        <form method="GET" style="display: inline-block;">
+                            <!-- Jaga agar tetap di halaman log-inventory -->
+                            <input type="hidden" name="page" value="log-inventory">
+                            <select name="filter_uker" onchange="this.form.submit()" class="list-input" style="padding: 5px;">
+                                <option value="">Semua Kode Uker</option>
+                                <?php
+                                $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
+                                while ($uker = $ukerQuery->fetch_assoc()):
+                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                endwhile;
+                                ?>
+                            </select>
+                            <?php if (!empty($filterUker)): ?>
+                                <a href="index.php?page=log-inventory&reset_filter=1" style="margin-left: 10px; color: red;">Reset</a>
+                            <?php endif; ?>
+                        </form>
+                    <?php endif; ?>
+                </div>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
 
             <div class="table-container">
@@ -59,14 +89,12 @@ $resultOut = $conn->query($query);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($stocksIn->num_rows > 0): ?>
+                        <?php if ($stocksIn && $stocksIn->num_rows > 0): ?>
                             <?php while ($row = $stocksIn->fetch_assoc()): ?>
-                                <tr>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
-
                                     <?php if ($row['tanggal_nota'] === null): ?>
                                         <td>
                                             Input Tanggal Nota
@@ -79,17 +107,17 @@ $resultOut = $conn->query($query);
                                     <?php else: ?>
                                         <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
                                     <?php endif; ?>
-
                                     <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['harga_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" style="text-align:center;">Belum ada data barang masuk</td>
+                                <td colspan="10" style="text-align:center;">Belum ada data barang masuk</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -117,21 +145,21 @@ $resultOut = $conn->query($query);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        if ($resultOut->num_rows > 0) {
-                            while ($row = $resultOut->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['tanggal']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['nama_barang']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['divisi']) . "</td>";
-                                echo "<td></td>"; // kolom kosong terakhir
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo '<tr><td colspan="5" style="text-align:center;">Belum ada data barang keluar</td></tr>';
-                        }
-                        ?>
+                        <?php if ($resultOut && $resultOut->num_rows > 0): ?>
+                            <?php while ($row = $resultOut->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['divisi']) ?></td>
+                                    <td></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

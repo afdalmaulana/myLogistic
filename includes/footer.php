@@ -530,7 +530,7 @@
             const tabName = hashPengajuan.substring(1); // hapus #
             openTab(null, tabName); // buka tab otomatis
         } else {
-            openTab(null, 'request'); // default ke tab "request"
+            openTab(null, 'incomplete'); // default ke tab "request"
         }
 
         // Optional: expose openTab ke global (jika dipakai di HTML onclick)

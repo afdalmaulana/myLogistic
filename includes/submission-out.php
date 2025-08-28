@@ -17,7 +17,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSIO
 
 $isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB3', 'JB5']);
 
-
+$isKanwil = isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB3');
 
 
 $result = $conn->query($query);
@@ -53,11 +53,19 @@ while ($row = $result->fetch_assoc()) {
     <div class="sub-content">
         <h4 style="font-weight: 800; font-size:32px;">Submission Overview</h4>
         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
-        <div class="tabs">
-            <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></button>
-            <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></button>
-            <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
-        </div>
+        <?php if ($isKanwil): ?>
+            <div class="tabs">
+                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Request <span class="badge"><?= $incompleteCount ?></button>
+                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
+            </div>
+        <?php else: ?>
+            <div class="tabs">
+                <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></button>
+                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></button>
+                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
+            </div>
+        <?php endif; ?>
+
 
         <div id="request" class="tabscontent" style="display: block;">
             <div class="body-content">

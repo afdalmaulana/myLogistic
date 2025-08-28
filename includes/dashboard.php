@@ -17,6 +17,8 @@ if ($isAdminOrCabang) {
     $whereClause = "kode_uker = '$kode_uker'";
 }
 
+$isKanwil = isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB3');
+
 $queryRecent = "SELECT * FROM pengajuan WHERE $whereClause ORDER BY updated_at DESC LIMIT 5";
 
 $resultRecent = $conn->query($queryRecent);
@@ -29,7 +31,7 @@ $tampung = $conn->query($queryAll);
 $queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Pending'";
 $resultPendingPengajuan = $conn->query($queryPending);
 
-$queryApproved = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Approved'";
+$queryApproved = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Approved' AND status_sisa = 'done'";
 $approvedPengajuan = $conn->query($queryApproved);
 
 $queryForward = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Forward'";
@@ -63,18 +65,18 @@ $dashboardRecent = [
 ];
 $dashboardStats = [
     [
-        'title' => 'Submission Summary',
-        'result' => $tampung,
+        'title' => $isKanwil ? 'Approved Submission' : 'Submission Summary',
+        'result' => $isKanwil ? $approvedPengajuan : $tampung,
         'icon' => 'fa-archive',
         'color' => '',
-        'link' => 'index.php?page=submission-out#request',
+        'link' => $isKanwil ? 'index.php?page=submission-out#approved' : 'index.php?page=submission-out#request',
     ],
     [
-        'title' => $isAdminOrCabang ? 'Incoming Submission' : 'Pending Request',
+        'title' => $isKanwil ? 'Pending Approval' : ($isAdminOrCabang ? 'Incoming Submission' : 'Pending Request'),
         'result' => $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
-        'link' => $isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#incomplete',
+        'link' => $isKanwil ? 'index.php?page=submission-out#incomplete' : ($isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#incomplete'),
     ],
     [
         'title' => 'Outgoing Items',
