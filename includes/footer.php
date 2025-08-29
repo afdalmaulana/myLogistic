@@ -501,28 +501,37 @@
 
         // Fungsi buka tab
         function openTab(evt, tabName) {
-            var i, tabContent, tablinks;
+            var tabContent = document.getElementsByClassName("tabscontent");
+            if (!tabContent.length) {
+                console.warn("Tidak ada tab content ditemukan, skip openTab");
+                return;
+            }
 
-            // Sembunyikan semua tab
-            tabContent = document.getElementsByClassName("tabscontent");
-            for (i = 0; i < tabContent.length; i++) {
+            for (let i = 0; i < tabContent.length; i++) {
                 tabContent[i].style.display = "none";
             }
 
-            // Hapus class "active" dari semua tombol
-            tablinks = document.getElementsByClassName("tabslinks");
-            for (i = 0; i < tablinks.length; i++) {
+            var tablinks = document.getElementsByClassName("tabslinks");
+            for (let i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
 
-            // Tampilkan tab yang diminta
-            document.getElementById(tabName).style.display = "block";
+            var tabElem = document.getElementById(tabName);
+            if (!tabElem) {
+                tabName = 'incomplete';
+                tabElem = document.getElementById(tabName);
+            }
 
-            // Tambahkan class active ke tombol
+            if (!tabElem) {
+                console.warn("Default tab '" + tabName + "' tidak ditemukan, skip openTab");
+                return;
+            }
+
+            tabElem.style.display = "block";
+
             if (evt) {
                 evt.currentTarget.className += " active";
             } else {
-                // Jika tidak dari klik, cari tombolnya dan aktifkan
                 var autoBtn = document.querySelector('.tabslinks[onclick*="' + tabName + '"]');
                 if (autoBtn) {
                     autoBtn.className += " active";
@@ -532,11 +541,15 @@
 
         // Cek hash di URL dan buka tab sesuai
         const hashPengajuan = window.location.hash;
+        const allowedTabs = ['request', 'incomplete', 'approved'];
         if (hashPengajuan) {
-            const tabName = hashPengajuan.substring(1); // hapus #
-            openTab(null, tabName); // buka tab otomatis
+            let tabName = hashPengajuan.substring(1);
+            if (!allowedTabs.includes(tabName)) {
+                tabName = 'incomplete';
+            }
+            openTab(null, tabName);
         } else {
-            openTab(null, 'incomplete'); // default ke tab "request"
+            openTab(null, 'incomplete');
         }
 
         // Optional: expose openTab ke global (jika dipakai di HTML onclick)
@@ -551,26 +564,37 @@
         function openInvent(evt, tabName) {
             var i, tabcontentinvent, tablinks;
 
-            // Sembunyikan semua tab
             tabcontentinvent = document.getElementsByClassName("tabcontent-invent");
+            if (!tabcontentinvent.length) {
+                console.warn("Tidak ada tab content ditemukan, mungkin ini bukan halaman inventory");
+                return; // langsung keluar, gak usah buka tab
+            }
+
             for (i = 0; i < tabcontentinvent.length; i++) {
                 tabcontentinvent[i].style.display = "none";
             }
 
-            // Hapus class "active" dari semua tombol
             tablinks = document.getElementsByClassName("tablink-invent");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
 
-            // Tampilkan tab yang diminta
-            document.getElementById(tabName).style.display = "block";
+            var tabElem = document.getElementById(tabName);
+            if (!tabElem) {
+                // fallback ke 'stocks' kalau id tidak ditemukan
+                tabName = 'stocks';
+                tabElem = document.getElementById(tabName);
+            }
+            if (!tabElem) {
+                console.warn("Tab dengan id '" + tabName + "' tidak ditemukan, skip openInvent");
+                return;
+            }
 
-            // Tambahkan class active ke tombol
+            tabElem.style.display = "block";
+
             if (evt) {
                 evt.currentTarget.className += " active";
             } else {
-                // Jika tidak dari klik, cari tombolnya dan aktifkan
                 var autoBtn = document.querySelector('.tablink-invent[onclick*="' + tabName + '"]');
                 if (autoBtn) {
                     autoBtn.className += " active";
@@ -578,14 +602,24 @@
             }
         }
 
+
         // Cek hash di URL dan buka tab sesuai
         const hash = window.location.hash;
+        const validTabs = ['stocks', 'formBarang_masuk', 'formBarang_keluar'];
+
+        let tabName = 'stocks'; // default
+
         if (hash) {
-            const tabName = hash.substring(1); // hapus #
-            openInvent(null, tabName); // buka tab otomatis
-        } else {
-            openInvent(null, 'stocks'); // default ke tab "incomplete"
+            const potentialTab = hash.substring(1);
+            if (validTabs.includes(potentialTab)) {
+                tabName = potentialTab;
+            } else {
+                // Kalau hash tidak valid, hapus hash dari URL
+                history.replaceState(null, null, ' ');
+            }
         }
+
+        openInvent(null, tabName);
 
         // Optional: expose openTab ke global (jika dipakai di HTML onclick)
         window.openInvent = openInvent;
@@ -598,26 +632,26 @@
         function openCity(evt, tabName) {
             var i, tabcontent, tablinks;
 
-            // Sembunyikan semua tab
             tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].style.display = "none";
             }
 
-            // Hapus class "active" dari semua tombol
             tablinks = document.getElementsByClassName("tablinks");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
 
-            // Tampilkan tab yang diminta
-            document.getElementById(tabName).style.display = "block";
+            var tabElem = document.getElementById(tabName);
+            if (tabElem) {
+                tabElem.style.display = "block";
+            } else {
+                console.warn('Tab dengan id "' + tabName + '" tidak ditemukan di DOM.');
+            }
 
-            // Tambahkan class active ke tombol
             if (evt) {
                 evt.currentTarget.className += " active";
             } else {
-                // Jika tidak dari klik, cari tombolnya dan aktifkan
                 var autoBtn = document.querySelector('.tablinks[onclick*="' + tabName + '"]');
                 if (autoBtn) {
                     autoBtn.className += " active";
@@ -639,49 +673,56 @@
     });
 
     //TAB INVENTORY IT
-    document.addEventListener("DOMContentLoaded", function() {
+    function openIt(evt, tabName) {
+        var i, tabcontentinvent, tablinks;
 
-        // Fungsi buka tab
-        function openIt(evt, tabName) {
-            var i, tabcontentinvent, tablinks;
-
-            // Sembunyikan semua tab
-            tabcontentinvent = document.getElementsByClassName("tabcontent-it");
-            for (i = 0; i < tabcontentinvent.length; i++) {
-                tabcontentinvent[i].style.display = "none";
-            }
-
-            // Hapus class "active" dari semua tombol
-            tablinks = document.getElementsByClassName("tablink-it");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            // Tampilkan tab yang diminta
-            document.getElementById(tabName).style.display = "block";
-
-            // Tambahkan class active ke tombol
-            if (evt) {
-                evt.currentTarget.className += " active";
-            } else {
-                // Jika tidak dari klik, cari tombolnya dan aktifkan
-                var autoBtn = document.querySelector('.tablink-it[onclick*="' + tabName + '"]');
-                if (autoBtn) {
-                    autoBtn.className += " active";
-                }
-            }
+        // Sembunyikan semua tab
+        tabcontentinvent = document.getElementsByClassName("tabcontent-it");
+        if (!tabcontentinvent.length) {
+            console.warn("Tidak ada elemen tabcontent-it. Mungkin bukan halaman IT.");
+            return;
         }
 
-        // Cek hash di URL dan buka tab sesuai
+        for (i = 0; i < tabcontentinvent.length; i++) {
+            tabcontentinvent[i].style.display = "none";
+        }
+
+        // Hapus class "active" dari semua tombol
+        tablinks = document.getElementsByClassName("tablink-it");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Tampilkan tab jika ada
+        var tabElem = document.getElementById(tabName);
+        if (!tabElem) {
+            console.warn(`Tab dengan id '${tabName}' tidak ditemukan. Skip openIt.`);
+            return;
+        }
+
+        tabElem.style.display = "block";
+
+        // Tambahkan class active ke tombol
+        if (evt) {
+            evt.currentTarget.className += " active";
+        } else {
+            var autoBtn = document.querySelector('.tablink-it[onclick*="' + tabName + '"]');
+            if (autoBtn) {
+                autoBtn.className += " active";
+            }
+        }
+    }
+
+    // Cek hash di URL dan buka tab sesuai
+    document.addEventListener("DOMContentLoaded", function() {
         const hash = window.location.hash;
         if (hash) {
             const tabName = hash.substring(1); // hapus #
             openIt(null, tabName); // buka tab otomatis
         } else {
-            openIt(null, 'stocks'); // default ke tab "incomplete"
+            openIt(null, 'stocks'); // default
         }
 
-        // Optional: expose openTab ke global (jika dipakai di HTML onclick)
         window.openIt = openIt;
     });
 
