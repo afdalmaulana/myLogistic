@@ -125,10 +125,17 @@
 
     function showLoading() {
         const btn = document.getElementById("submitBtn");
+        if (!btn) return true;
+
         btn.disabled = true;
-        // btn.textContent = "Mengirim ...";
-        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        return true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
+
+        // Delay form submit (for testing only)
+        setTimeout(() => {
+            document.forms[0].submit();
+        }, 1500);
+
+        return false; // prevent default submit, will be triggered manually
     }
 
     function loadingLink(link, event) {

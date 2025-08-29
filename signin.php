@@ -67,7 +67,7 @@ if (isset($_SESSION['user'])) {
                 </div>
 
                 <div class="">
-                    <button type="submit" id="signinBtn" class="button-signin">Sign in</button>
+                    <button type="submit" id="submitBtn" class="button-signin">Sign in</button>
                 </div>
             </div>
             <p>Forget Your Password ? Contact Admin</p>
