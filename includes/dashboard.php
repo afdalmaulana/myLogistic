@@ -31,6 +31,9 @@ $tampung = $conn->query($queryAll);
 $queryPending = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Pending'";
 $resultPendingPengajuan = $conn->query($queryPending);
 
+$queryPendingApproval = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Forward'";
+$resultPendingApproval = $conn->query($queryPendingApproval);
+
 $queryApproved = "SELECT * FROM pengajuan WHERE $whereClause AND status = 'Approved' AND status_sisa = 'done'";
 $approvedPengajuan = $conn->query($queryApproved);
 
@@ -73,7 +76,7 @@ $dashboardStats = [
     ],
     [
         'title' => $isKanwil ? 'Pending Approval' : ($isAdminOrCabang ? 'Incoming Submission' : 'Pending Request'),
-        'result' => $resultPendingPengajuan,
+        'result' => $isKanwil ? $resultPendingApproval : $resultPendingPengajuan,
         'icon' => 'fa-bell-o',
         'color' => 'orange',
         'link' => $isKanwil ? 'index.php?page=submission-out#incomplete' : ($isAdminOrCabang ? 'index.php?page=submission-out#request' : 'index.php?page=submission-out#request'),

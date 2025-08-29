@@ -141,7 +141,7 @@
         // Redirect setelah 500ms agar spinner terlihat
         setTimeout(() => {
             window.location.href = link.href;
-        }, 500);
+        }, 100);
 
         return false;
     }
@@ -211,20 +211,20 @@
 
             Swal.fire({
                 title: 'Forward Pengajuan',
-                html: `<input id="swal-input1" class="swal2-input" placeholder="Nomor Surat">` +
+                html: `<input id="swal-input1" class="swal2-input" placeholder="Harga Barang">` +
                     `<input id="swal-input2" type="number" min="1" max="${totalJumlah}" class="swal2-input" placeholder="Jumlah yang di-forward (maks: ${totalJumlah})">`,
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Kirim',
                 cancelButtonText: 'Batal',
                 preConfirm: () => {
-                    const nomorSurat = document.getElementById('swal-input1').value;
+                    const hargaBarang = parseInt(document.getElementById('swal-input1').value);
                     const jumlahForward = parseInt(document.getElementById('swal-input2').value);
 
-                    if (!nomorSurat) return Swal.showValidationMessage('Nomor surat wajib diisi!');
+                    if (!hargaBarang) return Swal.showValidationMessage('Harga Barang Wajib diisi!!!!');
                     if (!jumlahForward || jumlahForward <= 0 || jumlahForward > totalJumlah) return Swal.showValidationMessage(`Jumlah harus antara 1 dan ${totalJumlah}`);
                     return {
-                        nomorSurat,
+                        hargaBarang,
                         jumlahForward
                     };
                 }
@@ -238,7 +238,7 @@
                             body: new URLSearchParams({
                                 kode_pengajuan: kode,
                                 status: "forward",
-                                nomor_surat: result.value.nomorSurat,
+                                price: result.value.hargaBarang,
                                 jumlah: result.value.jumlahForward
                             })
                         })

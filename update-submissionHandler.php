@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $status = $_POST['status'] ?? '';
-$nomor_surat = $_POST['nomor_surat'] ?? null;
+$price = $_POST['price'] ?? null;
 $jumlah = intval($_POST['jumlah'] ?? 0); // jumlah yang akan diforward atau disetujui
 $PNpekerja = isset($_SESSION['user']) ? $_SESSION['user'] : "";
 $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
@@ -64,7 +64,7 @@ $status_sisa = $data['status_sisa'] ?? null;
 
 // =============== ✅ FORWARD ===============
 if ($status === 'forward') {
-    if (!$nomor_surat) {
+    if (!$price) {
         http_response_code(400);
         echo "Nomor surat wajib diisi untuk status forward.";
         exit;
@@ -80,8 +80,8 @@ if ($status === 'forward') {
     $status_sisa = $sisa > 0 ? 'not done' : null;
     $keterangan = "Disetujui sejumlah " . number_format($jumlah, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.') . " Oleh " . $PNpekerja;
 
-    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, nomor_surat = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-    $stmtUpdate->bind_param("ssissss", $status, $nomor_surat, $jumlah, $sisa, $status_sisa, $keterangan, $kode_pengajuan);
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, price = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
+    $stmtUpdate->bind_param("ssissss", $status, $price, $jumlah, $sisa, $status_sisa, $keterangan, $kode_pengajuan);
     $stmtUpdate->execute();
     $stmtUpdate->close();
 
@@ -123,21 +123,19 @@ if ($status === 'approved') {
             tanggal, 
             tanggal_approve, 
             tanggal_nota, 
-            nomor_nota, 
+            price, 
             nama_barang, 
-            harga_barang, 
             jumlah, 
             kode_uker
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
     $stmtMasuk->bind_param(
-        "sssssisi",
+        "sssisis",
         $tanggal_pengajuan,
         $tanggal_approve,
         $tanggal_nota,
-        $data['nomor_surat'],
+        $data['price'],
         $nama_barang,
-        $harga_barang,
         $jumlah_masuk,
         $kode_uker
     );
@@ -197,7 +195,7 @@ if ($status === 'completed') {
     // Simpan ke barang_masuk (barang masuk bertambah sesuai jumlah yang diselesaikan sekarang)
     $tanggal = date('Y-m-d');
     $stmtMasuk = $conn->prepare("INSERT INTO barang_masuk (tanggal, tanggal_nota, nomor_nota, nama_barang, harga_barang, jumlah, kode_uker) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmtMasuk->bind_param("ssssdis", $tanggal, $tanggal, $data['nomor_surat'], $nama_barang, $harga_barang, $jumlah_baru, $kode_uker);
+    $stmtMasuk->bind_param("ssssdis", $tanggal, $tanggal, $data['price'], $nama_barang, $harga_barang, $jumlah_baru, $kode_uker);
     $stmtMasuk->execute();
     $stmtMasuk->close();
 

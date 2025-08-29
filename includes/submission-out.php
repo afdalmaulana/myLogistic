@@ -9,10 +9,21 @@ $errorMessage = '';
 
 // Filter query sesuai role
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')) {
-    $query = "SELECT * FROM pengajuan ORDER BY kode_pengajuan DESC";
+    $query = "
+        SELECT p.*, a.nama_anggaran 
+        FROM pengajuan p
+        LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        ORDER BY p.kode_pengajuan DESC
+    ";
 } else {
     $kodeUker = $conn->real_escape_string($_SESSION['kode_uker']);
-    $query = "SELECT * FROM pengajuan WHERE kode_uker = '$kodeUker' ORDER BY kode_pengajuan DESC";
+    $query = "
+        SELECT p.*, a.nama_anggaran 
+        FROM pengajuan p
+        LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        WHERE p.kode_uker = '$kodeUker'
+        ORDER BY p.kode_pengajuan DESC
+    ";
 }
 
 $isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB3', 'JB5']);
@@ -79,8 +90,8 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Nama Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
-                                <th>Harga Barang</th>
-                                <th>No. Surat</th>
+                                <th>Nama Anggaran</th>
+                                <th>Nominal Anggaran</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -108,8 +119,8 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['harga_barang']) ?></td>
-                                    <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
+                                    <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <!-- <td style="background: none;">
                                         <?php if ($status === 'pending'): ?>
@@ -168,7 +179,6 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Jumlah</th>
                                 <th>Sisa</th>
                                 <th>Harga Barang</th>
-                                <th>No. Surat</th>
                                 <th>Keterangan</th>
                                 <th>Proses</th>
                                 <th>Aksi</th>
@@ -201,12 +211,11 @@ while ($row = $result->fetch_assoc()) {
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['harga_barang']) ?></td>
-                                    <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
+                                    <td><?= htmlspecialchars($row['price']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
-                                        <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
+                                        <?php if ($isKanwil): ?>
                                             <?php if ($isBerwenang) : ?>
                                                 <button class="btn-action"
                                                     data-kode="<?= $row['kode_pengajuan'] ?>"
@@ -286,7 +295,6 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                    <td class="nomor-surat-cell"><?= htmlspecialchars($row['nomor_surat'] ?? '') ?></td>
                                     <td style="background: none;">
                                         <?php if ($status === 'approved'): ?>
                                             <div style="font-size:12px;">Pengajuan disetujui</div>

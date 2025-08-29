@@ -1,3 +1,15 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require 'db_connect.php';
+
+
+$queryAnggaran = "SELECT * FROM anggaran ORDER BY id_anggaran ASC";
+$anggaran = $conn->query($queryAnggaran);
+?>
+
+
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
     <script>
@@ -71,8 +83,21 @@
                 </div>
                 <div class="submission-right">
                     <div class="form-group">
-                        <label>Harga Barang</label>
-                        <input type="text" name="harga_barang" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
+                        <label for="">Nama Anggaran</label>
+                        <select name="id_anggaran" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Pilih Nama Anggaran</option>
+                            <?php
+                            if ($anggaran && $anggaran->num_rows > 0) {
+                                while ($row = $anggaran->fetch_assoc()) {
+                                    echo '<option value="' . htmlspecialchars($row['id_anggaran']) . '">' . htmlspecialchars($row['nama_anggaran']) . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Anggaran</label>
+                        <input type="text" name="jumlah_anggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label>Jumlah</label>

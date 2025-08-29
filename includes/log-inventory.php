@@ -77,7 +77,6 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                     <thead>
                         <tr>
                             <th>Kode Uker</th>
-                            <th>Nomor Nota</th>
                             <th>Tanggal Input</th>
                             <th>Tanggal Nota</th>
                             <th>Tanggal Approval</th>
@@ -93,7 +92,6 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                             <?php while ($row = $stocksIn->fetch_assoc()): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
-                                    <td><?= htmlspecialchars($row['nomor_nota']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <?php if ($row['tanggal_nota'] === null): ?>
                                         <td>
@@ -109,9 +107,8 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     <?php endif; ?>
                                     <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                    <td><?= htmlspecialchars($row['harga_barang']) ?></td>
+                                    <td><?= htmlspecialchars($row['price']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                    <td></td>
                                     <td></td>
                                 </tr>
                             <?php endwhile; ?>
