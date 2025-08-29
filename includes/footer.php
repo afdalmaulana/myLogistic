@@ -155,6 +155,7 @@
     let currentlyEditingRow = null;
 
     /**BUTTON ACITION */
+    const isLogistik = <?= ($_SESSION['user'] === '00203119') ? 'true' : 'false' ?>;
     document.addEventListener("DOMContentLoaded", () => {
         const globalMenu = document.getElementById("global-actions");
 
@@ -326,7 +327,12 @@
         });
 
         // Tombol Selesaikan (baru)
+
         document.getElementById("btn-selesaikan").addEventListener("click", () => {
+            if (!isLogistik) {
+                Swal.fire("Akses Ditolak", "Hanya user logistik yang bisa menyelesaikan pengajuan ini.", "error");
+                return;
+            }
             const kode = document.getElementById("btn-selesaikan").dataset.kode;
             const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
             const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0");

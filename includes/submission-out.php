@@ -7,6 +7,7 @@ require 'db_connect.php';
 $successMessage = '';
 $errorMessage = '';
 
+
 // Filter query sesuai role
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')) {
     $query = "
@@ -30,7 +31,7 @@ $isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'
 
 $isKanwil = isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB3');
 
-$isLogistik = isset($_SESSION['nip']) && $_SESSION['nip'] === '00203119';
+$isLogistik = isset($_SESSION['user']) && $_SESSION['user'] === '00203119';
 $isApprovedNotDone = $status === 'approved' && $status_sisa === 'not done';
 
 $result = $conn->query($query);
@@ -217,7 +218,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
-                                        <?php if ($isKanwil): ?>
+                                        <?php if ($isKanwil || $isLogistik): ?>
                                             <?php if ($isBerwenang) : ?>
                                                 <button class="btn-action"
                                                     data-kode="<?= $row['kode_pengajuan'] ?>"
