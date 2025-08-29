@@ -1282,12 +1282,329 @@
             cursor: pointer;
         }
 
+        .list-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            background: #2460a3ff;
+            font-size: 12px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .list-select:hover {
+            background-color: #1d4d82;
+            border-color: #0f2f50;
+        }
+
+        .reset-filter {
+            margin-left: 10px;
+            color: red;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+
         .list-input:focus {
             outline: none;
             border: none;
             margin-top: 1px;
             box-shadow: 0 0 0 4px #00529c;
             transition: 0.2s ease-in-out;
+        }
+
+        @media screen and (max-width: 768px) {
+            .login-wrapper {
+                padding: 20px;
+                align-items: flex-start;
+                height: auto;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+
+            .signup-wrapper {
+                margin-top: 40px;
+                padding: 0 16px;
+                flex-direction: column;
+            }
+
+            .form-input-login {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+
+
+        @media screen and (max-width: 768px) {
+            .form-input {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .submission-left,
+            .submission-right {
+                width: 100%;
+            }
+
+            .input-login {
+                margin-top: 40px;
+                gap: 16px;
+            }
+
+            .form-input-login {
+                padding: 20px;
+                min-width: unset;
+                width: 100%;
+            }
+
+            .table-container {
+                font-size: 10px;
+                max-height: 300px;
+            }
+
+            .menu-submission-out,
+            .body-content,
+            .content-wrapper,
+            .content-wrappers {
+                padding: 16px;
+            }
+
+            .content-heading {
+                font-size: 22px;
+            }
+
+            #signinbutton {
+                font-size: 14px;
+                padding: 8px 14px;
+            }
+
+            .badge {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+
+            .mail-count {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .inmail,
+            .outmail,
+            .stocks {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+
+        @media screen and (max-width: 768px) {
+            /* Responsive untuk semua button */
+
+            .button-approve,
+            .button-complete,
+            .button-reject,
+            .button-list,
+            .button-lihat,
+            .button-trash,
+            .button-save,
+            .button-delete,
+            .button-send,
+            .button-signin,
+            .button-log,
+            .button-dropdown,
+            .button-ryc {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            .button-invent-group {
+                grid-template-columns: repeat(2, 1fr);
+                /* dari 3 jadi 2 kolom */
+                gap: 12px;
+            }
+
+            .button-invent-group button {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .dashboard-button {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .dashboard-button button {
+                font-size: 20px;
+            }
+
+            .button-signin,
+            .button-send,
+            .button-log {
+                padding: 10px;
+                font-size: 13px;
+            }
+        }
+
+
+        @media screen and (max-width: 768px) {
+
+            /* TAB RESPONSIVE */
+            .tab button,
+            .tabs button,
+            .tab-invent button {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            .tabcontent,
+            .tabscontent,
+            .tabcontent-invent {
+                padding: 10px 6px;
+            }
+
+            /* DROPDOWN */
+            .dropdown-content {
+                min-width: 100px;
+                font-size: 14px;
+            }
+
+            .dropdown-content a {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+
+            /* ACTION BUTTON DROPDOWN */
+            .dropdown-action {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            /* Optional: Make tab buttons stack vertically if needed */
+            .tabs,
+            .tab,
+            .tab-invent {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .tabs button,
+            .tab button,
+            .tab-invent button {
+                flex: 1 1 50%;
+                text-align: center;
+            }
+        }
+
+
+        @media screen and (max-width: 1024px) {
+            #dashmenu-item {
+                gap: 16px;
+            }
+
+            .dash-list,
+            .dash-list-inmail,
+            .dash-list-outmail,
+            .dash-list-inlogistic,
+            .dash-list-outlogistic {
+                height: auto;
+                min-width: 45%;
+                flex: 1 1 45%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .profile-container {
+                position: static;
+                margin-top: 10px;
+            }
+
+            .profile-dropdown {
+                right: 0;
+                left: 0;
+                margin: auto;
+                width: 80%;
+            }
+
+            .dash-list,
+            .dash-list-inmail,
+            .dash-list-outmail,
+            .dash-list-inlogistic,
+            .dash-list-outlogistic {
+                min-width: 100%;
+                flex: 1 1 100%;
+                height: auto;
+            }
+
+            #dashmenu-item {
+                flex-direction: column;
+            }
+        }
+
+
+        @media screen and (max-width: 768px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+            }
+
+            .nav {
+                left: 0;
+                right: 0;
+                padding: 15px 20px;
+            }
+
+            #main-content {
+                margin-left: 0;
+                padding: 20px 10px;
+            }
+
+            .nav-left {
+                font-size: 18px;
+            }
+
+            .nav-right {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 14px;
+            }
+
+            .menu-item {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .menu-label {
+                font-size: 14px;
+            }
+
+            .menusidebar {
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .nav-left {
+                font-size: 16px;
+            }
+
+            .menu-item,
+            .menusidebar {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .nav-right {
+                flex-direction: column;
+                font-size: 12px;
+            }
         }
 
 
@@ -1311,17 +1628,62 @@
             }
         }
 
-        @media (max-width: 768px) {
+        @media screen and (max-width: 1024px) {
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
+                padding: 20px 10px;
+            }
+
+            .dashboard-recent {
+                grid-template-columns: 1fr;
+                padding: 20px 10px;
+            }
+
+            .card-contents {
+                flex-direction: column;
+            }
+
+            .card-left,
+            .card-right {
+                width: 100%;
+            }
+
+            .dashboard-count {
+                font-size: 28px;
+                margin-left: 0;
+                text-align: center;
+            }
+
+            .dashboard-title {
+                text-align: center;
             }
         }
 
-        @media (max-width: 480px) {
+        @media screen and (max-width: 600px) {
             .dashboard-grid {
-                grid-template-columns: repeat(1, 1fr);
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-recent {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-icon {
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .btnRecent {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .dashboard-link a {
+                font-size: 12px;
+                padding: 6px 12px;
             }
         }
+
 
         @keyframes animate {
             0% {

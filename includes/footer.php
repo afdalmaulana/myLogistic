@@ -501,12 +501,12 @@
 
         // Fungsi buka tab
         function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
+            var i, tabContent, tablinks;
 
             // Sembunyikan semua tab
-            tabcontent = document.getElementsByClassName("tabscontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+            tabContent = document.getElementsByClassName("tabscontent");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
             }
 
             // Hapus class "active" dari semua tombol

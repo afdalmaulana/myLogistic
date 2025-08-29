@@ -11,6 +11,8 @@ if (isset($_GET['reset_filter'])) {
     exit;
 }
 
+$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
+
 // Simpan filter ke session jika ada perubahan
 if (isset($_GET['filter_uker'])) {
     $_SESSION['filter_uker'] = $_GET['filter_uker'];
@@ -53,19 +55,24 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                         <form method="GET" style="display: inline-block;">
                             <!-- Jaga agar tetap di halaman log-inventory -->
                             <input type="hidden" name="page" value="log-inventory">
-                            <select name="filter_uker" onchange="this.form.submit()" class="list-input" style="padding: 5px;">
-                                <option value="">Semua Kode Uker</option>
-                                <?php
-                                $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
-                                while ($uker = $ukerQuery->fetch_assoc()):
-                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
-                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
-                                endwhile;
-                                ?>
-                            </select>
-                            <?php if (!empty($filterUker)): ?>
-                                <a href="index.php?page=log-inventory&reset_filter=1" style="margin-left: 10px; color: red;">Reset</a>
+                            <?php if ($isBerwenang): ?>
+                                <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                                    <option value="">Filter Kode Uker</option>
+                                    <?php
+                                    $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
+                                    while ($uker = $ukerQuery->fetch_assoc()):
+                                        $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                        echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                    endwhile;
+                                    ?>
+                                </select>
+                            <?php else: ?>
+
                             <?php endif; ?>
+
+                            <!-- <?php if (!empty($filterUker)): ?>
+                                <a href="index.php?page=log-inventory&reset_filter=1" class="reset-filter">Reset</a>
+                            <?php endif; ?> -->
                         </form>
                     <?php endif; ?>
                 </div>

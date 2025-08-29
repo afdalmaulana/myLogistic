@@ -28,9 +28,9 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
         </div>
 
         <!-- Logout selalu muncul -->
-        <div id="menu-logout" style="margin-top: 20px;">
+        <!-- <div id="menu-logout" style="margin-top: 20px;">
             <a href="logout.php" class="menu-item" onclick="return confirm('Yakin ingin logout?')">Logout</a>
-        </div>
+        </div> -->
 
         <!-- Tambah Akun hanya untuk admin -->
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
