@@ -48,6 +48,8 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
 
     <div id="barang_masuk" class="tabcontent" style="display: block;">
         <div class="body-content">
+
+
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <p style="margin-bottom: 5px;">Log Record</p>
@@ -66,9 +68,10 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     endwhile;
                                     ?>
                                 </select>
-                                <?php endif; ?>>
+                            <?php endif; ?>
                         </form>
                     <?php endif; ?>
+                    <a href="export_barangMasuk.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Masuk</a>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
@@ -126,9 +129,30 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
 
     <div id="barang_keluar" class="tabcontent">
         <div class="body-content">
-            <div class="sub-menu">
-                <p>Log Record</p>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="margin-bottom: 5px;">Log Record</p>
+                    <?php if ($isAdminOrCabang): ?>
+                        <form method="GET" style="display: inline-block;">
+                            <!-- Jaga agar tetap di halaman log-inventory -->
+                            <input type="hidden" name="page" value="log-inventory">
+                            <?php if ($isBerwenang): ?>
+                                <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                                    <option value="">Filter Kode Uker</option>
+                                    <?php
+                                    $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
+                                    while ($uker = $ukerQuery->fetch_assoc()):
+                                        $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                        echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                    endwhile;
+                                    ?>
+                                </select>
+                            <?php endif; ?>
+                        </form>
+                    <?php endif; ?>
+                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Keluar</a>
+                </div>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
 
             <div class="table-container">
