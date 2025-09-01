@@ -9,29 +9,59 @@ $errorMessage = '';
 
 
 // Filter query sesuai role
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')) {
+// ------------------- PERBAIKAN FILTER QUERY -----------------------
+$sudirmanCodes = ['0334', '3556'];
+$ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+
+$role = $_SESSION['role'] ?? '';
+$user = $_SESSION['user'] ?? '';
+$kodeUker = $_SESSION['kode_uker'] ?? '';
+$idJabatan = $_SESSION['id_jabatan'] ?? '';
+
+$isAdmin = $role === 'admin';
+$isKanwil = $idJabatan === 'JB3';
+$isLogistikSudirman = $user === '00344250';
+$isLogistikAhmadYani = $user === '00203119';
+
+if ($isAdmin || $kodeUker === '0050' || $isKanwil) {
+    // Admin, 0050, dan Kanwil bisa lihat semua
     $query = "
         SELECT p.*, a.nama_anggaran 
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        ORDER BY p.kode_pengajuan DESC
+    ";
+} elseif ($isLogistikSudirman) {
+    // Logistik Sudirman hanya bisa lihat unit Sudirman
+    $inClause = "'" . implode("','", $sudirmanCodes) . "'";
+    $query = "
+        SELECT p.*, a.nama_anggaran 
+        FROM pengajuan p
+        LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        WHERE p.kode_uker IN ($inClause)
+        ORDER BY p.kode_pengajuan DESC
+    ";
+} elseif ($isLogistikAhmadYani) {
+    // Logistik Ahmad Yani hanya bisa lihat unit Ahmad Yani
+    $inClause = "'" . implode("','", $ahmadYaniCodes) . "'";
+    $query = "
+        SELECT p.*, a.nama_anggaran 
+        FROM pengajuan p
+        LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        WHERE p.kode_uker IN ($inClause)
         ORDER BY p.kode_pengajuan DESC
     ";
 } else {
-    $kodeUker = $conn->real_escape_string($_SESSION['kode_uker']);
+    // User biasa hanya bisa lihat pengajuan dari unit sendiri
+    $kodeUkerEscaped = $conn->real_escape_string($kodeUker);
     $query = "
         SELECT p.*, a.nama_anggaran 
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
-        WHERE p.kode_uker = '$kodeUker'
+        WHERE p.kode_uker = '$kodeUkerEscaped'
         ORDER BY p.kode_pengajuan DESC
     ";
 }
-
-$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB3', 'JB5']);
-
-$isKanwil = isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB3');
-
-$isLogistik = isset($_SESSION['user']) && $_SESSION['user'] === '00203119';
 
 
 $result = $conn->query($query);
@@ -106,6 +136,11 @@ while ($row = $result->fetch_assoc()) {
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
                                 if (!in_array($status, ['pending'])) continue;
+
+                                // Filter khusus logistik berdasarkan kode uker
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
@@ -125,44 +160,34 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
-                                    <!-- <td style="background: none;">
-                                        <?php if ($status === 'pending'): ?>
-                                            <div style="font-size:12px;">Menunggu Approval KC</div>
-                                        <?php elseif ($status === 'forward'): ?>
-                                            <div style="font-size:12px;">Menunggu Approval Kanwil</div>
-                                        <?php endif; ?>
-                                    </td> -->
                                     <td>
-                                        <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050')): ?>
-
-                                            <?php if ($isBerwenang) : ?>
-                                                <button class="btn-action"
-                                                    data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                    data-status="<?= $status ?>"
-                                                    style="font-size:24px; background: none; padding:10px; border:none">
-                                                    <i class="fa fa-ellipsis-v"></i>
-                                                </button>
-                                            <?php else : ?>
-                                                <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
-                                            <?php endif; ?>
+                                        <?php if ($isAdmin || $kodeUker === '0050' || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani): ?>
+                                            <button class="btn-action"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>"
+                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                        <?php elseif ($status === 'pending'): ?>
+                                            <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                                Hapus <i class="fa fa-trash-o"></i>
+                                            </button>
                                         <?php else: ?>
-                                            <?php if ($status === 'pending'): ?>
-                                                <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
-                                                    Hapus <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            <?php else: ?>
-                                                <div></div>
-                                            <?php endif; ?>
+                                            <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled>
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
+
                             <?php if (!$hasData): ?>
                                 <tr>
-                                    <td colspan="8" style="text-align: center; padding: 20px; font-style: italic;">Belum ada data</td>
+                                    <td colspan="10" style="text-align: center; padding: 20px; font-style: italic;">Belum ada data</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -218,8 +243,8 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
-                                        <?php if ($isKanwil || $isLogistik): ?>
-                                            <?php if ($isBerwenang) : ?>
+                                        <?php if ($isKanwil || $isLogistikAhmadYani || $isLogistikSudirman): ?>
+                                            <?php if ($isKanwil) : ?>
                                                 <button class="btn-action"
                                                     data-kode="<?= $row['kode_pengajuan'] ?>"
                                                     data-status="<?= $status ?>"
