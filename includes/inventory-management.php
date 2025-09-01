@@ -26,6 +26,34 @@ if ($isAdminOrCabang) {
     $whereClause = "kode_uker = '$kode_uker'";
 }
 
+$sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
+$ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+
+$role = $_SESSION['role'] ?? '';
+$user = $_SESSION['user'] ?? '';
+$kodeUker = $_SESSION['kode_uker'] ?? '';
+$idJabatan = $_SESSION['id_jabatan'] ?? '';
+
+$isLogistikSudirman = $user === '00344250';
+$isLogistikAhmadYani = $user === '00203119';
+
+$isAdmin = $role === 'admin';
+$isAdminOrCabang = $isAdmin || $kodeUker === '0050';
+$isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
+
+
+if (isset($_GET['filter_uker'])) {
+    $_SESSION['filter_uker'] = $_GET['filter_uker'];
+}
+
+$filterUker = $_SESSION['filter_uker'] ?? '';
+
+// Tentukan WHERE clause berdasarkan role & filter
+if ($isAdminOrCabang) {
+    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
+} else {
+    $whereClause = "kode_uker = '$kodeUker'";
+}
 // HILANGKAN baris berikut supaya filter_uker tidak tertimpa:
 // $whereClause = $isAdminOrCabang ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
 
@@ -103,7 +131,23 @@ if ($kodeUkerSession) {
                             <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
                                 <option value="">Filter Kode Uker</option>
                                 <?php
-                                $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
+                                $allowedCodes = [];
+
+                                if ($isLogistikSudirman) {
+                                    $allowedCodes = $sudirmanCodes;
+                                } elseif ($isLogistikAhmadYani) {
+                                    $allowedCodes = $ahmadYaniCodes;
+                                }
+
+                                $query = "SELECT DISTINCT kode_uker FROM barang_masuk";
+                                if (!empty($allowedCodes)) {
+                                    // Filter hanya kode yang diperbolehkan
+                                    $codesList = "'" . implode("','", $allowedCodes) . "'";
+                                    $query .= " WHERE kode_uker IN ($codesList)";
+                                }
+                                $query .= " ORDER BY kode_uker";
+
+                                $ukerQuery = $conn->query($query);
                                 while ($uker = $ukerQuery->fetch_assoc()):
                                     $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
                                     echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
@@ -127,6 +171,11 @@ if ($kodeUkerSession) {
                     <tbody>
                         <?php if ($stocks->num_rows > 0): ?>
                             <?php while ($row = $stocks->fetch_assoc()): ?>
+                                <?php
+                                // Filter berdasarkan logistik
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>

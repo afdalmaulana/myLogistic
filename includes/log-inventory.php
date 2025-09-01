@@ -4,6 +4,21 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require 'db_connect.php';
 
+$sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
+$ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+
+$role = $_SESSION['role'] ?? '';
+$user = $_SESSION['user'] ?? '';
+$kodeUker = $_SESSION['kode_uker'] ?? '';
+$idJabatan = $_SESSION['id_jabatan'] ?? '';
+
+$isLogistikSudirman = $user === '00344250';
+$isLogistikAhmadYani = $user === '00203119';
+
+$isAdmin = $role === 'admin';
+$isAdminOrCabang = $isAdmin || $kodeUker === '0050';
+$isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
+
 // Reset filter jika diminta
 if (isset($_GET['reset_filter'])) {
     unset($_SESSION['filter_uker']);
@@ -11,26 +26,19 @@ if (isset($_GET['reset_filter'])) {
     exit;
 }
 
-$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
-
 // Simpan filter ke session jika ada perubahan
 if (isset($_GET['filter_uker'])) {
     $_SESSION['filter_uker'] = $_GET['filter_uker'];
 }
 
 // Ambil filter dari session
-$filterUker = isset($_SESSION['filter_uker']) ? $conn->real_escape_string($_SESSION['filter_uker']) : '';
-
-// Tentukan apakah admin atau kode_uker = 0050
-$isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
-    (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
+$filterUker = $_SESSION['filter_uker'] ?? '';
 
 // Tentukan WHERE clause berdasarkan role & filter
 if ($isAdminOrCabang) {
     $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
 } else {
-    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
-    $whereClause = "kode_uker = '$kode_uker'";
+    $whereClause = "kode_uker = '$kodeUker'";
 }
 
 // Ambil data barang masuk dan keluar
@@ -46,29 +54,42 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
         <button class="tablinks" onclick="openCity(event, 'barang_keluar')">STOCK OUT</button>
     </div>
 
+    <!-- Barang Masuk -->
     <div id="barang_masuk" class="tabcontent" style="display: block;">
         <div class="body-content">
-
-
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <p style="margin-bottom: 5px;">Log Record</p>
-                    <?php if ($isAdminOrCabang): ?>
+                    <?php if ($isAdminOrCabang && $isBerwenang): ?>
                         <form method="GET" style="display: inline-block;">
-                            <!-- Jaga agar tetap di halaman log-inventory -->
                             <input type="hidden" name="page" value="log-inventory">
-                            <?php if ($isBerwenang): ?>
-                                <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
-                                    <option value="">Filter Kode Uker</option>
-                                    <?php
-                                    $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
-                                    while ($uker = $ukerQuery->fetch_assoc()):
-                                        $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
-                                        echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
-                                    endwhile;
-                                    ?>
-                                </select>
-                            <?php endif; ?>
+                            <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                                <option value="">Filter Kode Uker</option>
+                                <?php
+                                $allowedCodes = [];
+
+                                if ($isLogistikSudirman) {
+                                    $allowedCodes = $sudirmanCodes;
+                                } elseif ($isLogistikAhmadYani) {
+                                    $allowedCodes = $ahmadYaniCodes;
+                                }
+
+                                $query = "SELECT DISTINCT kode_uker FROM barang_masuk";
+                                if (!empty($allowedCodes)) {
+                                    // Filter hanya kode yang diperbolehkan
+                                    $codesList = "'" . implode("','", $allowedCodes) . "'";
+                                    $query .= " WHERE kode_uker IN ($codesList)";
+                                }
+                                $query .= " ORDER BY kode_uker";
+
+                                $ukerQuery = $conn->query($query);
+                                while ($uker = $ukerQuery->fetch_assoc()):
+                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                endwhile;
+                                ?>
+
+                            </select>
                         </form>
                     <?php endif; ?>
                     <a href="export_barangMasuk.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Masuk</a>
@@ -88,27 +109,31 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                             <th>Harga Barang Satuan</th>
                             <th>Jumlah</th>
                             <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($stocksIn && $stocksIn->num_rows > 0): ?>
-                            <?php while ($row = $stocksIn->fetch_assoc()): ?>
+                            <?php while ($row = $stocksIn->fetch_assoc()) : ?>
+                                <?php
+                                // Filter berdasarkan logistik
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <?php if ($row['tanggal_nota'] === null): ?>
-                                        <td>
+                                    <td>
+                                        <?php if (empty($row['tanggal_nota'])): ?>
                                             Input Tanggal Nota
                                             <button style="background: none; border: none" class="btn-edit-nota"
                                                 data-id="<?= $row['id'] ?>"
                                                 data-current="<?= $row['tanggal_nota'] ?>">
                                                 <i class="fa fa-edit" style="font-size:16px;color:red"></i>
                                             </button>
-                                        </td>
-                                    <?php else: ?>
-                                        <td><?= htmlspecialchars($row['tanggal_nota']) ?></td>
-                                    <?php endif; ?>
+                                        <?php else: ?>
+                                            <?= htmlspecialchars($row['tanggal_nota']) ?>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['price']) ?></td>
@@ -127,27 +152,42 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
         </div>
     </div>
 
+    <!-- Barang Keluar -->
     <div id="barang_keluar" class="tabcontent">
         <div class="body-content">
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <p style="margin-bottom: 5px;">Log Record</p>
-                    <?php if ($isAdminOrCabang): ?>
+                    <?php if ($isAdminOrCabang && $isBerwenang): ?>
                         <form method="GET" style="display: inline-block;">
-                            <!-- Jaga agar tetap di halaman log-inventory -->
                             <input type="hidden" name="page" value="log-inventory">
-                            <?php if ($isBerwenang): ?>
-                                <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
-                                    <option value="">Filter Kode Uker</option>
-                                    <?php
-                                    $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
-                                    while ($uker = $ukerQuery->fetch_assoc()):
-                                        $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
-                                        echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
-                                    endwhile;
-                                    ?>
-                                </select>
-                            <?php endif; ?>
+                            <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                                <option value="">Filter Kode Uker</option>
+                                <?php
+                                $allowedCodes = [];
+
+                                if ($isLogistikSudirman) {
+                                    $allowedCodes = $sudirmanCodes;
+                                } elseif ($isLogistikAhmadYani) {
+                                    $allowedCodes = $ahmadYaniCodes;
+                                }
+
+                                $query = "SELECT DISTINCT kode_uker FROM barang_keluar";
+                                if (!empty($allowedCodes)) {
+                                    // Filter hanya kode yang diperbolehkan
+                                    $codesList = "'" . implode("','", $allowedCodes) . "'";
+                                    $query .= " WHERE kode_uker IN ($codesList)";
+                                }
+                                $query .= " ORDER BY kode_uker";
+
+                                $ukerQuery = $conn->query($query);
+                                while ($uker = $ukerQuery->fetch_assoc()):
+                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                endwhile;
+                                ?>
+
+                            </select>
                         </form>
                     <?php endif; ?>
                     <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Keluar</a>
@@ -169,6 +209,11 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                     <tbody>
                         <?php if ($resultOut && $resultOut->num_rows > 0): ?>
                             <?php while ($row = $resultOut->fetch_assoc()): ?>
+                                <?php
+                                // Jika logistik Sudirman atau Ahmad Yani, filter kode uker
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
