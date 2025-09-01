@@ -69,27 +69,45 @@ $requestCount = 0;
 $incompleteCount = 0;
 $completeCount = 0;
 
-// Reset pointer
 $result->data_seek(0);
 
-// Loop hanya untuk menghitung jumlah tab
 while ($row = $result->fetch_assoc()) {
+    $kode_uker = $row['kode_uker'];
     $status = strtolower($row['status']);
     $status_sisa = strtolower($row['status_sisa'] ?? '');
     $sisa_jumlah = (int)($row['sisa_jumlah'] ?? 0);
 
-    if ($status === 'pending' || ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes))) {
+    // Cek apakah baris ini relevan untuk user logistik
+    $isAllowed = false;
+    if ($isLogistikSudirman && in_array($kode_uker, $sudirmanCodes)) {
+        $isAllowed = true;
+    } elseif ($isLogistikAhmadYani && in_array($kode_uker, $ahmadYaniCodes)) {
+        $isAllowed = true;
+    } elseif (!$isLogistikSudirman && !$isLogistikAhmadYani) {
+        // Jika bukan user logistik, tampilkan semua
+        $isAllowed = true;
+    }
+
+    if (!$isAllowed) {
+        continue; // Lewati baris jika tidak sesuai
+    }
+
+    // Hitung request
+    if ($status === 'pending') {
         $requestCount++;
     }
 
-    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done' && ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) && ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes))) {
+    // Hitung incomplete
+    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done') {
         $incompleteCount++;
     }
 
+    // Hitung complete
     if (($status === 'approved' && $sisa_jumlah === 0) || $status === 'rejected') {
         $completeCount++;
     }
 }
+
 
 ?>
 
@@ -99,16 +117,17 @@ while ($row = $result->fetch_assoc()) {
         <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
         <?php if ($isKanwil): ?>
             <div class="tabs">
-                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Request <span class="badge"><?= $incompleteCount ?></button>
-                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
+                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Request <span class="badge"><?= $incompleteCount ?></span></button>
+                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></span></button>
             </div>
         <?php else: ?>
             <div class="tabs">
-                <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></button>
-                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></button>
-                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></button>
+                <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></span></button>
+                <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></span></button>
+                <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></span></button>
             </div>
         <?php endif; ?>
+
 
 
         <div id="request" class="tabscontent" style="display: block;">
@@ -245,31 +264,17 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
-                                        <?php if ($isKanwil || $isLogistikAhmadYani || $isLogistikSudirman): ?>
-                                            <?php if ($isKanwil) : ?>
-                                                <button class="btn-action"
-                                                    data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                    data-status="<?= $status ?>"
-                                                    style="font-size:24px; background: none; padding:10px; border:none">
-                                                    <i class="fa fa-ellipsis-v"></i>
-                                                </button>
-                                            <?php else : ?>
-                                                <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
-                                            <?php endif; ?>
-
-
+                                        <?php if ($isLogistikAhmadYani || $isLogistikAhmadYani): ?>
+                                            <button class="btn-action"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>"
+                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
                                         <?php else: ?>
-                                            <?php if ($status === 'pending'): ?>
-                                                <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
-                                                    Hapus <i class="fa fa-trash-o"></i>
-                                                </button>
-                                            <?php else: ?>
-                                                <div></div>
-                                            <?php endif; ?>
+                                            <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
                                         <?php endif; ?>
                                     </td>
-
-
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
