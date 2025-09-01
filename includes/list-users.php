@@ -59,19 +59,6 @@ if (!$list) {
                 <!-- Filter Kode Uker -->
                 <form method="GET" style="margin-bottom: 15px;">
                     <input type="hidden" name="page" value="user-list">
-
-                    <label for="filter_uker">Filter Kode Uker:</label>
-                    <select name="filter_uker" id="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
-                        <option value="">-- Semua Kode Uker --</option>
-                        <?php
-                        $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM users ORDER BY kode_uker ASC");
-                        while ($uker = $ukerQuery->fetch_assoc()):
-                            $selected = ($filter_uker === $uker['kode_uker']) ? 'selected' : '';
-                            echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
-                        endwhile;
-                        ?>
-                    </select>
-
                     <?php if (!empty($filter_uker)): ?>
                         <a href="index.php?page=user-list" class="reset-filter" style="margin-left: 10px; color: red;">Reset</a>
                     <?php endif; ?>

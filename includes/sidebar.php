@@ -24,21 +24,15 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
             <div class="menu-label" style="font-size: 16px;">APPLICATION RECORD</div>
             <a href="index.php?page=inventory-management " class="menu-item <?= $currentPage === 'inventory-management' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Inventory Management</a>
             <a href="index.php?page=log-inventory" class="menu-item <?= $currentPage === 'log-inventory' ? 'active' : '' ?>" onclick="return loadingLink(this, event)">Log Inventory</a>
-            <!-- <a href="index.php?page=stocks" class="menu-item" onclick="return loadingLink(this, event)">Stok Barang</a> -->
         </div>
 
-        <!-- Logout selalu muncul -->
-        <!-- <div id="menu-logout" style="margin-top: 20px;">
-            <a href="logout.php" class="menu-item" onclick="return confirm('Yakin ingin logout?')">Logout</a>
-        </div> -->
-
         <!-- Tambah Akun hanya untuk admin -->
-        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+        <?php if (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6'): ?>
             <div>
                 <a href="index.php?page=add-user" class="menu-item">Tambah Akun</a>
             </div>
         <?php endif; ?>
-        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+        <?php if (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6'): ?>
             <div>
                 <a href="index.php?page=list-users" class="menu-item">Daftar User</a>
             </div>
