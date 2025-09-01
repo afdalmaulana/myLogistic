@@ -46,7 +46,7 @@ if (isset($_SESSION['user'])) {
     <li></li>
     <li></li>
 </div>
-<form action="sign-inHandler.php" method="POST" onsubmit="return showLoading()">
+<form action="sign-inHandler.php" method="POST" onsubmit="return showLoadingSignin()">
     <div class="login-wrapper">
         <div class="form-input-login">
             <div class="login-heading">
@@ -67,7 +67,7 @@ if (isset($_SESSION['user'])) {
                 </div>
 
                 <div class="">
-                    <button type="submit" id="submitBtn" class="button-signin">Sign in</button>
+                    <button type="submit" id="signinBtn" class="button-signin">Sign in</button>
                 </div>
             </div>
             <p>Forget Your Password ? Contact Admin</p>

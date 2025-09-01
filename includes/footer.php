@@ -121,7 +121,6 @@
         }
     };
 
-    //fitur dropdown tanpa scroll
 
     function showLoading() {
         const btn = document.getElementById("submitBtn");
@@ -130,12 +129,17 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
 
-        // Delay form submit (for testing only)
-        setTimeout(() => {
-            document.forms[0].submit();
-        }, 1500);
+        return true; // allow form submit normally
+    }
 
-        return false; // prevent default submit, will be triggered manually
+    function showLoadingSignin() {
+        const btn = document.getElementById("signinBtn");
+        if (!btn) return true;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
+
+        return true; // allow form submit normally
     }
 
     function loadingLink(link, event) {
@@ -162,7 +166,6 @@
     let currentlyEditingRow = null;
 
     /**BUTTON ACITION */
-    const isLogistik = <?= ($_SESSION['user'] === '00203119') ? 'true' : 'false' ?>;
     document.addEventListener("DOMContentLoaded", () => {
         const globalMenu = document.getElementById("global-actions");
 

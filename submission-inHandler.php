@@ -1,5 +1,12 @@
 <?php
-session_start();
+ini_set('session.gc_maxlifetime', 3600); // 1 jam
+session_set_cookie_params(3600);
+
+// ✅ Pastikan session dimulai dengan benar
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include 'db_connect.php';
 
 $tanggal_pengajuan = $_POST['tanggal_pengajuan'] ?? '';
