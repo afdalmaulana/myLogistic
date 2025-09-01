@@ -194,7 +194,7 @@ while ($row = $result->fetch_assoc()) {
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
                                 $status_sisa = strtolower($row['status_sisa'] ?? '');
-                                if (!in_array($status, ['approved', 'forward']) || $status_sisa !== 'not done') continue;
+                                if (!in_array($status, ['approved', 'forward']) || !in_array($status_sisa, ['not done', 'done'])) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',

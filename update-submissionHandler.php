@@ -77,7 +77,7 @@ if ($status === 'forward') {
     }
 
     $sisa = max(0, $jumlah_asli - $jumlah);
-    $status_sisa = $sisa > 0 ? 'not done' : null;
+    $status_sisa = $sisa > 0 ? 'not done' : 'done';
     $keterangan = "Disetujui sejumlah " . number_format($jumlah, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.') . " Oleh " . $PNpekerja;
 
     $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, price = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
