@@ -66,13 +66,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     endwhile;
                                     ?>
                                 </select>
-                            <?php else: ?>
-
-                            <?php endif; ?>
-
-                            <!-- <?php if (!empty($filterUker)): ?>
-                                <a href="index.php?page=log-inventory&reset_filter=1" class="reset-filter">Reset</a>
-                            <?php endif; ?> -->
+                                <?php endif; ?>>
                         </form>
                     <?php endif; ?>
                 </div>

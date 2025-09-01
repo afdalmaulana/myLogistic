@@ -7,16 +7,34 @@ require 'db_connect.php';
 $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || ($kodeUkerSession === '0050');
 
-// Untuk kebutuhan tabel stok dan log stok (admin/kanwil bisa lihat semua)
-$whereClause = $isAdminOrCabang ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
+$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
+if (isset($_GET['filter_uker'])) {
+    $_SESSION['filter_uker'] = $_GET['filter_uker'];
+}
 
-// Tabel stok
+// Ambil filter dari session
+if (isset($_GET['filter_uker'])) {
+    $_SESSION['filter_uker'] = $_GET['filter_uker'];
+}
+
+$filterUker = isset($_SESSION['filter_uker']) ? $conn->real_escape_string($_SESSION['filter_uker']) : '';
+
+if ($isAdminOrCabang) {
+    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
+} else {
+    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
+    $whereClause = "kode_uker = '$kode_uker'";
+}
+
+// HILANGKAN baris berikut supaya filter_uker tidak tertimpa:
+// $whereClause = $isAdminOrCabang ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
+
+// Query dengan filter yang sudah benar
 $queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
 $stocks = $conn->query($queryStock);
 
-// Barang masuk
 $query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
-$stocksIn = $conn->query($query);
+$stocksIn = $conn->query($query);;
 
 // Barang masuk - full log
 $query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
@@ -76,8 +94,25 @@ if ($kodeUkerSession) {
 
     <div id="stocks" class="tabcontent-invent" style="display: block;">
         <div class="body-content">
-            <div class="sub-menu">
-                <p>Inventory List</p>
+            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p>Inventory List</p>
+                    <?php if ($isBerwenang): ?>
+                        <form method="GET" style="display: inline-block;">
+                            <input type="hidden" name="page" value="inventory-management">
+                            <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                                <option value="">Filter Kode Uker</option>
+                                <?php
+                                $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM barang_masuk ORDER BY kode_uker");
+                                while ($uker = $ukerQuery->fetch_assoc()):
+                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                                endwhile;
+                                ?>
+                            </select>
+                        <?php endif; ?>
+                        </form>
+                </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
             <div class="table-container">

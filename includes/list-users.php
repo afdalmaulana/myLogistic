@@ -1,21 +1,30 @@
 <?php
+// Start session jika belum
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require 'db_connect.php';
 
+// Cek apakah user adalah admin atau cabang dengan hak khusus
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
     (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
 
-if ($isAdminOrCabang) {
-    // Admin atau Kanwil melihat semua data
-    $whereClause = "1"; // tidak ada filter
-} else {
-    // Selain itu, hanya melihat data berdasarkan kode_uker
-    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
-    $whereClause = "kode_uker = '$kode_uker'";
+// Siapkan whereClause awal
+$whereClause = "1"; // default untuk admin
+
+if (!$isAdminOrCabang) {
+    $userKodeUker = $conn->real_escape_string($_SESSION['kode_uker']);
+    $whereClause = "users.kode_uker = '$userKodeUker'";
 }
 
+// Ambil filter jika ada
+$filter_uker = '';
+if (isset($_GET['filter_uker']) && $_GET['filter_uker'] !== '') {
+    $filter_uker = $conn->real_escape_string($_GET['filter_uker']);
+    $whereClause .= " AND users.kode_uker = '$filter_uker'";
+}
+
+// Query utama
 $query = "
     SELECT 
         users.*, 
@@ -24,22 +33,52 @@ $query = "
         users 
     LEFT JOIN 
         jabatan ON users.id_jabatan = jabatan.id_jabatan
+    WHERE $whereClause
 ";
 
 $list = $conn->query($query);
 
-
+// Optional debugging (hapus di production)
+if (!$list) {
+    die("Query error: " . $conn->error);
+}
 ?>
 
-<div class="content-wrappers">
+<div class="dashboard-menu">
     <div class="content-heading">User List Management</div>
+
     <div id="list-user" style="display: block;">
         <div class="body-content">
+
             <div class="sub-menu">
                 <p>Daftar User</p>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ..." class="list-input">
             </div>
 
+            <?php if ($isAdminOrCabang): ?>
+                <!-- Filter Kode Uker -->
+                <form method="GET" style="margin-bottom: 15px;">
+                    <input type="hidden" name="page" value="user-list">
+
+                    <label for="filter_uker">Filter Kode Uker:</label>
+                    <select name="filter_uker" id="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                        <option value="">-- Semua Kode Uker --</option>
+                        <?php
+                        $ukerQuery = $conn->query("SELECT DISTINCT kode_uker FROM users ORDER BY kode_uker ASC");
+                        while ($uker = $ukerQuery->fetch_assoc()):
+                            $selected = ($filter_uker === $uker['kode_uker']) ? 'selected' : '';
+                            echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                        endwhile;
+                        ?>
+                    </select>
+
+                    <?php if (!empty($filter_uker)): ?>
+                        <a href="index.php?page=user-list" class="reset-filter" style="margin-left: 10px; color: red;">Reset</a>
+                    <?php endif; ?>
+                </form>
+            <?php endif; ?>
+
+            <!-- Tabel Data User -->
             <div class="table-container">
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
@@ -66,52 +105,26 @@ $list = $conn->query($query);
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" style="text-align:center;">Belum ada data barang masuk</td>
+                                <td colspan="6" style="text-align:center;">Belum ada data user</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
 
-    <div id="barang_keluar" class="tabcontent">
-        <div class="body-content">
-            <div class="sub-menu">
-                <p>Log Barang Keluar</p>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
-            </div>
-
-            <div class="table-container">
-                <table id="dataTable" style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama Barang</th>
-                            <th>Jumlah</th>
-                            <th>Divisi</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if ($resultOut->num_rows > 0) {
-                            while ($row = $resultOut->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['tanggal']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['nama_barang']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['jumlah']) . "</td>";
-                                echo "<td>" . htmlspecialchars($row['divisi']) . "</td>";
-                                echo "<td></td>"; // kolom kosong terakhir
-                                echo "</tr>";
-                            }
-                        } else {
-                            echo '<tr><td colspan="5" style="text-align:center;">Belum ada data barang keluar</td></tr>';
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function searchTable() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll("#dataTable tbody tr");
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    }
+</script>
