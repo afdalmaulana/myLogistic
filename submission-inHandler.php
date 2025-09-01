@@ -13,7 +13,7 @@ $tanggal_pengajuan = $_POST['tanggal_pengajuan'] ?? '';
 $kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
 $nama_barang = $_POST['nama_barang'] ?? '';
 $id_anggaran = $_POST['id_anggaran'] ?? '';
-$jumlah_anggaran = intval($_POST['jumlah_anggaran'] ?? 0);
+$jumlah_anggaran = $_POST['jumlah_anggaran'] ?? '';
 $jumlah = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
 $kode_uker = $_SESSION['kode_uker'] ?? null; // ambil dari session
 
@@ -30,7 +30,7 @@ $sql = "INSERT INTO pengajuan (kode_pengajuan, tanggal_pengajuan, nama_barang,ju
 try {
     $stmt = $conn->prepare($sql);
     if (!$stmt) throw new Exception($conn->error);
-    $stmt->bind_param("sssiiss", $kode_pengajuan, $tanggal_pengajuan, $nama_barang, $jumlah, $jumlah_anggaran, $id_anggaran, $kode_uker);
+    $stmt->bind_param("sssisss", $kode_pengajuan, $tanggal_pengajuan, $nama_barang, $jumlah, $jumlah_anggaran, $id_anggaran, $kode_uker);
 
     if (!$stmt->execute()) {
         throw new Exception($stmt->error);

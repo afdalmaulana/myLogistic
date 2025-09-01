@@ -48,15 +48,29 @@ $anggaran = $conn->query($queryAnggaran);
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Set tanggal otomatis
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
-
         const formattedDate = `${yyyy}-${mm}-${dd}`;
-        document.getElementById('tanggal_pengajuan').value = formattedDate;
+
+        const tanggalInput = document.getElementById('tanggal_pengajuan');
+        if (tanggalInput) {
+            tanggalInput.value = formattedDate;
+        }
+
+        // Format angka untuk input jumlah anggaran
+        const inputJumlah = document.getElementById('jumlahAnggaran');
+        if (inputJumlah) {
+            inputJumlah.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            });
+        }
     });
 </script>
+
 <div class="content-wrapper">
     <div>
         <div class="sub-content">
@@ -97,7 +111,7 @@ $anggaran = $conn->query($queryAnggaran);
                     </div>
                     <div class="form-group">
                         <label>Jumlah Anggaran</label>
-                        <input type="text" name="jumlah_anggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
+                        <input type="text" name="jumlah_anggaran" id="jumlahAnggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
                         <label>Jumlah</label>

@@ -37,6 +37,8 @@
         });
     }
 
+
+
     function toggleSidebar() {
         const body = document.body;
 

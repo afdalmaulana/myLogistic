@@ -32,7 +32,7 @@ $isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'
 $isKanwil = isset($_SESSION['id_jabatan']) && ($_SESSION['id_jabatan'] === 'JB3');
 
 $isLogistik = isset($_SESSION['user']) && $_SESSION['user'] === '00203119';
-$isApprovedNotDone = $status === 'approved' && $status_sisa === 'not done';
+
 
 $result = $conn->query($query);
 $requestCount = 0;
