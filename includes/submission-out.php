@@ -264,7 +264,14 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
-                                        <?php if ($isLogistikAhmadYani || $isLogistikAhmadYani): ?>
+                                        <?php if ($status === 'forward' && $isKanwil): ?>
+                                            <button class="btn-action"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>"
+                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikAhmadYani)): ?>
                                             <button class="btn-action"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
