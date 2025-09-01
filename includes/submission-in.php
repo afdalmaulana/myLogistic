@@ -114,7 +114,7 @@ $anggaran = $conn->query($queryAnggaran);
                         <input type="text" name="jumlah_anggaran" id="jumlahAnggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
-                        <label>Jumlah</label>
+                        <label>Jumlah Barang</label>
                         <input type="number" name="jumlah" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div>

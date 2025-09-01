@@ -116,24 +116,24 @@ if ($kodeUkerSession) {
                 <!-- <div><i>* Tanggal Otomatis mengikut hari ini</i></div> -->
                 <div class="form-input">
                     <div class="submission-left">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Nomor Nota</label>
                             <input type="text" name="nomor_nota" class="list-input" placeholder="Masukkan Nomor Nota">
-                        </div>
-                        <div class="form-group">
+                        </div> -->
+                        <!-- <div class="form-group">
                             <label>Tanggal Nota</label>
                             <input type="date" name="tanggal_nota" class="list-input" placeholder="Masukkan Tanggal Nota">
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label>Nama Barang</label>
                             <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang">
                         </div>
                     </div>
                     <div class="submission-right">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Harga Barang</label>
                             <input type="text" name="harga_barang" class="list-input" placeholder="Masukkan Harga">
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label>Jumlah</label>
                             <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">

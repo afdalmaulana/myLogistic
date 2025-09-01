@@ -10,7 +10,7 @@ $errorMessage = '';
 
 // Filter query sesuai role
 // ------------------- PERBAIKAN FILTER QUERY -----------------------
-$sudirmanCodes = ['0334', '3556'];
+$sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
 
 $role = $_SESSION['role'] ?? '';
@@ -78,11 +78,11 @@ while ($row = $result->fetch_assoc()) {
     $status_sisa = strtolower($row['status_sisa'] ?? '');
     $sisa_jumlah = (int)($row['sisa_jumlah'] ?? 0);
 
-    if ($status === 'pending') {
+    if ($status === 'pending' || ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes))) {
         $requestCount++;
     }
 
-    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done') {
+    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done' && ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) && ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes))) {
         $incompleteCount++;
     }
 
@@ -161,7 +161,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td>
-                                        <?php if ($isAdmin || $kodeUker === '0050' || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani): ?>
+                                        <?php if ($isAdmin || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani): ?>
                                             <button class="btn-action"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
@@ -220,6 +220,8 @@ while ($row = $result->fetch_assoc()) {
                                 $status = strtolower($row['status']);
                                 $status_sisa = strtolower($row['status_sisa'] ?? '');
                                 if (!in_array($status, ['approved', 'forward']) || !in_array($status_sisa, ['not done', 'done'])) continue;
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
