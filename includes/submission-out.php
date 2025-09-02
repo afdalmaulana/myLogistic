@@ -393,6 +393,46 @@ while ($row = $result->fetch_assoc()) {
                 }
             });
         });
+
+        // Tombol Delete
+        document.querySelectorAll('.button-trash').forEach(button => {
+            button.addEventListener('click', () => {
+                const kode = button.dataset.kode;
+                if (!kode) return;
+
+                Swal.fire({
+                    title: `Hapus Pengajuan?`,
+                    text: `Yakin ingin menghapus kode pengajuan ${kode}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('update-submissionHandler.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: new URLSearchParams({
+                                    kode_pengajuan: kode,
+                                    status: 'delete'
+                                })
+                            })
+                            .then(res => res.text())
+                            .then(msg => {
+                                Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                Swal.fire('Gagal', 'Terjadi kesalahan saat menghapus pengajuan.', 'error');
+                            });
+                    }
+                });
+            });
+        });
+
     });
 
     // Search 

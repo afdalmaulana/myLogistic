@@ -167,39 +167,6 @@
 
     let currentlyEditingRow = null;
 
-    //Hapus Pengajuan
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.button-trash');
-
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const kodePengajuan = this.getAttribute('data-kode');
-                if (!kodePengajuan) return;
-
-                if (!confirm(`Yakin ingin menghapus pengajuan ${kodePengajuan}?`)) return;
-
-                fetch('update-submissionHandler.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `kode_pengajuan=${encodeURIComponent(kodePengajuan)}&status=delete`
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data);
-                        location.reload(); // refresh agar data terbaru muncul
-                    })
-                    .catch(error => {
-                        alert('Gagal menghapus pengajuan.');
-                        console.error(error);
-                    });
-            });
-        });
-    });
-
-
-
 
     /**Password */
     function togglePassword() {
