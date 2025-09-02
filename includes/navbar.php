@@ -10,6 +10,34 @@ $kodeUker = isset($_SESSION['kode_uker']) ? $_SESSION['kode_uker'] : 'Kode Uker'
 $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
 $jabatan = isset($_SESSION['nama_jabatan']) ? $_SESSION['nama_jabatan'] : '';
 ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function(e) {
+                e.preventDefault(); // Mencegah link langsung dijalankan
+
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Arahkan ke logout.php
+                        window.location.href = logoutBtn.getAttribute("href");
+                    }
+                });
+            });
+        }
+    });
+</script>
 <div class="nav">
     <div class="isinavbar">
         <!-- Bagian Kiri -->

@@ -15,16 +15,21 @@ $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $isKanwil = $idJabatan === 'JB3';
 $isNoLimit = $idJabatan === ['JB1', 'JB2', 'JB8'];
-$isLogistikSudirman = $user === '00344250';
-$isLogistikAhmadYani = $user === '00203119';
+$isSudirmanAccess = in_array($user, ['00068898', '00031021']);
+$isAyaniAccess = in_array($user, ['00008839', '00030413']);
+$pnLogistikSudirman = $user === '00344250';
+$pnLogistikAyani = $user === '00203119';
+
+$isLogistikSudirman = $pnLogistikSudirman || $isSudirmanAccess;
+$isLogistikAhmadYani = $pnLogistikAyani || $isAyaniAccess;
 
 // Tentukan WHERE clause
-if ($isKanwil || $isNoLimit) {
+if ($isKanwil) {
     $whereClause = "1"; // Kanwil melihat semua
-} elseif ($isLogistikSudirman) {
+} elseif ($isLogistikSudirman || $isSudirmanAccess) {
     $inList = "'" . implode("','", $sudirmanCodes) . "'";
     $whereClause = "kode_uker IN ($inList)";
-} elseif ($isLogistikAhmadYani) {
+} elseif ($isLogistikAhmadYani || $isAyaniAccess) {
     $inList = "'" . implode("','", $ahmadYaniCodes) . "'";
     $whereClause = "kode_uker IN ($inList)";
 } else {

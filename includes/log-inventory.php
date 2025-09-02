@@ -14,6 +14,8 @@ $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
+$isSudirmanAccess = $user === ['00068898', '00031021'];
+$isAyaniAccess = $user === ['00008839', '00030413'];
 
 $isAdmin = $role === 'admin';
 $isAdminOrCabang = $isAdmin || $kodeUker === '0050';
@@ -46,6 +48,100 @@ $stocksIn = $conn->query("SELECT * FROM barang_masuk WHERE $whereClause ORDER BY
 $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
 ?>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Fungsi buka tab
+        function openCity(evt, tabName) {
+            var i, tabcontent, tablinks;
+
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            var tabElem = document.getElementById(tabName);
+            if (tabElem) {
+                tabElem.style.display = "block";
+            } else {
+                console.warn('Tab dengan id "' + tabName + '" tidak ditemukan di DOM.');
+            }
+
+            if (evt) {
+                evt.currentTarget.className += " active";
+            } else {
+                var autoBtn = document.querySelector('.tablinks[onclick*="' + tabName + '"]');
+                if (autoBtn) {
+                    autoBtn.className += " active";
+                }
+            }
+        }
+
+        // Cek hash di URL dan buka tab sesuai
+        const hash = window.location.hash;
+        if (hash) {
+            const tabName = hash.substring(1); // hapus #
+            openCity(null, tabName); // buka tab otomatis
+        } else {
+            openCity(null, 'barang_masuk'); // default ke tab "incomplete"
+        }
+
+        // Optional: expose openTab ke global (jika dipakai di HTML onclick)
+        window.openCity = openCity;
+
+        document.querySelectorAll('.btn-edit-nota').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const currentDate = this.dataset.current || '';
+
+                Swal.fire({
+                    title: 'Edit Tanggal Nota',
+                    input: 'date',
+                    inputLabel: 'Pilih tanggal baru',
+                    inputValue: currentDate,
+                    showCancelButton: true,
+                    confirmButtonText: 'Simpan',
+                    cancelButtonText: 'Batal',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Tanggal tidak boleh kosong!';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim AJAX ke update_tanggal_nota.php
+                        fetch('update_tanggal_nota.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `id=${encodeURIComponent(id)}&tanggal_nota=${encodeURIComponent(result.value)}`
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire('Berhasil!', 'Tanggal nota diperbarui.', 'success')
+                                    .then(() => {
+                                        location.reload(); // atau update DOM tanpa reload
+                                    });
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                Swal.fire('Gagal!', 'Terjadi kesalahan saat mengupdate.', 'error');
+                            });
+                    }
+                });
+            });
+        });
+    });
+
+    // button edit tanggal nota
+</script>
+
 <div class="dashboard-menu">
     <div class="content-heading">Log Inventory Management</div>
     <div><i>Track log incoming, and outgoing inventory</i></div>
@@ -68,9 +164,9 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                 <?php
                                 $allowedCodes = [];
 
-                                if ($isLogistikSudirman) {
+                                if ($isLogistikSudirman || $isSudirmanAccess) {
                                     $allowedCodes = $sudirmanCodes;
-                                } elseif ($isLogistikAhmadYani) {
+                                } elseif ($isLogistikAhmadYani || $isAyaniAccess) {
                                     $allowedCodes = $ahmadYaniCodes;
                                 }
 

@@ -28,6 +28,25 @@ if (isset($_SESSION['user'])) {
     </script>
 <?php endif; ?>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const signinBtn = document.getElementById("signinBtn");
+
+        if (signinBtn) {
+            signinBtn.addEventListener("click", function(e) {
+                // e.preventDefault(); // Mencegah link langsung dijalankan
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Selamat Datang",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            });
+        }
+    });
+</script>
+
 
 <div class="background">
     <li></li>

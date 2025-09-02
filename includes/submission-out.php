@@ -20,10 +20,15 @@ $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $isAdmin = $role === 'admin';
 $isKanwil = $idJabatan === 'JB3';
-$isLogistikSudirman = $user === '00344250';
-$isLogistikAhmadYani = $user === '00203119';
+$pnLogistikSudirman = $user === '00344250';
+$pnLogistikAyani = $user === '00203119';
+$isSudirmanAccess = in_array($user, ['00068898', '00031021']);
+$isAyaniAccess = in_array($user, ['00008839', '00030413']);
 
-if ($isAdmin || $kodeUker === '0050' || $isKanwil) {
+$isLogistikSudirman = $pnLogistikSudirman || $isSudirmanAccess;
+$isLogistikAhmadYani = $pnLogistikAyani || $isAyaniAccess;
+
+if ($isAdmin || $isKanwil) {
     // Admin, 0050, dan Kanwil bisa lihat semua
     $query = "
         SELECT p.*, a.nama_anggaran 
@@ -31,7 +36,7 @@ if ($isAdmin || $kodeUker === '0050' || $isKanwil) {
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
         ORDER BY p.kode_pengajuan DESC
     ";
-} elseif ($isLogistikSudirman) {
+} elseif ($isLogistikSudirman || $isSudirmanAccess) {
     // Logistik Sudirman hanya bisa lihat unit Sudirman
     $inClause = "'" . implode("','", $sudirmanCodes) . "'";
     $query = "
@@ -41,7 +46,7 @@ if ($isAdmin || $kodeUker === '0050' || $isKanwil) {
         WHERE p.kode_uker IN ($inClause)
         ORDER BY p.kode_pengajuan DESC
     ";
-} elseif ($isLogistikAhmadYani) {
+} elseif ($isLogistikAhmadYani || $isAyaniAccess) {
     // Logistik Ahmad Yani hanya bisa lihat unit Ahmad Yani
     $inClause = "'" . implode("','", $ahmadYaniCodes) . "'";
     $query = "
@@ -107,14 +112,332 @@ while ($row = $result->fetch_assoc()) {
         $completeCount++;
     }
 }
-
-
 ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Fungsi buka tab
+        function openTab(evt, tabName) {
+            var tabContent = document.getElementsByClassName("tabscontent");
+            if (!tabContent.length) {
+                console.warn("Tidak ada tab content ditemukan, skip openTab");
+                return;
+            }
+
+            for (let i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+
+            var tablinks = document.getElementsByClassName("tabslinks");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            var tabElem = document.getElementById(tabName);
+            if (!tabElem) {
+                tabName = 'incomplete';
+                tabElem = document.getElementById(tabName);
+            }
+
+            if (!tabElem) {
+                console.warn("Default tab '" + tabName + "' tidak ditemukan, skip openTab");
+                return;
+            }
+
+            tabElem.style.display = "block";
+
+            if (evt) {
+                evt.currentTarget.className += " active";
+            } else {
+                var autoBtn = document.querySelector('.tabslinks[onclick*="' + tabName + '"]');
+                if (autoBtn) {
+                    autoBtn.className += " active";
+                }
+            }
+        }
+
+        // Cek hash di URL dan buka tab sesuai
+        const hashPengajuan = window.location.hash;
+        const allowedTabs = ['request', 'incomplete', 'approved'];
+        if (hashPengajuan) {
+            let tabName = hashPengajuan.substring(1);
+            if (!allowedTabs.includes(tabName)) {
+                tabName = 'incomplete';
+            }
+            openTab(null, tabName);
+        } else {
+            openTab(null, 'incomplete');
+        }
+
+        // Optional: expose openTab ke global (jika dipakai di HTML onclick)
+        window.openTab = openTab;
+    });
+
+
+    //BUTTON ACTION
+    document.addEventListener("DOMContentLoaded", () => {
+        const globalMenu = document.getElementById("global-actions");
+
+        // Fungsi untuk update posisi dan tampilkan menu sesuai status dan data tambahan
+        function showGlobalMenu(btn) {
+            const kode = btn.dataset.kode;
+            const status = btn.dataset.status;
+
+            // Ambil row terkait untuk cek data tambahan
+            const row = btn.closest("tr");
+            const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0"); // pastikan ada atribut data-sisa-jumlah di tr
+            const proses = row.dataset.proses || ""; // pastikan ada atribut data-proses di tr
+
+            const rect = btn.getBoundingClientRect();
+            globalMenu.style.top = (window.scrollY + rect.bottom - 50) + "px";
+            globalMenu.style.left = (window.scrollX + rect.left - 60) + "px";
+            globalMenu.style.display = "block";
+
+            // Atur tombol tampil sesuai status dan kondisi tambahan
+            document.getElementById("btn-forward").style.display = (status === "pending") ? "block" : "none";
+            document.getElementById("btn-approve").style.display = (status === "forward") ? "block" : "none";
+            document.getElementById("btn-reject").style.display = (status === "pending" || status === "forward") ? "block" : "none";
+
+            // Tombol selesaikan muncul jika status approved, sisa_jumlah > 0 dan proses pending
+            document.getElementById("btn-selesaikan").style.display = (status === "approved" && sisaJumlah > 0 && proses === "not done") ? "block" : "none";
+
+            // Inject data kode ke semua tombol aksi
+            ["btn-forward", "btn-approve", "btn-reject", "btn-selesaikan"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.dataset.kode = kode;
+            });
+        }
+
+        // Pasang event click ke semua tombol action
+        document.querySelectorAll(".btn-action").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation(); // agar tidak tertangkap oleh document click di bawah
+                showGlobalMenu(btn);
+            });
+        });
+
+        // Event klik luar untuk menutup menu global
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".btn-action") && !e.target.closest("#global-actions")) {
+                globalMenu.style.display = "none";
+            }
+        });
+
+        // Tombol Forward
+        document.getElementById("btn-forward").addEventListener("click", () => {
+            const kode = document.getElementById("btn-forward").dataset.kode;
+            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const totalJumlah = parseInt(row.children[5].innerText);
+
+            Swal.fire({
+                title: 'Forward Pengajuan',
+                html: `<input id="swal-input1" class="swal2-input" placeholder="Harga Barang">` +
+                    `<input id="swal-input2" type="number" min="1" max="${totalJumlah}" class="swal2-input" placeholder="Jumlah yang di-forward (maks: ${totalJumlah})">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Kirim',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const hargaBarang = parseInt(document.getElementById('swal-input1').value);
+                    const jumlahForward = parseInt(document.getElementById('swal-input2').value);
+
+                    if (!hargaBarang) return Swal.showValidationMessage('Harga Barang Wajib diisi!!!!');
+                    if (!jumlahForward || jumlahForward <= 0 || jumlahForward > totalJumlah) return Swal.showValidationMessage(`Jumlah harus antara 1 dan ${totalJumlah}`);
+                    return {
+                        hargaBarang,
+                        jumlahForward
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "forward",
+                                price: result.value.hargaBarang,
+                                jumlah: result.value.jumlahForward
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                        });
+                }
+            });
+        });
+
+        // Tombol Approve
+        document.getElementById("btn-approve").addEventListener("click", () => {
+            const kode = document.getElementById("btn-approve").dataset.kode;
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: "Setujui pengajuan ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Approve',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "approved",
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Sukses', msg, 'success').then(() => {
+                                location.reload();
+                            });
+
+                            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+                            row.querySelector(".status-cell").innerText = "Approved";
+                            row.querySelector(".btn-action").dataset.status = "approved";
+                        }).catch(err => {
+                            console.error(err);
+                            Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                        });
+                }
+            });
+        });
+
+        // Tombol Reject
+        document.getElementById("btn-reject").addEventListener("click", () => {
+            const kode = document.getElementById("btn-reject").dataset.kode;
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: "Tolak pengajuan ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Reject',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "rejected",
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Sukses', msg, 'success').then(() => location.reload());
+                        });
+                }
+            });
+        });
+
+        // Tombol Selesaikan (baru)
+
+        document.getElementById("btn-selesaikan").addEventListener("click", () => {
+            if (!isLogistik) {
+                Swal.fire("Akses Ditolak", "Hanya user logistik yang bisa menyelesaikan pengajuan ini.", "error");
+                return;
+            }
+            const kode = document.getElementById("btn-selesaikan").dataset.kode;
+            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0");
+
+            Swal.fire({
+                title: 'Selesaikan Pengajuan',
+                html: `<input id="swal-input1" class="swal2-input" type="number" min="1" max="${sisaJumlah}" placeholder="Jumlah yang diselesaikan (maks: ${sisaJumlah})">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Selesaikan',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const jumlahSelesai = parseInt(document.getElementById('swal-input1').value);
+                    if (!jumlahSelesai || jumlahSelesai <= 0 || jumlahSelesai > sisaJumlah) return Swal.showValidationMessage(`Jumlah harus antara 1 dan ${sisaJumlah}`);
+                    return jumlahSelesai;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                kode_pengajuan: kode,
+                                status: "completed",
+                                jumlah_selesai: result.value
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                        });
+                }
+            });
+        });
+    });
+
+    // Search 
+    function searchTableById(tableId, inputValue) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+
+        const trs = table.querySelectorAll("tbody tr");
+        const query = inputValue.toLowerCase();
+
+        trs.forEach(tr => {
+            const tds = tr.querySelectorAll("td");
+            let match = false;
+
+            tds.forEach(td => {
+                if (td.innerText.toLowerCase().includes(query)) {
+                    match = true;
+                }
+            });
+
+            tr.style.display = match ? "" : "none";
+        });
+    }
+
+    // Fungsi khusus untuk tiap tab
+    function searchRequest() {
+        const input = document.querySelector('#request .list-input-request').value;
+        searchTableById('dataTable-request', input);
+    }
+
+    function searchIncomplete() {
+        const input = document.querySelector('#incomplete .list-input-incomplete').value;
+        searchTableById('dataTable-incomplete', input);
+    }
+
+    function searchApproved() {
+        const input = document.querySelector('#approved .list-input-complete').value;
+        searchTableById('dataTable-complete', input);
+    }
+</script>
+
 
 <div class="content-wrapper">
     <div class="sub-content">
-        <h4 style="font-weight: 800; font-size:32px;">Submission Overview</h4>
-        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+        <h4 style="font-weight: 800; font-size:28px;">Submission Overview</h4>
         <?php if ($isKanwil): ?>
             <div class="tabs">
                 <button class="tabslinks" onclick="openTab(event, 'incomplete')">Request <span class="badge"><?= $incompleteCount ?></span></button>
@@ -130,10 +453,11 @@ while ($row = $result->fetch_assoc()) {
 
 
 
-        <div id="request" class="tabscontent" style="display: block;">
+        <div id="request" class="tabscontent">
             <div class="body-content">
+                <input type="text" onkeyup="searchRequest()" placeholder="Search ..." class="list-input-request">
                 <div class="table-container">
-                    <table id="dataTable-incomplete" style="width:100%;">
+                    <table id="dataTable-request" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>Kode Pengajuan</th>
@@ -214,6 +538,7 @@ while ($row = $result->fetch_assoc()) {
 
         <div id="incomplete" class="tabscontent">
             <div class="body-content">
+                <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
                 <div class="table-container">
                     <table id="dataTable-incomplete" style="width:100%;">
                         <thead>
@@ -297,6 +622,7 @@ while ($row = $result->fetch_assoc()) {
 
         <div id="approved" class="tabscontent">
             <div class="body-content">
+                <input type="text" onkeyup="searchApproved()" placeholder="Search ..." class="list-input-complete">
                 <div class="table-container">
                     <table id="dataTable-complete" style="width:100%;">
                         <thead>

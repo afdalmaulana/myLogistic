@@ -110,6 +110,75 @@ if ($kodeUkerSession) {
     </script>
 <?php endif; ?>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Fungsi buka tab
+        function openInvent(evt, tabName) {
+            var i, tabcontentinvent, tablinks;
+
+            tabcontentinvent = document.getElementsByClassName("tabcontent-invent");
+            if (!tabcontentinvent.length) {
+                console.warn("Tidak ada tab content ditemukan, mungkin ini bukan halaman inventory");
+                return; // langsung keluar, gak usah buka tab
+            }
+
+            for (i = 0; i < tabcontentinvent.length; i++) {
+                tabcontentinvent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablink-invent");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            var tabElem = document.getElementById(tabName);
+            if (!tabElem) {
+                // fallback ke 'stocks' kalau id tidak ditemukan
+                tabName = 'stocks';
+                tabElem = document.getElementById(tabName);
+            }
+            if (!tabElem) {
+                console.warn("Tab dengan id '" + tabName + "' tidak ditemukan, skip openInvent");
+                return;
+            }
+
+            tabElem.style.display = "block";
+
+            if (evt) {
+                evt.currentTarget.className += " active";
+            } else {
+                var autoBtn = document.querySelector('.tablink-invent[onclick*="' + tabName + '"]');
+                if (autoBtn) {
+                    autoBtn.className += " active";
+                }
+            }
+        }
+
+
+        // Cek hash di URL dan buka tab sesuai
+        const hash = window.location.hash;
+        const validTabs = ['stocks', 'formBarang_masuk', 'formBarang_keluar'];
+
+        let tabName = 'stocks'; // default
+
+        if (hash) {
+            const potentialTab = hash.substring(1);
+            if (validTabs.includes(potentialTab)) {
+                tabName = potentialTab;
+            } else {
+                // Kalau hash tidak valid, hapus hash dari URL
+                history.replaceState(null, null, ' ');
+            }
+        }
+
+        openInvent(null, tabName);
+
+        // Optional: expose openTab ke global (jika dipakai di HTML onclick)
+        window.openInvent = openInvent;
+    });
+</script>
+
 
 <div class="dashboard-menu">
     <div class="content-heading">Inventory Management</div>

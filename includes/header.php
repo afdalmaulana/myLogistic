@@ -551,7 +551,7 @@
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 5px 12px;
             transition: 0.3s;
             font-size: 17px;
             margin-top: 12px;
@@ -1025,11 +1025,11 @@
         .table-container {
             overflow: visible;
             /* supaya dropdown nggak kepotong */
-            max-height: 350px;
+            max-height: 300px;
             overflow-x: auto;
             overflow-y: auto;
             /* scroll tabel tetap ada */
-            border: 1px solid #ddd;
+            /* border: 1px solid #ddd; */
             font-size: 12px;
         }
 
@@ -1046,7 +1046,7 @@
             background-color: #2460a3ff;
             color: white;
             z-index: 2;
-            padding: 12px;
+            padding: 8px;
             /* box-sizing: border-box; */
         }
 
@@ -1142,7 +1142,7 @@
             display: flex;
             flex-direction: column;
             margin-top: 50px;
-            padding: 20px 2px 40px 2px;
+            padding: 20px 2px 2px 2px;
             border-radius: 8px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
@@ -1275,9 +1275,36 @@
         }
 
         .list-input {
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 10px;
             color: black;
+            border: 2px solid black;
+            cursor: pointer;
+        }
+
+        .list-input-request {
+            width: 200px;
+            margin-bottom: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 2px solid black;
+            cursor: pointer;
+        }
+
+        .list-input-incomplete {
+            width: 200px;
+            margin-bottom: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 2px solid black;
+            cursor: pointer;
+        }
+
+        .list-input-complete {
+            width: 200px;
+            margin-bottom: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
             border: 2px solid black;
             cursor: pointer;
         }
@@ -1364,7 +1391,6 @@
             }
 
             .menu-submission-out,
-            .body-content,
             .content-wrapper,
             .content-wrappers {
                 padding: 16px;

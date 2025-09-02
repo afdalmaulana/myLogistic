@@ -82,6 +82,59 @@ if ($uker && $uker->num_rows > 0) {
     </script>
 <?php endif; ?>
 
+<script>
+    function openIt(evt, tabName) {
+        var i, tabcontentinvent, tablinks;
+
+        // Sembunyikan semua tab
+        tabcontentinvent = document.getElementsByClassName("tabcontent-it");
+        if (!tabcontentinvent.length) {
+            console.warn("Tidak ada elemen tabcontent-it. Mungkin bukan halaman IT.");
+            return;
+        }
+
+        for (i = 0; i < tabcontentinvent.length; i++) {
+            tabcontentinvent[i].style.display = "none";
+        }
+
+        // Hapus class "active" dari semua tombol
+        tablinks = document.getElementsByClassName("tablink-it");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Tampilkan tab jika ada
+        var tabElem = document.getElementById(tabName);
+        if (!tabElem) {
+            console.warn(`Tab dengan id '${tabName}' tidak ditemukan. Skip openIt.`);
+            return;
+        }
+
+        tabElem.style.display = "block";
+
+        // Tambahkan class active ke tombol
+        if (evt) {
+            evt.currentTarget.className += " active";
+        } else {
+            var autoBtn = document.querySelector('.tablink-it[onclick*="' + tabName + '"]');
+            if (autoBtn) {
+                autoBtn.className += " active";
+            }
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        const hash = window.location.hash;
+        if (hash) {
+            const tabName = hash.substring(1); // hapus #
+            openIt(null, tabName); // buka tab otomatis
+        } else {
+            openIt(null, 'stocks'); // default
+        }
+
+        window.openIt = openIt;
+    });
+</script>
+
 
 <div class="dashboard-menu">
     <div class="content-heading">Inventory Management</div>
