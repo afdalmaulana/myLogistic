@@ -193,9 +193,32 @@ if ($status === 'completed') {
     $status_sisa = $sisa_baru === 0 ? 'done' : 'not done';
 
     // Simpan ke barang_masuk (barang masuk bertambah sesuai jumlah yang diselesaikan sekarang)
-    $tanggal = date('Y-m-d');
-    $stmtMasuk = $conn->prepare("INSERT INTO barang_masuk (tanggal, tanggal_nota, nomor_nota, nama_barang, harga_barang, jumlah, kode_uker) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmtMasuk->bind_param("ssssdis", $tanggal, $tanggal, $data['price'], $nama_barang, $harga_barang, $jumlah_baru, $kode_uker);
+    $tanggal_approve = date('Y-m-d'); // hari ini
+    $tanggal_nota = null; // dikosongkan (user uker akan isi nanti)
+
+    $jumlah_masuk = $jumlah_baru;
+    // Insert ke barang_masuk
+    $stmtMasuk = $conn->prepare("
+        INSERT INTO barang_masuk (
+            tanggal, 
+            tanggal_approve, 
+            tanggal_nota, 
+            price, 
+            nama_barang, 
+            jumlah, 
+            kode_uker
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmtMasuk->bind_param(
+        "sssisis",
+        $tanggal_pengajuan,
+        $tanggal_approve,
+        $tanggal_nota,
+        $data['price'],
+        $nama_barang,
+        $jumlah_masuk,
+        $kode_uker
+    );
     $stmtMasuk->execute();
     $stmtMasuk->close();
 

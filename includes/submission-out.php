@@ -115,6 +115,8 @@ while ($row = $result->fetch_assoc()) {
 ?>
 
 <script>
+    const isLogistikAyani = <?= ($pnLogistikAyani ? 'true' : 'false') ?>;
+    const isLogistikSudirman = <?= ($pnLogistikSudirman ? 'true' : 'false') ?>;
     document.addEventListener("DOMContentLoaded", function() {
 
         // Fungsi buka tab
@@ -349,7 +351,7 @@ while ($row = $result->fetch_assoc()) {
         // Tombol Selesaikan (baru)
 
         document.getElementById("btn-selesaikan").addEventListener("click", () => {
-            if (!isLogistik) {
+            if (!isLogistikAyani && !isLogistikSudirman) {
                 Swal.fire("Akses Ditolak", "Hanya user logistik yang bisa menyelesaikan pengajuan ini.", "error");
                 return;
             }
