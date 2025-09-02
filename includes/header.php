@@ -312,13 +312,26 @@
             color: orange;
         }
 
+        .bluee {
+            color: #2460a3ff;
+        }
+
+        .greens {
+            color: #24b311ff;
+        }
+
+        .langolango {
+            color: #b70ce6ff;
+        }
+
         .red {
             color: red;
         }
 
         /* PROFILE */
         .profile-container {
-            /* position: absolute; */
+            position: relative;
+            /* dibutuhkan agar dropdown bisa posisi absolute relatif ke sini */
             top: 5px;
             right: 20px;
             cursor: pointer;
@@ -332,6 +345,7 @@
         .profile-dropdown {
             display: none;
             position: absolute;
+            top: 100%;
             right: 0;
             background-color: white;
             border: 1px solid #ddd;
@@ -342,9 +356,7 @@
             z-index: 999;
         }
 
-
-
-        .profile-container:hover .profile-dropdown {
+        .profile-container.active .profile-dropdown {
             display: block;
         }
 
@@ -1570,6 +1582,29 @@
 
 
         @media screen and (max-width: 768px) {
+            .profile-container {
+                position: relative;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+            }
+
+            .profile-dropdown {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                /* agar center di bawah icon */
+                background-color: white;
+                border: 1px solid #ddd;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                padding: 15px;
+                width: 200px;
+                z-index: 999;
+            }
+
             .main-wrapper {
                 flex-direction: column;
             }

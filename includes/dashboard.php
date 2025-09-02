@@ -65,7 +65,7 @@ $dashboardStats = [
         'title' => $isKanwil ? 'Approved Submission' : 'Submission Summary',
         'result' => $isKanwil ? $approvedPengajuan : $tampung,
         'icon' => 'fa-archive',
-        'color' => '',
+        'color' => 'bluee',
         'link' => $isKanwil ? 'index.php?page=submission-out#approved' : 'index.php?page=submission-out#request',
     ],
     [
@@ -79,14 +79,14 @@ $dashboardStats = [
         'title' => 'Outgoing Items',
         'result' => $outstocks,
         'icon' => 'fa fa-mail-forward',
-        'color' => '',
+        'color' => 'langolango',
         'link' => 'index.php?page=log-inventory#barang_keluar',
     ],
     [
         'title' => 'Incoming Items',
         'result' => $instocks,
         'icon' => 'fa fa-mail-reply',
-        'color' => '',
+        'color' => 'greens',
         'link' => 'index.php?page=log-inventory#barang_masuk',
     ],
 ];

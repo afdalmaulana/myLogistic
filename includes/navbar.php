@@ -13,31 +13,43 @@ $jabatan = isset($_SESSION['nama_jabatan']) ? $_SESSION['nama_jabatan'] : '';
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const logoutBtn = document.getElementById("logoutBtn");
+        const profileContainer = document.getElementById("profileContainer");
+        const logoutForm = document.getElementById("logoutForm");
 
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", function(e) {
-                e.preventDefault(); // Mencegah link langsung dijalankan
+        // Toggling dropdown saat diklik
+        profileContainer.addEventListener("click", function(e) {
+            e.stopPropagation(); // agar klik tidak tembus ke document
+            this.classList.toggle("active");
+        });
 
-                Swal.fire({
-                    title: 'Yakin ingin logout?',
-                    text: "",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, logout!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Arahkan ke logout.php
-                        window.location.href = logoutBtn.getAttribute("href");
-                    }
-                });
+        // Klik di luar area profil menutup dropdown
+        document.addEventListener("click", function(e) {
+            if (!e.target.closest("#profileContainer")) {
+                profileContainer.classList.remove("active");
+            }
+        });
+
+        // Konfirmasi logout
+        logoutForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, logout!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    logoutForm.submit(); // tetap pakai POST
+                }
             });
-        }
+        });
     });
 </script>
+
+
+
 <div class="nav">
     <div class="isinavbar">
         <!-- Bagian Kiri -->
@@ -45,29 +57,24 @@ $jabatan = isset($_SESSION['nama_jabatan']) ? $_SESSION['nama_jabatan'] : '';
             <img src="../assets/img/logo.png" alt="bri" style="height:50px">
         </div>
         <div class="nav-right">
-            <div class="profile-container">
+            <div class="profile-container" id="profileContainer">
                 <div class="profile-icon">
                     <i class="fa fa-user-circle"></i>
                 </div>
-                <div class="profile-dropdown">
+                <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-groups">
-                        <div class="profile-name"><?php echo $kodeUker; ?></div>
+                        <div class="profile-name"><?= $kodeUker ?></div>
                         <div style="font-size: 32px; margin-top:-16px; color:black;"> - </div>
-                        <div class="profile-name"><?php echo $jabatan; ?></div>
+                        <div class="profile-name"><?= $jabatan ?></div>
                     </div>
-                    <div class="profile-name"><?php echo $username; ?></div>
-                    <div class="profile-name"><?php echo $namaPekerja; ?></div>
-                    <form action="logout.php" method="post">
-                        <a href="logout.php" class="logoutBtn" id="logoutBtn">LOG OUT</a>
+                    <div class="profile-name"><?= $username ?></div>
+                    <div class="profile-name"><?= $namaPekerja ?></div>
+                    <form id="logoutForm" action="logout.php" method="post">
+                        <button type="submit" class="logoutBtn">LOG OUT</button>
                     </form>
                 </div>
             </div>
         </div>
-
-
-        <!-- <a href="index.php?page=formInMail" class="menu-item">Tulis Surat Masuk</a>
-            <a href="index.php?page=formOutMail" class="menu-item">Tulis Surat Keluar</a> -->
-        <!-- <button id="signinbutton">Sign in</button> -->
     </div>
 </div>
 </div>
