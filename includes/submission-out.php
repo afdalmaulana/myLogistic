@@ -361,7 +361,9 @@ while ($row = $result->fetch_assoc()) {
 
             Swal.fire({
                 title: 'Selesaikan Pengajuan',
-                html: `<input id="swal-input1" class="swal2-input" type="number" min="1" max="${sisaJumlah}" placeholder="Jumlah yang diselesaikan (maks: ${sisaJumlah})">`,
+                text: "Masukkan jumlah yang ingin di beli",
+                html: `<p>Masukkan jumlah yang ingin di beli</p>
+                <input style="width:50%;" id="swal-input1" class="swal2-input" type="number" min="1" max="${sisaJumlah}" placeholder="Jumlah (maks: ${sisaJumlah})">`,
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: 'Selesaikan',
