@@ -69,7 +69,7 @@ if (isset($_SESSION['user'])) {
     <div class="login-wrapper">
         <div class="form-input-login">
             <div class="login-heading">
-                <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrackSSSS</div>
+                <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
                 <p>Masukkan username sesuai dengan kode uker</p>
             </div>
             <div class="input-login">
