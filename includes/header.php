@@ -1363,6 +1363,7 @@
                 flex-direction: column;
             }
 
+
             .signup-wrapper {
                 margin-top: 40px;
                 padding: 0 16px;
@@ -1581,6 +1582,7 @@
         }
 
 
+
         @media screen and (max-width: 768px) {
             .profile-container {
                 position: relative;
@@ -1615,6 +1617,18 @@
                 height: auto;
                 box-shadow: none;
                 margin-top: 60px;
+            }
+
+            .list-select {
+                width: 60px;
+                padding: 2px 6px;
+                border-radius: 8px;
+                color: white;
+                border: 2px solid black;
+                cursor: pointer;
+                background: #2460a3ff;
+                font-size: 6px;
+                transition: background-color 0.3s, border-color 0.3s;
             }
 
             .nav {

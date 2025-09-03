@@ -188,7 +188,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                             </select>
                         </form>
                     <?php endif; ?>
-                    <a href="export_barangMasuk.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Masuk</a>
+                    <a href="export_barangMasuk.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
@@ -286,7 +286,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                             </select>
                         </form>
                     <?php endif; ?>
-                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel - Barang Keluar</a>
+                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
