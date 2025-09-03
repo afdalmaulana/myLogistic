@@ -1614,6 +1614,7 @@
                 width: 100%;
                 height: auto;
                 box-shadow: none;
+                margin-top: 60px;
             }
 
             .nav {
