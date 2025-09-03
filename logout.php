@@ -1,7 +1,10 @@
 <?php
 session_start();
-session_unset(); // Hapus semua variabel session
-session_destroy(); // Hancurkan session
+session_unset();
+session_destroy();
 
-header("Location: signin.php"); // Redirect ke halaman login
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+
+header("Location: /");
 exit;
