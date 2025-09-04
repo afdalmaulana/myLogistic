@@ -1206,7 +1206,7 @@
             /* border: 6px solid #dbe5edff; */
             padding: 10px 40px 10px 40px;
             min-height: 420px;
-            min-width: 320px;
+            min-width: 380px;
             color: white;
             overflow-y: auto;
             border-radius: 20px;
@@ -1215,6 +1215,7 @@
             /* Dark navy-like with transparency */
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
+            text-align: center;
 
             /* Soft shadow */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -1240,7 +1241,7 @@
         }
 
         .input-login {
-            margin-top: 60px;
+            margin-top: 30px;
             display: flex;
             flex-direction: column;
             gap: 20px;

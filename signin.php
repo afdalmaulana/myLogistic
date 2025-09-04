@@ -70,6 +70,7 @@ if (isset($_SESSION['user'])) {
         <div class="form-input-login">
             <div class="login-heading">
                 <div style="font-size: 22px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
+                <p style="font-size: 12px;">Supervisi KC Makassar Ahmad Yani || Sudirman || Tamalanrea</p>
                 <p>Masukkan username sesuai dengan kode uker</p>
             </div>
             <div class="input-login">
@@ -90,5 +91,6 @@ if (isset($_SESSION['user'])) {
                 </div>
             </div>
             <p>Forget Your Password ? Contact Admin</p>
+            <p>Copyright by Muh. Afdal Maulana Said & Reinaldo Wattimena</p>
         </div>
 </form>
