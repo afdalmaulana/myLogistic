@@ -44,6 +44,107 @@ if (!$list) {
 }
 ?>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // 🛠️ Event untuk tombol Edit
+        document.querySelectorAll('.editUserBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const username = btn.dataset.username;
+                const nama = btn.dataset.nama;
+                const role = btn.dataset.role;
+                const jabatan = btn.dataset.jabatan;
+                const uker = btn.dataset.uker;
+
+                Swal.fire({
+                    title: 'Edit User',
+                    html: `
+          <input id="swal-username" class="swal2-input" value="${username}" placeholder="Username">
+          <input id="swal-nama" class="swal2-input" value="${nama}" placeholder="Nama Pekerja">
+          <input id="swal-role" class="swal2-input" value="${role}" placeholder="Role">
+          <input id="swal-jabatan" class="swal2-input" value="${jabatan}" placeholder="ID Jabatan">
+          <input id="swal-uker" class="swal2-input" value="${uker}" placeholder="Kode Uker">
+        `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Update',
+                    preConfirm: () => {
+                        return {
+                            username: document.getElementById('swal-username').value,
+                            nama: document.getElementById('swal-nama').value,
+                            role: document.getElementById('swal-role').value,
+                            jabatan: document.getElementById('swal-jabatan').value,
+                            uker: document.getElementById('swal-uker').value
+                        };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('updateUser.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(result.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil', 'User berhasil diupdate', 'success').then(() => location.reload());
+                                } else {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
+                                }
+                            });
+                    }
+                });
+            });
+        });
+
+        // 🔑 Event untuk Ganti Password
+        document.querySelectorAll('.changePassBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const username = btn.dataset.username;
+
+                Swal.fire({
+                    title: `Ganti Password untuk ${username}`,
+                    html: `<input id="swal-newpass" class="swal2-input" type="password" placeholder="Password Baru">`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Update',
+                    preConfirm: () => {
+                        const password = document.getElementById('swal-newpass').value;
+                        if (!password) {
+                            Swal.showValidationMessage('Password tidak boleh kosong');
+                            return false;
+                        }
+                        return {
+                            username,
+                            password
+                        };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('update_password.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(result.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil', 'Password berhasil diubah', 'success');
+                                } else {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
+                                }
+                            });
+                    }
+                });
+            });
+        });
+
+    });
+</script>
+
+
 <div class="dashboard-menu">
     <div class="content-heading">User List Management</div>
 
@@ -72,9 +173,12 @@ if (!$list) {
                         <tr>
                             <th>Username</th>
                             <th>Nama Pekerja</th>
+                            <th>Password</th>
                             <th>Role</th>
                             <th>Kode Uker</th>
                             <th>Jabatan</th>
+                            <th></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -84,10 +188,21 @@ if (!$list) {
                                 <tr>
                                     <td><?= htmlspecialchars($row['username']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_pekerja']) ?></td>
+                                    <td>
+                                        <button class="changePassBtn"
+                                            data-username="<?= $row['username'] ?>">Ganti Password</button>
+                                    </td>
                                     <td><?= htmlspecialchars($row['role']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_jabatan']) ?></td>
-                                    <td></td>
+                                    <td>
+                                        <button class="editUserBtn"
+                                            data-username="<?= $row['username'] ?>"
+                                            data-nama="<?= $row['nama_pekerja'] ?>"
+                                            data-role="<?= $row['role'] ?>"
+                                            data-jabatan="<?= $row['id_jabatan'] ?>"
+                                            data-uker="<?= $row['kode_uker'] ?>">Edit</button>
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
