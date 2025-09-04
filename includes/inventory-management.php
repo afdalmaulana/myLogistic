@@ -36,7 +36,7 @@ $kodeUker = $_SESSION['kode_uker'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 
-$isLogistikTamalanrea = $user === '';
+$isLogistikTamalanrea = $user === '00220631';
 $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
 
