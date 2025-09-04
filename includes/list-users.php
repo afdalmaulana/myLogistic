@@ -28,11 +28,14 @@ if (isset($_GET['filter_uker']) && $_GET['filter_uker'] !== '') {
 $query = "
     SELECT 
         users.*, 
-        jabatan.nama_jabatan 
+        jabatan.nama_jabatan, 
+        unit_kerja.nama_uker
     FROM 
         users 
     LEFT JOIN 
         jabatan ON users.id_jabatan = jabatan.id_jabatan
+    LEFT JOIN 
+        unit_kerja ON users.kode_uker = unit_kerja.kode_uker
     WHERE $whereClause
 ";
 
@@ -177,6 +180,7 @@ if (!$list) {
                             <th>Password</th>
                             <th>Role</th>
                             <th>Kode Uker</th>
+                            <th>Nama Unit Kerja</th>
                             <th>Jabatan</th>
                             <th></th>
                             <th></th>
@@ -202,6 +206,7 @@ if (!$list) {
                                     </td>
                                     <td><?= htmlspecialchars($row['role']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_jabatan']) ?></td>
                                 </tr>
                             <?php endwhile; ?>

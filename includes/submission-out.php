@@ -12,6 +12,7 @@ $errorMessage = '';
 // ------------------- PERBAIKAN FILTER QUERY -----------------------
 $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+$tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
 $role = $_SESSION['role'] ?? '';
 $user = $_SESSION['user'] ?? '';
@@ -22,11 +23,14 @@ $isAdmin = $role === 'admin';
 $isKanwil = $idJabatan === 'JB3';
 $pnLogistikSudirman = $user === '00344250';
 $pnLogistikAyani = $user === '00203119';
+$pnLogistikTamalanrea = $user === '00220631';
 $isSudirmanAccess = in_array($user, ['00068898', '00031021']);
 $isAyaniAccess = in_array($user, ['00008839', '00030413']);
+$isTamalanreaAccess = in_array($user, ['00028145', '00062209']);
 
 $isLogistikSudirman = $pnLogistikSudirman || $isSudirmanAccess;
 $isLogistikAhmadYani = $pnLogistikAyani || $isAyaniAccess;
+$isLogistikTamalanrea = $pnLogistikTamalanrea || $isTamalanreaAccess;
 
 if ($isAdmin || $isKanwil) {
     // Admin, 0050, dan Kanwil bisa lihat semua
@@ -49,6 +53,16 @@ if ($isAdmin || $isKanwil) {
 } elseif ($isLogistikAhmadYani || $isAyaniAccess) {
     // Logistik Ahmad Yani hanya bisa lihat unit Ahmad Yani
     $inClause = "'" . implode("','", $ahmadYaniCodes) . "'";
+    $query = "
+        SELECT p.*, a.nama_anggaran 
+        FROM pengajuan p
+        LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+        WHERE p.kode_uker IN ($inClause)
+        ORDER BY p.kode_pengajuan DESC
+    ";
+} elseif ($isLogistikTamalanrea || $isTamalanreaAccess) {
+    // Logistik Tamalanrea hanya bisa melihat uker Tamalanrea
+    $inClause = "'" . implode("','", $tamalanreaCodes) . "'";
     $query = "
         SELECT p.*, a.nama_anggaran 
         FROM pengajuan p
@@ -88,7 +102,9 @@ while ($row = $result->fetch_assoc()) {
         $isAllowed = true;
     } elseif ($isLogistikAhmadYani && in_array($kode_uker, $ahmadYaniCodes)) {
         $isAllowed = true;
-    } elseif (!$isLogistikSudirman && !$isLogistikAhmadYani) {
+    } elseif ($isLogistikTamalanrea && in_array($kode_uker, $tamalanreaCodes)) {
+        $isAllowed = true;
+    } elseif (!$isLogistikSudirman && !$isLogistikAhmadYani && !$isLogistikTamalanrea) {
         // Jika bukan user logistik, tampilkan semua
         $isAllowed = true;
     }
@@ -117,6 +133,7 @@ while ($row = $result->fetch_assoc()) {
 <script>
     const isLogistikAyani = <?= ($pnLogistikAyani ? 'true' : 'false') ?>;
     const isLogistikSudirman = <?= ($pnLogistikSudirman ? 'true' : 'false') ?>;
+    const isLogistikTamalanrea = <?= ($pnLogistikTamalanrea ? 'true' : 'false') ?>;
     document.addEventListener("DOMContentLoaded", function() {
 
         // Fungsi buka tab
@@ -527,6 +544,7 @@ while ($row = $result->fetch_assoc()) {
                                 // Filter khusus logistik berdasarkan kode uker
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
 
                                 $hasData = true;
                                 $class = match ($status) {
@@ -548,7 +566,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td>
-                                        <?php if ($isAdmin || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani): ?>
+                                        <?php if ($isAdmin || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
                                             <button class="btn-action"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
@@ -610,6 +628,7 @@ while ($row = $result->fetch_assoc()) {
                                 if (!in_array($status, ['approved', 'forward']) || !in_array($status_sisa, ['not done', 'done'])) continue;
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
                                 $hasData = true;
                                 $class = match ($status) {
                                     'pending' => 'status-pending',
@@ -640,7 +659,7 @@ while ($row = $result->fetch_assoc()) {
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
-                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikAhmadYani)): ?>
+                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikAhmadYani || $isLogistikTamalanrea)): ?>
                                             <button class="btn-action"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
@@ -727,12 +746,6 @@ while ($row = $result->fetch_assoc()) {
                 </div>
             </div>
         </div>
-
-
-
-
-
-
     </div>
 </div>
 <div id="global-actions" class="dropdown-action" style="display:none; position:absolute; z-index:9999;">
