@@ -171,6 +171,7 @@ if (!$list) {
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
+                            <th>Edit</th>
                             <th>Username</th>
                             <th>Nama Pekerja</th>
                             <th>Password</th>
@@ -179,13 +180,20 @@ if (!$list) {
                             <th>Jabatan</th>
                             <th></th>
                             <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($list->num_rows > 0): ?>
                             <?php while ($row = $list->fetch_assoc()): ?>
                                 <tr>
+                                    <td>
+                                        <button class="editUserBtn"
+                                            data-username="<?= $row['username'] ?>"
+                                            data-nama="<?= $row['nama_pekerja'] ?>"
+                                            data-role="<?= $row['role'] ?>"
+                                            data-jabatan="<?= $row['id_jabatan'] ?>"
+                                            data-uker="<?= $row['kode_uker'] ?>"><i class="fa fa-edit" style="font-size:22px"></i></button>
+                                    </td>
                                     <td><?= htmlspecialchars($row['username']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_pekerja']) ?></td>
                                     <td>
@@ -195,14 +203,6 @@ if (!$list) {
                                     <td><?= htmlspecialchars($row['role']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_jabatan']) ?></td>
-                                    <td>
-                                        <button class="editUserBtn"
-                                            data-username="<?= $row['username'] ?>"
-                                            data-nama="<?= $row['nama_pekerja'] ?>"
-                                            data-role="<?= $row['role'] ?>"
-                                            data-jabatan="<?= $row['id_jabatan'] ?>"
-                                            data-uker="<?= $row['kode_uker'] ?>">Edit</button>
-                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>

@@ -137,7 +137,7 @@ if ($uker && $uker->num_rows > 0) {
 
 
 <div class="dashboard-menu">
-    <div class="content-heading">Inventory Management</div>
+    <div class="content-heading">Inventory Management IT</div>
     <div><i>Manage your inventory, track incoming, and outgoing</i></div>
     <div class="tab-invent">
         <button class="tablink-it active" onclick="openIt(event, 'stocks')">STOCK</button>

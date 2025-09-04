@@ -6,6 +6,7 @@ require 'db_connect.php';
 
 $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+$tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
 $role = $_SESSION['role'] ?? '';
 $user = $_SESSION['user'] ?? '';
@@ -14,11 +15,13 @@ $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
-$isSudirmanAccess = $user === ['00068898', '00031021'];
-$isAyaniAccess = $user === ['00008839', '00030413'];
+$isLogistikTamalanrea = $user === '00220631';
+$isSudirmanAccess = in_array($user, ['00068898', '00031021']);
+$isAyaniAccess = in_array($user, ['00008839', '00030413']);
+$isTamalanreaAccess = in_array($user, ['00028145', '00062209']);
 
 $isAdmin = $role === 'admin';
-$isAdminOrCabang = $isAdmin || $kodeUker === '0050';
+$isAdminLog = $isAdmin;
 $isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
 
 // Reset filter jika diminta
@@ -37,7 +40,7 @@ if (isset($_GET['filter_uker'])) {
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
 // Tentukan WHERE clause berdasarkan role & filter
-if ($isAdminOrCabang) {
+if ($isAdminLog) {
     $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
 } else {
     $whereClause = "kode_uker = '$kodeUker'";
@@ -156,7 +159,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <p style="margin-bottom: 5px;">Log Record</p>
-                    <?php if ($isAdminOrCabang && $isBerwenang): ?>
+                    <?php if ($isAdminLog && $isBerwenang): ?>
                         <form method="GET" style="display: inline-block;">
                             <input type="hidden" name="page" value="log-inventory">
                             <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
@@ -168,6 +171,8 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     $allowedCodes = $sudirmanCodes;
                                 } elseif ($isLogistikAhmadYani || $isAyaniAccess) {
                                     $allowedCodes = $ahmadYaniCodes;
+                                } elseif ($isLogistikTamalanrea || $isTamalanreaAccess) {
+                                    $allowedCodes = $tamalanreaCodes;
                                 }
 
                                 $query = "SELECT DISTINCT kode_uker FROM barang_masuk";
@@ -214,6 +219,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                 // Filter berdasarkan logistik
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
                                 ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
@@ -254,7 +260,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <p style="margin-bottom: 5px;">Log Record</p>
-                    <?php if ($isAdminOrCabang && $isBerwenang): ?>
+                    <?php if ($isAdminLog && $isBerwenang): ?>
                         <form method="GET" style="display: inline-block;">
                             <input type="hidden" name="page" value="log-inventory">
                             <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
@@ -266,6 +272,8 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     $allowedCodes = $sudirmanCodes;
                                 } elseif ($isLogistikAhmadYani) {
                                     $allowedCodes = $ahmadYaniCodes;
+                                } elseif ($isLogistikTamalanrea) {
+                                    $allowedCodes = $tamalanreaCodes;
                                 }
 
                                 $query = "SELECT DISTINCT kode_uker FROM barang_keluar";
@@ -309,6 +317,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                 // Jika logistik Sudirman atau Ahmad Yani, filter kode uker
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
                                 ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>

@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require 'db_connect.php';
 
 $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
-$isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || ($kodeUkerSession === '0050');
+$isAdminlog = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
 
 $isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
 if (isset($_GET['filter_uker'])) {
@@ -19,7 +19,7 @@ if (isset($_GET['filter_uker'])) {
 
 $filterUker = isset($_SESSION['filter_uker']) ? $conn->real_escape_string($_SESSION['filter_uker']) : '';
 
-if ($isAdminOrCabang) {
+if ($isAdminlog) {
     $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
 } else {
     $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
@@ -41,7 +41,7 @@ $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
 
 $isAdmin = $role === 'admin';
-$isAdminOrCabang = $isAdmin || $kodeUker === '0050';
+$isAdminlog = $isAdmin;
 $isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
 
 
@@ -52,13 +52,13 @@ if (isset($_GET['filter_uker'])) {
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
 // Tentukan WHERE clause berdasarkan role & filter
-if ($isAdminOrCabang) {
+if ($isAdminlog) {
     $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
 } else {
     $whereClause = "kode_uker = '$kodeUker'";
 }
 // HILANGKAN baris berikut supaya filter_uker tidak tertimpa:
-// $whereClause = $isAdminOrCabang ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
+// $whereClause = $isAdminlog ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
 
 // Query dengan filter yang sudah benar
 $queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
@@ -209,6 +209,8 @@ if ($kodeUkerSession) {
                                     $allowedCodes = $sudirmanCodes;
                                 } elseif ($isLogistikAhmadYani) {
                                     $allowedCodes = $ahmadYaniCodes;
+                                } elseif ($isLogistikTamalanrea) {
+                                    $allowedCodes = $tamalanreaCodes;
                                 }
 
                                 $query = "SELECT DISTINCT kode_uker FROM barang_masuk";
@@ -247,6 +249,7 @@ if ($kodeUkerSession) {
                                 // Filter berdasarkan logistik
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
                                 ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
@@ -340,6 +343,10 @@ if ($kodeUkerSession) {
                                 <option value="LOG">Logistik</option>
                                 <option value="ADK">Administrasi Keuangan</option>
                                 <option value="RMFT">RMFT</option>
+                                <option value="RMFT">RMSME</option>
+                                <option value="RMFT">CRR</option>
+                                <option value="RMFT">BRIGUNA</option>
+                                <option value="RMFT">KPR</option>
                             </select>
                         </div>
                         <div class="form-group">

@@ -759,6 +759,26 @@
             color: white;
         }
 
+        .editUserBtn {
+            border: none;
+            background: none;
+            color: #00529c;
+        }
+
+        .changePassBtn {
+            border: 2px solid #00529c;
+            background-color: none;
+            border-radius: 8px;
+            padding: 2px 4px;
+            color: #00529c;
+        }
+
+        .changePassBtn:hover {
+            background-color: #00529c;
+            transition: 0.3s ease-in-out;
+            color: white;
+        }
+
         .button-approve:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
