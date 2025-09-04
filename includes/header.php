@@ -727,7 +727,8 @@
         /* tombol */
         .button-approve,
         .button-complete,
-        .button-reject {
+        .button-rejec,
+        .button-addUker {
             background: none;
             border: none;
             font-size: 12px;
@@ -742,6 +743,20 @@
             width: 100%;
             text-align: left;
             transition: background-color 0.3s ease;
+        }
+
+        .addUker {
+            background: none;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            border: 2px solid #00529c;
+        }
+
+        .addUker:hover {
+            background-color: #00529c;
+            transition: 0.3s ease-in-out;
+            color: white;
         }
 
         .button-approve:hover {

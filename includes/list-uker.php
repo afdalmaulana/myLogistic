@@ -9,16 +9,72 @@ $query = "SELECT * FROM unit_kerja ORDER BY kode_uker DESC";
 $uker = $conn->query($query);;
 ?>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addUkerBtn = document.querySelector('.addUker');
+
+        if (addUkerBtn) {
+            addUkerBtn.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Tambah Unit Kerja',
+                    html: '<input id="swal-kode" class="swal2-input" placeholder="Kode Uker">' +
+                        '<input id="swal-nama" class="swal2-input" placeholder="Nama Unit Kerja">',
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Simpan',
+                    preConfirm: () => {
+                        const kode = document.getElementById('swal-kode').value.trim();
+                        const nama = document.getElementById('swal-nama').value.trim();
+
+                        if (!kode || !nama) {
+                            Swal.showValidationMessage('Semua field wajib diisi');
+                            return false;
+                        }
+
+                        return {
+                            kode,
+                            nama
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = result.value;
+
+                        fetch('addUker_Handler.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            })
+                            .then(response => response.json())
+                            .then(res => {
+                                if (res.success) {
+                                    Swal.fire('Berhasil', 'Unit Kerja ditambahkan!', 'success')
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire('Error', 'Tidak bisa terhubung ke server', 'error');
+                            });
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+
 <div class="dashboard-menu">
     <div class="content-heading">User List Management</div>
-
     <div id="list-user" style="display: block;">
         <div class="body-content">
-
             <div class="sub-menu">
                 <p>Daftar Unit Kerja</p>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ..." class="list-input">
-                <button>Tambah Unit Kerja</button>
+                <button class="addUker">Tambah Unit Kerja</button>
             </div>
 
             <!-- Tabel Data User -->
