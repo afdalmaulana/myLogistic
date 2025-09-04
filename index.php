@@ -28,7 +28,8 @@ include 'includes/navbar.php';
                 'inventory-management',
                 'log-inventory',
                 'list-users',
-                'inventory-It'
+                'inventory-It',
+                'list-uker'
             ];
 
             if (in_array($page, $allowed_pages)) {

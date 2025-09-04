@@ -36,6 +36,9 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
             <div>
                 <a href="index.php?page=list-users" class="menu-item">Daftar User</a>
             </div>
+            <div>
+                <a href="index.php?page=list-uker" class="menu-item">Unit Kerja</a>
+            </div>
         <?php endif; ?>
         <?php if (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6'): ?>
             <div>

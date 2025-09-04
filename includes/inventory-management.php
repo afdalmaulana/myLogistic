@@ -28,12 +28,15 @@ if ($isAdminOrCabang) {
 
 $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
+$tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
 $role = $_SESSION['role'] ?? '';
 $user = $_SESSION['user'] ?? '';
 $kodeUker = $_SESSION['kode_uker'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
+
+$isLogistikTamalanrea = $user === '';
 $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
 
