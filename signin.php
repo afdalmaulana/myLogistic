@@ -80,7 +80,7 @@ if (isset($_SESSION['user'])) {
                     <input type="text" name="username" class="list-input" placeholder="Masukkan Username" style="border-radius: 10px;">
                 </div>
                 <div style="display: flex; flex-direction:column; position:relative">
-                    <label>Password</label>
+                    <label style="display: flex; left:0;">Password</label>
                     <input type="password" name="password" id="password" class="list-input" placeholder="Masukkan Password" style="border-radius: 10px;">
                     <span onclick="togglePassword()" style="position: absolute; right: 10px; top: 34px; cursor: pointer; color:black">
                         <i class="fa fa-eye-slash" id="toggleIcon"></i>
