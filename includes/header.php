@@ -727,7 +727,7 @@
         /* tombol */
         .button-approve,
         .button-complete,
-        .button-rejec,
+        .button-reject,
         .button-addUker {
             background: none;
             border: none;
