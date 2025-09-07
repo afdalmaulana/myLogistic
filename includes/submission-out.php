@@ -624,8 +624,12 @@ while ($row = $result->fetch_assoc()) {
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-                                $status_sisa = strtolower($row['status_sisa'] ?? '');
-                                if (!in_array($status, ['approved', 'forward']) || !in_array($status_sisa, ['not done', 'done'])) continue;
+$status_sisa = strtolower($row['status_sisa'] ?? '');
+
+if (!in_array($status, ['approved', 'forward'])) continue;
+if (!in_array($status_sisa, ['not done', 'done'])) continue;
+if ($status === 'approved' && $status_sisa === 'done') continue;
+
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
                                 if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
