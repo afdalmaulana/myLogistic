@@ -659,7 +659,7 @@ while ($row = $result->fetch_assoc()) {
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
-                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikAhmadYani || $isLogistikTamalanrea)): ?>
+                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
                                             <button class="btn-action"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
