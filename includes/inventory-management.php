@@ -319,17 +319,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="form-input">
                     <div class="submission-left">
                         <div class="form-group">
-                            <label>Nama Barang</label>
+                            <label>Product Name</label>
                             <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang">
                         </div>
                     </div>
                     <div class="submission-right">
                         <div class="form-group">
-                            <label>Jumlah</label>
+                            <label>Quantity</label>
                             <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="button-send">Kirim</button>
+                            <button type="submit" class="button-send">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -345,9 +345,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="form-input">
                     <div class="submission-left">
                         <div class="form-group">
-                            <label>Pilih Nama Barang</label>
+                            <label>Product Name</label>
                             <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Nama Barang</option>
+                                <option value="" disabled selected hidden>Choose</option>
                                 <?php
                                 if ($stokResult && $stokResult->num_rows > 0) {
                                     while ($row = $stokResult->fetch_assoc()) {
@@ -359,16 +359,16 @@ document.addEventListener("DOMContentLoaded", function () {
                                 ?>
                             </select>
                             <div class="form-group">
-                                <label for="">Jumlah</label>
+                                <label for="">Quantity</label>
                                 <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" required>
                             </div>
                         </div>
                     </div>
                     <div class="submission-right">
                         <div class="form-group">
-                            <label>Departemen</label>
+                            <label>Departement</label>
                             <select name="divisi" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Departemen</option>
+                                <option value="" disabled selected hidden>Choose</option>
                                 <option value="OPS">Operasional</option>
                                 <option value="HC">Human Capital</option>
                                 <option value="LOG">Logistik</option>
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </select>
                         </div>
                         <div class="form-group">
-                            <button type="submit" id="submitBtn" class="button-send">Kirim</button>
+                            <button type="submit" id="submitBtn" class="button-send">Submit</button>
                         </div>
                     </div>
                 </div>

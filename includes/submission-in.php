@@ -87,19 +87,19 @@ $anggaran = $conn->query($queryAnggaran);
                         <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" class="list-input" placeholder="Tanggal" style="border-radius: 10px;" required readonly>
                     </div>
                     <div class="form-group">
-                        <label for="">Nomor Pengajuan / Surat</label>
+                        <label for="">Submission Number</label>
                         <input type="text" name="kode_pengajuan" class="list-input" placeholder="Input here ... " style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
-                        <label>Nama Barang</label>
+                        <label>Product Name</label>
                         <input type="text" name="nama_barang" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                 </div>
                 <div class="submission-right">
                     <div class="form-group">
-                        <label for="">Nama Anggaran</label>
+                        <label for="">Budget Name</label>
                         <select name="id_anggaran" class="list-input" required style="border-radius: 10px;">
-                            <option value="" disabled selected hidden>Pilih Nama Anggaran</option>
+                            <option value="" disabled selected hidden>Choose Budget</option>
                             <?php
                             if ($anggaran && $anggaran->num_rows > 0) {
                                 while ($row = $anggaran->fetch_assoc()) {
@@ -110,11 +110,11 @@ $anggaran = $conn->query($queryAnggaran);
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Anggaran</label>
+                        <label>Amount of Budget</label>
                         <input type="text" name="jumlah_anggaran" id="jumlahAnggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
-                        <label>Jumlah Barang</label>
+                        <label>Input Quantity</label>
                         <input type="number" name="jumlah" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div>
