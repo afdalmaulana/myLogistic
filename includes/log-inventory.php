@@ -40,10 +40,34 @@ if (isset($_GET['filter_uker'])) {
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
 // Tentukan WHERE clause berdasarkan role & filter
-if ($isAdminLog) {
-    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
+if ($isAdminlog) {
+    // Admin bisa lihat semua, atau filter jika ada
+    $whereClause = (!empty($filterUker)) ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'" : "1";
+} else if ($isLogistikAhmadYani) {
+    $allowedUkerList = "'" . implode("','", $ahmadYaniCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $ahmadYaniCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
+} else if ($isLogistikSudirman) {
+    $allowedUkerList = "'" . implode("','", $sudirmanCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $sudirmanCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
+} else if ($isLogistikTamalanrea) {
+    $allowedUkerList = "'" . implode("','", $tamalanreaCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $tamalanreaCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
 } else {
-    $whereClause = "kode_uker = '$kodeUker'";
+    // User biasa hanya bisa lihat kode_uker dari sessionnya
+    $kodeUkerEsc = $conn->real_escape_string($kodeUkerSession);
+    $whereClause = "kode_uker = '$kodeUkerEsc'";
 }
 
 // Ambil data barang masuk dan keluar
@@ -215,12 +239,6 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                     <tbody>
                         <?php if ($stocksIn && $stocksIn->num_rows > 0): ?>
                             <?php while ($row = $stocksIn->fetch_assoc()) : ?>
-                                <?php
-                                // Filter berdasarkan logistik
-                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
-                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
-                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
-                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
@@ -290,7 +308,6 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
                                 endwhile;
                                 ?>
-
                             </select>
                         </form>
                     <?php endif; ?>
@@ -313,12 +330,6 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                     <tbody>
                         <?php if ($resultOut && $resultOut->num_rows > 0): ?>
                             <?php while ($row = $resultOut->fetch_assoc()): ?>
-                                <?php
-                                // Jika logistik Sudirman atau Ahmad Yani, filter kode uker
-                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
-                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
-                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
-                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
