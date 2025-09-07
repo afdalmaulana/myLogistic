@@ -13,6 +13,7 @@ $user = $_SESSION['user'] ?? '';
 $kodeUker = $_SESSION['kode_uker'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
+$isAdminlog = ($role === 'admin');
 $isLogistikSudirman = $user === '00344250';
 $isLogistikAhmadYani = $user === '00203119';
 $isLogistikTamalanrea = $user === '00220631';
