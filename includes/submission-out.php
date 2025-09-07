@@ -700,8 +700,10 @@ if ($status === 'approved' && $status_sisa === 'done') continue;
                                 <th>Nama Barang</th>
                                 <th>Status</th>
                                 <th>Jumlah</th>
-                                <th>No. Surat</th>
                                 <th>Keterangan</th>
+                                <?php if ($isAdmin): ?>
+            <th>Aksi</th>
+        <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -737,6 +739,15 @@ if ($status === 'approved' && $status_sisa === 'done') continue;
                                             <div style="font-size:12px;">Pengajuan ditolak</div>
                                         <?php endif; ?>
                                     </td>
+                                    <?php if ($isAdmin): ?>
+    <td>
+        <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                                 <i class="fa fa-trash-o"></i>
+                                            </button>
+
+    </td>
+<?php endif; ?>
+
 
                                 </tr>
                             <?php endwhile; ?>
