@@ -5,78 +5,75 @@ if (session_status() === PHP_SESSION_NONE) {
 require 'db_connect.php';
 
 $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
-$isAdminlog = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
+$role = $_SESSION['role'] ?? '';
+$user = $_SESSION['user'] ?? '';
+$idJabatan = $_SESSION['id_jabatan'] ?? '';
 
-$isBerwenang = isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
-if (isset($_GET['filter_uker'])) {
-    $_SESSION['filter_uker'] = $_GET['filter_uker'];
-}
+$isAdminlog = ($role === 'admin');
+$isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
 
-// Ambil filter dari session
-if (isset($_GET['filter_uker'])) {
-    $_SESSION['filter_uker'] = $_GET['filter_uker'];
-}
-
-$filterUker = isset($_SESSION['filter_uker']) ? $conn->real_escape_string($_SESSION['filter_uker']) : '';
-
-if ($isAdminlog) {
-    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
-} else {
-    $kode_uker = $conn->real_escape_string($_SESSION['kode_uker']);
-    $whereClause = "kode_uker = '$kode_uker'";
-}
-
+// Daftar kode uker untuk masing-masing logistik
 $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
 $tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
-$role = $_SESSION['role'] ?? '';
-$user = $_SESSION['user'] ?? '';
-$kodeUker = $_SESSION['kode_uker'] ?? '';
-$idJabatan = $_SESSION['id_jabatan'] ?? '';
+// Identifikasi user logistik berdasarkan user ID
+$isLogistikTamalanrea = ($user === '00220631');
+$isLogistikSudirman = ($user === '00344250');
+$isLogistikAhmadYani = ($user === '00203119');
 
-$isLogistikTamalanrea = $user === '00220631';
-$isLogistikSudirman = $user === '00344250';
-$isLogistikAhmadYani = $user === '00203119';
-
-$isAdmin = $role === 'admin';
-$isAdminlog = $isAdmin;
-$isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);
-
-
+// Tangani filter_uker dari GET dan simpan di session
 if (isset($_GET['filter_uker'])) {
     $_SESSION['filter_uker'] = $_GET['filter_uker'];
 }
-
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
-// Tentukan WHERE clause berdasarkan role & filter
+// Tentukan WHERE clause berdasarkan role dan user
 if ($isAdminlog) {
-    $whereClause = (!empty($filterUker)) ? "kode_uker = '$filterUker'" : "1";
+    // Admin bisa lihat semua, atau filter jika ada
+    $whereClause = (!empty($filterUker)) ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'" : "1";
+} else if ($isLogistikAhmadYani) {
+    $allowedUkerList = "'" . implode("','", $ahmadYaniCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $ahmadYaniCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
+} else if ($isLogistikSudirman) {
+    $allowedUkerList = "'" . implode("','", $sudirmanCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $sudirmanCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
+} else if ($isLogistikTamalanrea) {
+    $allowedUkerList = "'" . implode("','", $tamalanreaCodes) . "'";
+    if (!empty($filterUker) && in_array($filterUker, $tamalanreaCodes)) {
+        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
+    } else {
+        $whereClause = "kode_uker IN ($allowedUkerList)";
+    }
 } else {
-    $whereClause = "kode_uker = '$kodeUker'";
+    // User biasa hanya bisa lihat kode_uker dari sessionnya
+    $kodeUkerEsc = $conn->real_escape_string($kodeUkerSession);
+    $whereClause = "kode_uker = '$kodeUkerEsc'";
 }
-// HILANGKAN baris berikut supaya filter_uker tidak tertimpa:
-// $whereClause = $isAdminlog ? "1" : "kode_uker = '{$conn->real_escape_string($kodeUkerSession)}'";
 
-// Query dengan filter yang sudah benar
+// Query data stok dan barang masuk berdasarkan where clause
 $queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
 $stocks = $conn->query($queryStock);
 
 $query = "SELECT * FROM barang_masuk WHERE $whereClause ORDER BY nama_barang DESC";
-$stocksIn = $conn->query($query);;
+$stocksIn = $conn->query($query);
 
-// Barang masuk - full log
+// Query log full (optional)
 $query = "SELECT * FROM barang_masuk ORDER BY tanggal DESC";
 $result = $conn->query($query);
 
-// Barang keluar - full log
 $query = "SELECT * FROM barang_keluar ORDER BY tanggal DESC";
 $resultOut = $conn->query($query);
 
-// ==========================
-// FIX: Stok dropdown HANYA berdasarkan kode_uker login
-// ==========================
+// Untuk dropdown nama barang stok berdasarkan kode_uker session
 if ($kodeUkerSession) {
     $stmt = $conn->prepare("SELECT nama_barang FROM stok_barang WHERE kode_uker = ? ORDER BY nama_barang ASC");
     $stmt->bind_param("s", $kodeUkerSession);
@@ -85,9 +82,8 @@ if ($kodeUkerSession) {
 } else {
     $stokResult = false;
 }
-
-
 ?>
+
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
     <script>
@@ -244,12 +240,6 @@ if ($kodeUkerSession) {
                     <tbody>
                         <?php if ($stocks->num_rows > 0): ?>
                             <?php while ($row = $stocks->fetch_assoc()): ?>
-                                <?php
-                                // Filter berdasarkan logistik
-                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
-                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
-                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
-                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
