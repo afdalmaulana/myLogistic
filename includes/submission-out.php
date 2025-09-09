@@ -624,11 +624,11 @@ while ($row = $result->fetch_assoc()) {
                             $hasData = false;
                             while ($row = $result->fetch_assoc()):
                                 $status = strtolower($row['status']);
-$status_sisa = strtolower($row['status_sisa'] ?? '');
+                                $status_sisa = strtolower($row['status_sisa'] ?? '');
 
-if (!in_array($status, ['approved', 'forward'])) continue;
-if (!in_array($status_sisa, ['not done', 'done'])) continue;
-if ($status === 'approved' && $status_sisa === 'done') continue;
+                                if (!in_array($status, ['approved', 'forward'])) continue;
+                                if (!in_array($status_sisa, ['not done', 'done'])) continue;
+                                if ($status === 'approved' && $status_sisa === 'done') continue;
 
                                 if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
                                 if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
@@ -702,8 +702,8 @@ if ($status === 'approved' && $status_sisa === 'done') continue;
                                 <th>Jumlah</th>
                                 <th>Keterangan</th>
                                 <?php if ($isAdmin): ?>
-            <th>Aksi</th>
-        <?php endif; ?>
+                                    <th>Aksi</th>
+                                <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -740,15 +740,13 @@ if ($status === 'approved' && $status_sisa === 'done') continue;
                                         <?php endif; ?>
                                     </td>
                                     <?php if ($isAdmin): ?>
-    <td>
-        <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
-                                                 <i class="fa fa-trash-o"></i>
+                                        <td>
+                                            <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                                <i class="fa fa-trash-o"></i>
                                             </button>
 
-    </td>
-<?php endif; ?>
-
-
+                                        </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
