@@ -744,7 +744,6 @@ while ($row = $result->fetch_assoc()) {
                                             <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
                                                 <i class="fa fa-trash-o"></i>
                                             </button>
-
                                         </td>
                                     <?php endif; ?>
                                 </tr>
