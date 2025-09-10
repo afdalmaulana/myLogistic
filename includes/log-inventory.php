@@ -168,41 +168,41 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
 
         //Delete 
         document.querySelectorAll('.btn-delete').forEach(button => {
-    button.addEventListener('click', function () {
-        const id = this.dataset.id;
-        const table = this.dataset.table;
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const table = this.dataset.table;
 
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: "Data yang dihapus tidak bisa dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch('deleteLog.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `id=${encodeURIComponent(id)}&table=${encodeURIComponent(table)}`
-                })
-                .then(response => response.text())
-                .then(data => {
-                    Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
-                        .then(() => location.reload());
-                })
-                .catch(error => {
-                    console.error(error);
-                    Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data yang dihapus tidak bisa dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('deleteLog.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `id=${encodeURIComponent(id)}&table=${encodeURIComponent(table)}`
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
+                                    .then(() => location.reload());
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
+                            });
+                    }
                 });
-            }
+            });
         });
-    });
-});
     });
 </script>
 
@@ -296,12 +296,12 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     <td><?= htmlspecialchars($row['price']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td>
-    <?php if ($isAdminlog): ?>
-        <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_masuk" style="background:none; border:none;">
-            <i class="fa fa-trash" style="color:red;"></i>
-        </button>
-    <?php endif; ?>
-</td>
+                                        <?php if ($isAdminlog): ?>
+                                            <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_masuk" style="background:none; border:none;">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
 
                                 </tr>
                             <?php endwhile; ?>
@@ -380,12 +380,12 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['divisi']) ?></td>
                                     <td>
-    <?php if ($isAdminlog): ?>
-        <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
-            <i class="fa fa-trash" style="color:red;"></i>
-        </button>
-    <?php endif; ?>
-</td>
+                                        <?php if ($isAdminlog): ?>
+                                            <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
 
                                 </tr>
                             <?php endwhile; ?>

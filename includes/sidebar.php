@@ -32,7 +32,7 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
                 <a href="index.php?page=add-user" class="menu-item">Tambah Akun</a>
             </div>
         <?php endif; ?>
-        <?php if (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6'): ?>
+        <?php if (isset($_SESSION['id_jabatan']) && in_array($_SESSION['id_jabatan'], ['JB6', 'JB3'])): ?>
             <div>
                 <a href="index.php?page=list-users" class="menu-item">Daftar User</a>
             </div>

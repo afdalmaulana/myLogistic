@@ -177,47 +177,47 @@ if ($kodeUkerSession) {
     });
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.btn-delete-stock').forEach(function (button) {
-        button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.btn-delete-stock').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
 
-            Swal.fire({
-                title: 'Yakin ingin menghapus?',
-                text: "Data akan dihapus secara permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#aaa',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('deleteStock.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + encodeURIComponent(id)
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        if (data.trim() === 'success') {
-                            Swal.fire('Dihapus!', 'Data berhasil dihapus.', 'success').then(() => {
-                                location.reload(); // Atau: hapus baris langsung tanpa reload
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Data akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('deleteStock.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: 'id=' + encodeURIComponent(id)
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data.trim() === 'success') {
+                                    Swal.fire('Dihapus!', 'Data berhasil dihapus.', 'success').then(() => {
+                                        location.reload(); // Atau: hapus baris langsung tanpa reload
+                                    });
+                                } else {
+                                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire('Error!', 'Tidak dapat terhubung ke server.', 'error');
                             });
-                        } else {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire('Error!', 'Tidak dapat terhubung ke server.', 'error');
-                    });
-                }
+                    }
+                });
             });
         });
     });
-});
 </script>
 
 
@@ -280,8 +280,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
                             <?php if ($isAdminlog): ?>
-            <th>Aksi</th>
-        <?php endif; ?>
+                                <th>Aksi</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -291,13 +291,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
-<?php if ($isAdminlog): ?>
-    <td>
-        <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
-            <i class="fa fa-trash" style="color:red;"></i>
-        </button>
-    </td>
-<?php endif; ?>
+                                    <?php if ($isAdminlog): ?>
+                                        <td>
+                                            <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        </td>
+                                    <?php endif; ?>
 
                                 </tr>
                             <?php endwhile; ?>
