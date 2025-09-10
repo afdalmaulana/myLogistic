@@ -217,6 +217,46 @@ if ($kodeUkerSession) {
                 });
             });
         });
+
+        document.querySelectorAll('.editStocks').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const nama_barang = btn.dataset.nama_barang;
+                const jumlah = btn.dataset.jumlah;
+                Swal.fire({
+                    title: 'Edit Stocks',
+                    html: `
+          <input id="swal-nama_barang" class="swal2-input" value="${nama_barang}" placeholder="Nama Barang">
+          <input id="swal-jumlah" class="swal2-input" value="${jumlah}" placeholder="jumlah">
+        `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Update',
+                    preConfirm: () => {
+                        return {
+                            username: document.getElementById('swal-nama_barang').value,
+                            nama: document.getElementById('swal-jumlah').value,
+                        };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('updateStockNew.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(result.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil', 'User berhasil diupdate', 'success').then(() => location.reload());
+                                } else {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
+                                }
+                            });
+                    }
+                });
+            });
+        });
     });
 </script>
 
@@ -298,6 +338,9 @@ if ($kodeUkerSession) {
                                                 <i class="fa fa-trash" style="color:red;"></i>
                                             </button>
                                         </td>
+                                        <td> <button class="editStocks"
+                                                data-nama_barang="<?= $row['nama_barang'] ?>"
+                                                data-jumlah="<?= $row['jumlah'] ?>"><i class="fa fa-edit" style="font-size:22px"></i></button></td>
                                     <?php endif; ?>
 
                                 </tr>
