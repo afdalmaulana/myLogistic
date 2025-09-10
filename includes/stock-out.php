@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/../db_connect.php';
 
 $stokQuery = "SELECT nama_barang FROM stok_barang ORDER BY nama_barang ASC";
 $stokResult = $conn->query($stokQuery);

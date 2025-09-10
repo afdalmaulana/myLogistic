@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
 
 $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
 $role = $_SESSION['role'] ?? '';

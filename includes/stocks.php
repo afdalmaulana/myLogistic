@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/../db_connect.php';
 
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
     (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');

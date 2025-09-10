@@ -10,6 +10,24 @@ include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
 
+<?php if (isset($_SESSION['login_success'])): ?>
+    <script src="js/sweetalert.all.min.js"></script>
+    <script>
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            html: `<div style="font-size: 18px; font-weight: bold;">Selamat Datang</div>
+                   <div style="font-size: 16px;"><?= $_SESSION['nama_pekerja'] ?? $_SESSION['user'] ?></div>`,
+            showConfirmButton: false,
+            timer: 2500
+        }).then(() => {
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        });
+    </script>
+    <?php unset($_SESSION['login_success']); ?>
+<?php endif; ?>
+
 <script>
     // Sembunyikan spinner setelah halaman selesai dimuat
     window.addEventListener('load', function() {
@@ -67,3 +85,4 @@ include 'includes/navbar.php';
 </div>
 
 <?php include 'includes/footer.php'; ?>
+<?php include 'db_close.php'; ?>

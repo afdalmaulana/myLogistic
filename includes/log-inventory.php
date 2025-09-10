@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
 
 $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811', '3815', '3816', '3819', '3821', '3822', '3825', '4986', '7016', '7077'];
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];

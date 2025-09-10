@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
 
 
 $queryAnggaran = "SELECT * FROM anggaran ORDER BY id_anggaran ASC";

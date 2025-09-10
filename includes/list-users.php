@@ -3,7 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
 
 // Cek apakah user adalah admin atau cabang dengan hak khusus
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||

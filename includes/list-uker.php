@@ -3,7 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
 
 $query = "SELECT * FROM unit_kerja ORDER BY kode_uker DESC";
 $uker = $conn->query($query);;
