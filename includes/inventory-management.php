@@ -303,7 +303,7 @@ if ($kodeUkerSession) {
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="2" style="text-align:center;">Belum ada data stok barang</td>
+                                <td colspan="3" style="text-align:center;">Belum ada data stok barang</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
