@@ -41,13 +41,12 @@ if (isset($_SESSION['user'])) {
 
 
 
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", function() {
         const signinBtn = document.getElementById("signinBtn");
 
         if (signinBtn) {
             signinBtn.addEventListener("click", function(e) {
-                // e.preventDefault(); // Mencegah link langsung dijalankan
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -58,7 +57,7 @@ if (isset($_SESSION['user'])) {
             });
         }
     });
-</script>
+</script> -->
 
 
 <div class="background">
