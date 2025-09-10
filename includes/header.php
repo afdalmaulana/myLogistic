@@ -1277,7 +1277,6 @@
             color: white;
             overflow-y: auto;
             border-radius: 20px;
-            /* background-image: linear-gradient(#dbe5edff, #dfe7edff, #dbe5edff); */
             background: rgba(25, 25, 35, 0.45);
             /* Dark navy-like with transparency */
             backdrop-filter: blur(14px);

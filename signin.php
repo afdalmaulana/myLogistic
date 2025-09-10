@@ -82,9 +82,10 @@ if (isset($_SESSION['user'])) {
         <div class="form-input-login">
             <div class="login-heading">
                 <div style="font-size: 26px; margin-top: 12px; font-weight:700">Welcome to LogiTrack</div>
-                <p style="font-size: 20px;">Cluster SBO </p>
-                <p style="font-size: 10px;">Makassar Ahmad Yani || Makassar Sudirman || Tamalanrea</p>
-                <p>Masukkan username sesuai dengan kode uker</p>
+                <div style="display:flex; flex-direction:column; gap:2px">
+                    <p style="font-size: 20px; margin: 0;">Cluster SBO </p>
+                    <p style="font-size: 10px; margin: 0;">Makassar Ahmad Yani || Makassar Sudirman || Tamalanrea</p>
+                </div>
             </div>
             <div class="input-login">
                 <div style="display: flex; flex-direction:column">

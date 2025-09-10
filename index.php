@@ -19,7 +19,7 @@ include 'includes/navbar.php';
             html: `<div style="font-size: 18px; font-weight: bold;">Selamat Datang</div>
                    <div style="font-size: 16px;"><?= $_SESSION['nama_pekerja'] ?? $_SESSION['user'] ?></div>`,
             showConfirmButton: false,
-            timer: 2500
+            timer: 1500
         }).then(() => {
             const cleanUrl = window.location.origin + window.location.pathname;
             window.history.replaceState({}, document.title, cleanUrl);

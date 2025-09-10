@@ -281,6 +281,7 @@ if ($kodeUkerSession) {
                             <th>Jumlah</th>
                             <?php if ($isAdminlog): ?>
                                 <th>Aksi</th>
+                                <th>Edit</th>
                             <?php endif; ?>
                         </tr>
                     </thead>
