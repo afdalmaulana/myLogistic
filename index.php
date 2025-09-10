@@ -2,22 +2,44 @@
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    // Belum login, tampilkan form login (include signin.php)
     include 'signin.php';
-    exit; // pastikan berhenti di sini supaya gak jalan ke bawah
+    exit;
 }
 
-// Kalau sudah login, tampilkan dashboard (bisa langsung include dashboard.php)
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
+
+<script>
+    // Sembunyikan spinner setelah halaman selesai dimuat
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('loading-overlay');
+        if (loader) loader.style.display = 'none';
+    });
+
+    // Tampilkan spinner saat klik menu/page lain
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            const href = this.getAttribute('href');
+            if (href && href.includes('page=')) {
+                const loader = document.getElementById('loading-overlay');
+                if (loader) loader.style.display = 'flex';
+            }
+        });
+    });
+</script>
+
+<!-- Tambahkan ini -->
+<div id="loading-overlay">
+    <div class="spinner"></div>
+</div>
+<!-- End loading spinner -->
 
 <div class="main-wrapper">
     <?php include 'includes/sidebar.php'; ?>
 
     <div id="main-content">
         <?php
-        // Kalau ada page lain, bisa di-handle di sini, tapi default tampil dashboard
         if (isset($_GET['page'])) {
             $page = $_GET['page'];
 
@@ -38,7 +60,7 @@ include 'includes/navbar.php';
                 include 'includes/403.php';
             }
         } else {
-            include 'includes/dashboard.php'; // Halaman dashboard default
+            include 'includes/dashboard.php';
         }
         ?>
     </div>
