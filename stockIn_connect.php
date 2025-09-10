@@ -32,8 +32,8 @@ if ($stmt->execute()) {
 
     if ($cek->num_rows > 0) {
         // Barang sudah ada → update jumlah
-        $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ?, WHERE nama_barang = ?");
-        $update->bind_param("isss", $jumlah, $nama_barang, $kode_uker);
+        $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ? AND kode_uker = ?");
+        $update->bind_param("iss", $jumlah, $nama_barang, $kode_uker);
         $update->execute();
     } else {
         // Barang belum ada → insert baru
