@@ -17,16 +17,32 @@ if (isset($_SESSION['user'])) {
                 icon: 'error',
                 title: 'Login Gagal',
                 text: 'Kombinasi username dan password salah'
+            }).then(() => {
+                // Hapus query param 'status' dari URL setelah alert ditutup
+                if (window.history.replaceState) {
+                    const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.replaceState({
+                        path: url
+                    }, '', url);
+                }
             });
         <?php elseif ($_GET['status'] === 'incomplete'): ?>
             Swal.fire({
                 icon: 'warning',
                 title: 'Data tidak lengkap',
                 text: 'Harap lengkapi semua form.'
+            }).then(() => {
+                if (window.history.replaceState) {
+                    const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.replaceState({
+                        path: url
+                    }, '', url);
+                }
             });
         <?php endif; ?>
     </script>
 <?php endif; ?>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
