@@ -10,7 +10,7 @@ if (isset($_SESSION['user'])) {
 
 
 <?php if (isset($_GET['status'])): ?>
-    <script src="../js/sweetalert.all.min.js"></script>
+    <script src="js/sweetalert.all.min.js"></script>
     <script>
         <?php if ($_GET['status'] === 'error'): ?>
             Swal.fire({
@@ -18,12 +18,10 @@ if (isset($_SESSION['user'])) {
                 title: 'Login Gagal',
                 text: 'Kombinasi username dan password salah'
             }).then(() => {
-                // Hapus query param 'status' dari URL setelah alert ditutup
                 if (window.history.replaceState) {
-                    const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.replaceState({
-                        path: url
-                    }, '', url);
+                    // Buat URL tanpa query string
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
                 }
             });
         <?php elseif ($_GET['status'] === 'incomplete'): ?>
@@ -33,15 +31,14 @@ if (isset($_SESSION['user'])) {
                 text: 'Harap lengkapi semua form.'
             }).then(() => {
                 if (window.history.replaceState) {
-                    const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.replaceState({
-                        path: url
-                    }, '', url);
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
                 }
             });
         <?php endif; ?>
     </script>
 <?php endif; ?>
+
 
 
 <script>
