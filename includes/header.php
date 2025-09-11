@@ -797,6 +797,12 @@
             color: #00529c;
         }
 
+        .editStocks {
+            border: none;
+            background: none;
+            color: #00529c;
+        }
+
         .changePassBtn {
             border: 2px solid #00529c;
             background-color: none;
