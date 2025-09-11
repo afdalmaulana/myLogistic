@@ -232,8 +232,8 @@ if ($kodeUkerSession) {
                     confirmButtonText: 'Update',
                     preConfirm: () => {
                         return {
-                            username: document.getElementById('swal-nama_barang').value,
-                            nama: document.getElementById('swal-jumlah').value,
+                            nama_barang: document.getElementById('swal-nama_barang').value,
+                            jumlah: document.getElementById('swal-jumlah').value,
                         };
                     }
                 }).then(result => {
