@@ -413,7 +413,9 @@ if ($kodeUkerSession) {
                             <label>Departement</label>
                             <select name="divisi" class="list-input" required style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Choose</option>
-                                <option value="OPS">Operasional</option>
+                                <option value="OPS">Petugas Transaksi</option>
+                                <option value="HC">TELLER</option>
+                                <option value="HC">CS</option>
                                 <option value="HC">Human Capital</option>
                                 <option value="LOG">Logistik</option>
                                 <option value="ADK">Administrasi Keuangan</option>
@@ -422,6 +424,12 @@ if ($kodeUkerSession) {
                                 <option value="RMFT">CRR</option>
                                 <option value="RMFT">BRIGUNA</option>
                                 <option value="RMFT">KPR</option>
+                                <option value="RMFT">KCP Ratulangi</option>
+                                <option value="RMFT">KCP Slamet Riyadi</option>
+                                <option value="RMFT">KCP Latimojong</option>
+                                <option value="RMFT">KCP Yos Sudarso</option>
+                                <option value="RMFT">KK Taspen</option>
+                                <option value="RMFT">KPPN</option>
                             </select>
                         </div>
                         <div class="form-group">
