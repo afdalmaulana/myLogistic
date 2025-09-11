@@ -1125,6 +1125,10 @@
             /* biar gak nutupin hover dropdown */
         }
 
+        .table-container tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
         /* Sticky header agar tetap terlihat saat scroll */
         .table-container thead th {
             position: sticky;
