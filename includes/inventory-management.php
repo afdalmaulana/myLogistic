@@ -413,23 +413,23 @@ if ($kodeUkerSession) {
                             <label>Departement</label>
                             <select name="divisi" class="list-input" required style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Choose</option>
-                                <option value="OPS">Petugas Transaksi</option>
-                                <option value="HC">TELLER</option>
-                                <option value="HC">CS</option>
+                                <option value="DJS">Petugas Transaksi</option>
+                                <option value="TELLER">TELLER</option>
+                                <option value="CS">CS</option>
                                 <option value="HC">Human Capital</option>
                                 <option value="LOG">Logistik</option>
                                 <option value="ADK">Administrasi Keuangan</option>
                                 <option value="RMFT">RMFT</option>
-                                <option value="RMFT">RMSME</option>
-                                <option value="RMFT">CRR</option>
-                                <option value="RMFT">BRIGUNA</option>
-                                <option value="RMFT">KPR</option>
-                                <option value="RMFT">KCP Ratulangi</option>
-                                <option value="RMFT">KCP Slamet Riyadi</option>
-                                <option value="RMFT">KCP Latimojong</option>
-                                <option value="RMFT">KCP Yos Sudarso</option>
-                                <option value="RMFT">KK Taspen</option>
-                                <option value="RMFT">KPPN</option>
+                                <option value="RMSME">RMSME</option>
+                                <option value="CRR">CRR</option>
+                                <option value="BRIGUNA">BRIGUNA</option>
+                                <option value="KPR">KPR</option>
+                                <option value="KCP-Ratulangi">KCP Ratulangi</option>
+                                <option value="KCP-SlametRiyadi">KCP Slamet Riyadi</option>
+                                <option value="KCP-Latimojong">KCP Latimojong</option>
+                                <option value="KCP-YosSudarso">KCP Yos Sudarso</option>
+                                <option value="KK-Taspen">KK Taspen</option>
+                                <option value="KPPN">KPPN</option>
                             </select>
                         </div>
                         <div class="form-group">
