@@ -316,6 +316,7 @@ if ($kodeUkerSession) {
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Kode Uker</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
@@ -329,6 +330,7 @@ if ($kodeUkerSession) {
                         <?php if ($stocks->num_rows > 0): ?>
                             <?php while ($row = $stocks->fetch_assoc()): ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['id']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
