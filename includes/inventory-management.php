@@ -344,7 +344,6 @@ if ($kodeUkerSession) {
                                                 data-nama_barang="<?= $row['nama_barang'] ?>"
                                                 data-jumlah="<?= $row['jumlah'] ?>"><i class="fa fa-edit" style="font-size:22px"></i></button></td>
                                     <?php endif; ?>
-
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>

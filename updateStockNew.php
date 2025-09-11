@@ -3,9 +3,9 @@ require_once 'db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$id = $conn->real_escape_string($data['id']);
+$id = (int) $data['id'];
 $nama_barang = $conn->real_escape_string($data['nama_barang']);
-$jumlah = $conn->real_escape_string($data['jumlah']);
+$jumlah = (int) $data['jumlah'];
 
 $query = "UPDATE stok_barang SET nama_barang='$nama_barang', jumlah='$jumlah' WHERE id='$id'";
 
