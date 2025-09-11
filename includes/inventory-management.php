@@ -346,22 +346,31 @@ if ($kodeUkerSession) {
                     <tbody>
                         <?php if ($stocks->num_rows > 0): ?>
                             <?php while ($row = $stocks->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['id']) ?></td>
-                                    <td><?= htmlspecialchars($row['kode_uker']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                    <?php if ($isAdminlog): ?>
-                                        <td>
-                                            <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
-                                                <i class="fa fa-trash" style="color:red;"></i>
-                                            </button>
-                                        </td>
-                                        <td> <button class="editStocks" data-id="<?= $row['id'] ?>"
-                                                data-nama_barang="<?= $row['nama_barang'] ?>"
-                                                data-jumlah="<?= $row['jumlah'] ?>"><i class="fa fa-edit" style="font-size:22px"></i></button></td>
-                                    <?php endif; ?>
-                                </tr>
+                                <?php if ($row['jumlah'] > 0): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($row['id']) ?></td>
+                                        <td><?= htmlspecialchars($row['kode_uker']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                        <td><?= htmlspecialchars($row['jumlah']) ?></td>
+
+                                        <?php if ($isAdminlog): ?>
+                                            <td>
+                                                <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
+                                                    <i class="fa fa-trash" style="color:red;"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button class="editStocks"
+                                                    data-id="<?= $row['id'] ?>"
+                                                    data-nama_barang="<?= $row['nama_barang'] ?>"
+                                                    data-jumlah="<?= $row['jumlah'] ?>">
+                                                    <i class="fa fa-edit" style="font-size:22px"></i>
+                                                </button>
+                                            </td>
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endif; ?>
+
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
