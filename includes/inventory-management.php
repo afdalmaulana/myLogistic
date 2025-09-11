@@ -220,20 +220,32 @@ if ($kodeUkerSession) {
 
         document.querySelectorAll('.editStocks').forEach(btn => {
             btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
                 const nama_barang = btn.dataset.nama_barang;
                 const jumlah = btn.dataset.jumlah;
+
                 Swal.fire({
-                    title: 'Edit Stocks',
+                    title: 'Edit Stok',
                     html: `
-          <input id="swal-nama_barang" class="swal2-input" value="${nama_barang}" placeholder="Nama Barang">
-          <input id="swal-jumlah" class="swal2-input" value="${jumlah}" placeholder="jumlah">
-        `,
+                <input id="swal-nama_barang" class="swal2-input" value="${nama_barang}" placeholder="Nama Barang">
+                <input id="swal-jumlah" class="swal2-input" value="${jumlah}" placeholder="Jumlah" type="number">
+            `,
                     showCancelButton: true,
                     confirmButtonText: 'Update',
                     preConfirm: () => {
+                        const updatedNama = document.getElementById('swal-nama_barang').value;
+                        const updatedJumlah = document.getElementById('swal-jumlah').value;
+
+                        // Validasi sederhana
+                        if (updatedNama === '' || updatedJumlah === '') {
+                            Swal.showValidationMessage('Semua field wajib diisi!');
+                            return false;
+                        }
+
                         return {
-                            nama_barang: document.getElementById('swal-nama_barang').value,
-                            jumlah: document.getElementById('swal-jumlah').value,
+                            id: id,
+                            nama_barang: updatedNama,
+                            jumlah: updatedJumlah
                         };
                     }
                 }).then(result => {
@@ -248,10 +260,15 @@ if ($kodeUkerSession) {
                             .then(res => res.json())
                             .then(data => {
                                 if (data.success) {
-                                    Swal.fire('Berhasil', 'User berhasil diupdate', 'success').then(() => location.reload());
+                                    Swal.fire('Berhasil', 'Stok berhasil diperbarui!', 'success')
+                                        .then(() => location.reload());
                                 } else {
                                     Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
                                 }
+                            })
+                            .catch(err => {
+                                Swal.fire('Error', 'Gagal menghubungi server', 'error');
+                                console.error(err);
                             });
                     }
                 });
