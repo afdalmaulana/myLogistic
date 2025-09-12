@@ -16,7 +16,11 @@ $queryItStockMasuk = "SELECT * FROM barangit_masuk ORDER BY id ASC";
 $stockItIn = $conn->query($queryItStockMasuk);
 
 //barang it keluar
-$queryItStockKeluar = "SELECT * FROM barangit_keluar ORDER BY id ASC";
+$queryItStockKeluar = "SELECT bk.*,
+d.divisi AS nama_divisi
+FROM barangit_keluar bk
+LEFT JOIN divisi d ON bk.id_divisi = d.id_divisi
+ORDER BY bk.id ASC";
 $stockItOut = $conn->query($queryItStockKeluar);
 
 //divisi
@@ -62,6 +66,14 @@ if ($uker && $uker->num_rows > 0) {
                 title: 'Berhasil',
                 text: 'Data Berhasil disimpan'
             });
+            if (window.location.search.includes("status=success")) {
+                setTimeout(() => {
+                    // Hapus query string dan perbarui URL
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('status');
+                    window.history.replaceState({}, document.title, url.pathname + url.search);
+                }, 100); // beri waktu alert jalan dulu
+            }
         <?php elseif ($_GET['status'] === 'error'): ?>
             Swal.fire({
                 icon: 'error',
@@ -309,6 +321,10 @@ if ($uker && $uker->num_rows > 0) {
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="">Jumlah</label>
+                            <input type="number" name="jumlah" class="list-input" placeholder="Input Here ...">
+                        </div>
+                        <div class="form-group">
                             <button type="submit" class="button-send">Kirim</button>
                         </div>
                     </div>
@@ -385,77 +401,10 @@ if ($uker && $uker->num_rows > 0) {
     </div>
 
     <div id="logIt_masuk" class="tabcontent-it">
-        <form action="computerOut.php" method="POST" onsubmit="return showLoading()">
-            <div class="body-content">
-                <p>Log ingoing Stock IT</p>
-                <div class="form-input">
-                    <div class="submission-left">
-                        <div class="form-group">
-                            <label>Pilih Nama Barang</label>
-                            <select name="merk_komputer" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Nama Barang</option>
-                                <?php if (!empty($stocksComputer)): ?>
-                                    <?php foreach ($stocksComputer as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['merk_komputer']) ?>">
-                                            <?= htmlspecialchars($item['merk_komputer']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <option value="" disabled>Tidak ada stok komputer</option>
-                                <?php endif; ?>
-                            </select>
-
-                        </div>
-                        <div class="form-group">
-                            <label>Hostname Baru</label>
-                            <input type="text" name="hostname_baru" class="list-input" placeholder="Input Here ..." required>
-                        </div>
-                        <div class="form-group">
-                            <label>Serial Number</label>
-                            <input type="text" name="serial_number" class="list-input" placeholder="Input Here ...">
-                        </div>
-                    </div>
-                    <div class="submission-right">
-                        <div class="form-group">
-                            <label for="">Choose Divisi</label>
-                            <select name="id_divisi" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Divisi</option>
-                                <?php foreach ($divisiList as $row): ?>
-                                    <option value="<?= $row['id_divisi']; ?>">
-                                        <?= htmlspecialchars($row['divisi']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Nama Unit Kerja</label>
-                            <select name="kode_uker" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Unit Kerja</option>
-                                <?php foreach ($ukerList as $row): ?>
-                                    <option value="<?= $row['kode_uker']; ?>">
-                                        <?= htmlspecialchars($row['nama_uker']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Jumlah</label>
-                            <input type="number" name="jumlah" class="list-input" placeholder="Input Here ...">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" id="submitBtn" class="button-send">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <div id="logIt_keluar" class="tabcontent-it">
         <div class="body-content">
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <p style="margin-bottom: 5px;">Log Record</p>
+                    <p style="margin-bottom: 5px;">Log Record Masuk</p>
                     <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
@@ -479,7 +428,57 @@ if ($uker && $uker->num_rows > 0) {
                                     <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
                                     <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
                                     <td><?= htmlspecialchars($row['serial_number']) ?></td>
-                                    <td><?= htmlspecialchars($row['id_divisi']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
+                                    <td>
+                                        <!-- <?php if ($isAdminlog): ?>
+                                            <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        <?php endif; ?> -->
+                                    </td>
+
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="logIt_keluar" class="tabcontent-it">
+        <div class="body-content">
+            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="margin-bottom: 5px;">Log Record Keluar</p>
+                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
+                </div>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
+            </div>
+
+            <div class="table-container">
+                <table id="dataTable" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Merk Komputer</th>
+                            <th>Hostname</th>
+                            <th>Divisi</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($stockItOut->num_rows > 0): ?>
+                            <?php while ($row = $stockItOut->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
+                                    <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
+                                    <td><?= htmlspecialchars($row['serial_number']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
                                     <td>
                                         <!-- <?php if ($isAdminlog): ?>
                                             <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
