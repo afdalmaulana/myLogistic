@@ -132,6 +132,71 @@ if ($uker && $uker->num_rows > 0) {
         }
 
         window.openIt = openIt;
+
+        document.querySelectorAll('.editStocksIT').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const merk_komputer = btn.dataset.merk_komputer;
+                const hostname = btn.dataset.hostname;
+                const serial_number = btn.dataset.serial_number;
+                const jumlah = btn.dataset.jumlah;
+
+                Swal.fire({
+                    title: 'Edit Stok',
+                    html: `
+                <input id="swal-merk_komputer" class="swal2-input" value="${merk_komputer}" placeholder="Nama Barang">
+                <input id="swal-hostname" class="swal2-input" value="${hostname}" placeholder="Hostname">
+                <input id="swal-serial_number" class="swal2-input" value="${serial_number}" placeholder="Serial Number">
+                <input id="swal-jumlah" class="swal2-input" value="${jumlah}" placeholder="Jumlah" type="number">
+            `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Update',
+                    preConfirm: () => {
+                        const updatedMerk = document.getElementById('swal-merk_komputer').value;
+                        const updatedHost = document.getElementById('swal-hostname').value;
+                        const updatedSerialNumber = document.getElementById('swal-serial_number').value;
+                        const updatedJumlah = document.getElementById('swal-jumlah').value;
+
+                        // Validasi sederhana
+                        if (updatedMerk === '' || updatedHost === '') {
+                            Swal.showValidationMessage('Semua field wajib diisi!');
+                            return false;
+                        }
+
+                        return {
+                            id: id,
+                            merk_komputer: updatedMerk,
+                            hostname: updatedHost,
+                            serial_number: updatedSerialNumber,
+                            jumlah: updatedJumlah
+                        };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('updateStockITNew.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(result.value)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Berhasil', 'Stok IT berhasil diperbarui!', 'success')
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
+                                }
+                            })
+                            .catch(err => {
+                                Swal.fire('Error', 'Gagal menghubungi server', 'error');
+                                console.error(err);
+                            });
+                    }
+                });
+            });
+        });
     });
 </script>
 
@@ -159,6 +224,7 @@ if ($uker && $uker->num_rows > 0) {
                             <th>Hostname</th>
                             <th>Serial Number</th>
                             <th>Jumlah</th>
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,6 +235,16 @@ if ($uker && $uker->num_rows > 0) {
                                     <td><?= htmlspecialchars($item['hostname']) ?></td>
                                     <td><?= htmlspecialchars($item['serial_number']) ?></td>
                                     <td><?= htmlspecialchars($item['jumlah']) ?></td>
+                                    <td>
+                                        <button class="editStocksIT"
+                                            data-id="<?= $item['id'] ?>"
+                                            data-merk_komputer="<?= $item['merk_komputer'] ?>"
+                                            data-hostname="<?= $item['hostname'] ?>"
+                                            data-serial_number="<?= $item['serial_number'] ?>"
+                                            data-jumlah="<?= $item['jumlah'] ?>">
+                                            <i class="fa fa-edit" style="font-size:22px"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
