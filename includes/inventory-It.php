@@ -12,7 +12,9 @@ $queryStock = "SELECT * FROM stok_barang_it ORDER BY id ASC";
 $stocksIt = $conn->query($queryStock);
 
 //barang it masuk
-$queryItStockMasuk = "SELECT * FROM barangit_masuk ORDER BY id ASC";
+$queryItStockMasuk = "SELECT bk.*, d.divisi AS nama_divisi FROM barangit_masuk bk 
+LEFT JOIN divisi d ON bk.id_divisi = d.id_divisi
+ORDER BY bk.id ASC";
 $stockItIn = $conn->query($queryItStockMasuk);
 
 //barang it keluar
@@ -231,7 +233,7 @@ if ($uker && $uker->num_rows > 0) {
 
     <div id="stocks" class="tabcontent-it" style="display: block;">
         <div class="body-content">
-            <div class="sub-menu">
+            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <p>Inventory List</p>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
@@ -289,11 +291,17 @@ if ($uker && $uker->num_rows > 0) {
                             <input type="text" name="merk_komputer" class="list-input" placeholder="Input Here ...">
                         </div>
                         <div class="form-group">
-                            <label>Hostname</label>
+                            <div style="display: flex; flex-direction:row; gap:6px">
+                                <label>Hostname</label>
+                                <label for=""><i style="font-size: 10px;color:red;">Kalau Hostname tidak ada, isi "Stok Gudang"</i></label>
+                            </div>
                             <input type="text" name="hostname" class="list-input" placeholder="Input Here ...">
                         </div>
                         <div class="form-group">
-                            <label>Serial Number</label>
+                            <div style="display: flex; flex-direction:row; gap:6px">
+                                <label>Serial Number</label>
+                                <label for=""><i style="font-size: 10px;color:red;">Kalau tidak ada isi "-" (Tanda Kurang)</i></label>
+                            </div>
                             <input type="text" name="serial_number" class="list-input" placeholder="Input Here ...">
                         </div>
                     </div>
@@ -356,11 +364,17 @@ if ($uker && $uker->num_rows > 0) {
 
                         </div>
                         <div class="form-group">
-                            <label>Hostname Baru</label>
-                            <input type="text" name="hostname_baru" class="list-input" placeholder="Input Here ..." required>
+                            <div style="display: flex; flex-direction:row; gap:6px">
+                                <label>Hostname Baru</label>
+                                <label for=""><i style="font-size: 10px;color:red;">Kalau Hostname tidak ada, isi keterangan</i></label>
+                            </div>
+                            <input type="text" name="hostname_baru" class="list-input" placeholder="Input Here ...">
                         </div>
                         <div class="form-group">
-                            <label>Serial Number</label>
+                            <div style="display: flex; flex-direction:row; gap:6px">
+                                <label>Serial Number</label>
+                                <label for=""><i style="font-size: 10px;color:red;">Kalau tidak ada isi, PN Pekerja yang pinjam</i></label>
+                            </div>
                             <input type="text" name="serial_number" class="list-input" placeholder="Input Here ...">
                         </div>
                     </div>
@@ -417,25 +431,19 @@ if ($uker && $uker->num_rows > 0) {
                             <th>Tanggal</th>
                             <th>Merk Komputer</th>
                             <th>Hostname</th>
+                            <th>Serial Number</th>
                             <th>Divisi</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($stockItOut->num_rows > 0): ?>
-                            <?php while ($row = $stockItOut->fetch_assoc()): ?>
+                        <?php if ($stockItIn->num_rows > 0): ?>
+                            <?php while ($row = $stockItIn->fetch_assoc()): ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
-                                    <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
+                                    <td><?= htmlspecialchars($row['hostname']) ?></td>
                                     <td><?= htmlspecialchars($row['serial_number']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
-                                    <td>
-                                        <!-- <?php if ($isAdminlog): ?>
-                                            <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
-                                                <i class="fa fa-trash" style="color:red;"></i>
-                                            </button>
-                                        <?php endif; ?> -->
-                                    </td>
 
                                 </tr>
                             <?php endwhile; ?>
@@ -449,6 +457,7 @@ if ($uker && $uker->num_rows > 0) {
             </div>
         </div>
     </div>
+
 
     <div id="logIt_keluar" class="tabcontent-it">
         <div class="body-content">
@@ -467,25 +476,19 @@ if ($uker && $uker->num_rows > 0) {
                             <th>Tanggal</th>
                             <th>Merk Komputer</th>
                             <th>Hostname</th>
+                            <th>Serial Number / PN</th>
                             <th>Divisi</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($stockItOut->num_rows > 0): ?>
                             <?php while ($row = $stockItOut->fetch_assoc()): ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
                                     <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
                                     <td><?= htmlspecialchars($row['serial_number']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
-                                    <td>
-                                        <!-- <?php if ($isAdminlog): ?>
-                                            <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
-                                                <i class="fa fa-trash" style="color:red;"></i>
-                                            </button>
-                                        <?php endif; ?> -->
-                                    </td>
 
                                 </tr>
                             <?php endwhile; ?>

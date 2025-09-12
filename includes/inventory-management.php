@@ -292,7 +292,6 @@ if ($kodeUkerSession) {
         <div class="body-content">
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <p>Inventory List</p>
                     <?php if ($isBerwenang): ?>
                         <form method="GET" style="display: inline-block;">
                             <input type="hidden" name="page" value="inventory-management">
