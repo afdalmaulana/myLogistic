@@ -532,7 +532,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 <option value="CS">CS</option>
                                 <option value="HC">Human Capital</option>
                                 <option value="LOG">Logistik</option>
-                                <option value="ADK">Administrasi Keuangan</option>
+                                <option value="ADK">Petugas Operasional Kredit</option>
                                 <option value="RMFT">RMFT</option>
                                 <option value="RMSME">RMSME</option>
                                 <option value="CRR">CRR</option>
