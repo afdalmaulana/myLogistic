@@ -624,6 +624,17 @@
             margin-top: 6px;
         }
 
+        .tabs button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            transition: 0.3s;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
         /* Change background color of buttons on hover */
         .tab button:hover {
             background-color: #3498db;
