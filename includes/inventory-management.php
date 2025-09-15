@@ -82,6 +82,12 @@ if ($kodeUkerSession) {
 } else {
     $stokResult = false;
 }
+$stokBarangList = [];
+if ($stokResult && $stokResult->num_rows > 0) {
+    while ($row = $stokResult->fetch_assoc()) {
+        $stokBarangList[] = $row;
+    }
+}
 ?>
 
 <?php if (isset($_GET['status'])): ?>
@@ -455,8 +461,8 @@ if ($kodeUkerSession) {
                             <select id="selectBarang" class="list-input" style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Pilih Barang yang Sudah Ada</option>
                                 <?php
-                                if ($stokResult && $stokResult->num_rows > 0) {
-                                    while ($row = $stokResult->fetch_assoc()) {
+                                if (!empty($stokBarangList)) {
+                                    foreach ($stokBarangList as $row) {
                                         echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
                                     }
                                 }
@@ -501,8 +507,8 @@ if ($kodeUkerSession) {
                             <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Choose</option>
                                 <?php
-                                if ($stokResult && $stokResult->num_rows > 0) {
-                                    while ($row = $stokResult->fetch_assoc()) {
+                                if (!empty($stokBarangList)) {
+                                    foreach ($stokBarangList as $row) {
                                         echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
                                     }
                                 } else {
