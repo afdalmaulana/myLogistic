@@ -25,8 +25,8 @@ $stmt->bind_param("ssis", $tanggal, $nama_barang, $jumlah, $kode_uker);
 if ($stmt->execute()) {
 
     // ==== ✅ Update stok_barang ====
-    $cek = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ?");
-    $cek->bind_param("s", $nama_barang);
+    $cek = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ? AND kode_uker = ?");
+    $cek->bind_param("ss", $nama_barang, $kode_uker);
     $cek->execute();
     $cek->store_result();
 

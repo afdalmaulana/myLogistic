@@ -87,24 +87,42 @@ if ($kodeUkerSession) {
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
     <script>
-        <?php if ($_GET['status'] === 'success'): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Data Berhasil disimpan'
-            });
-        <?php elseif ($_GET['status'] === 'error'): ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: 'Terjadi kesalahan dalam form, mohon di ulangi'
-            })
-        <?php elseif ($_GET['status'] === 'outstock'): ?>
-            Swal.fire({
-                icon: 'warning',
-                title: 'Stock tidak mencukupi',
-            });
-        <?php endif; ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if ($_GET['status'] === 'success'): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data Berhasil disimpan'
+                }).then(() => {
+                    // ✅ Hapus status=success dari URL tanpa reload
+                    if (window.history.replaceState) {
+                        const cleanUrl = window.location.href.split('?')[0];
+                        window.history.replaceState(null, null, cleanUrl + window.location.hash);
+                    }
+                });
+            <?php elseif ($_GET['status'] === 'error'): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan dalam form, mohon di ulangi'
+                }).then(() => {
+                    if (window.history.replaceState) {
+                        const cleanUrl = window.location.href.split('?')[0];
+                        window.history.replaceState(null, null, cleanUrl + window.location.hash);
+                    }
+                });
+            <?php elseif ($_GET['status'] === 'outstock'): ?>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock tidak mencukupi',
+                }).then(() => {
+                    if (window.history.replaceState) {
+                        const cleanUrl = window.location.href.split('?')[0];
+                        window.history.replaceState(null, null, cleanUrl + window.location.hash);
+                    }
+                });
+            <?php endif; ?>
+        });
     </script>
 <?php endif; ?>
 
@@ -277,6 +295,49 @@ if ($kodeUkerSession) {
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectBarang = document.getElementById('selectBarang');
+        const inputBarangBaru = document.getElementById('inputBarangBaru');
+        const btnToggle = document.getElementById('btnToggleInput');
+
+        let isAddingNew = false;
+
+        // ✅ Set default name saat pertama kali halaman dimuat
+        selectBarang.name = 'nama_barang';
+        inputBarangBaru.name = '';
+
+        btnToggle.addEventListener('click', function() {
+            isAddingNew = !isAddingNew;
+
+            if (isAddingNew) {
+                // Mode: Tambah Barang Baru
+                selectBarang.style.display = 'none';
+                inputBarangBaru.style.display = 'block';
+                btnToggle.textContent = 'Kembali Pilih Barang yang Ada';
+
+                // ⚠️ Aktifkan input text, nonaktifkan select
+                selectBarang.name = '';
+                inputBarangBaru.name = 'nama_barang';
+                selectBarang.value = '';
+            } else {
+                // Mode: Pilih Barang dari Dropdown
+                selectBarang.style.display = 'block';
+                inputBarangBaru.style.display = 'none';
+                btnToggle.textContent = 'Tambah Barang Baru';
+
+                // ⚠️ Aktifkan select, nonaktifkan input text
+                inputBarangBaru.name = '';
+                selectBarang.name = 'nama_barang';
+                inputBarangBaru.value = '';
+            }
+        });
+    });
+</script>
+
+
+
+
 
 
 <div class="dashboard-menu">
@@ -390,8 +451,29 @@ if ($kodeUkerSession) {
                     <div class="submission-left">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" name="nama_barang" class="list-input" placeholder="Masukkan Nama Barang">
+                            <!-- SELECT BARANG -->
+                            <select id="selectBarang" class="list-input" style="border-radius: 10px;">
+                                <option value="" disabled selected hidden>Pilih Barang yang Sudah Ada</option>
+                                <?php
+                                if ($stokResult && $stokResult->num_rows > 0) {
+                                    while ($row = $stokResult->fetch_assoc()) {
+                                        echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+
+                            <!-- INPUT BARANG BARU -->
+                            <input type="text" id="inputBarangBaru" class="list-input" placeholder="Masukkan Nama Barang Baru" style="display:none; margin-top:10px;">
+
+                            <!-- TOMBOL TOGGLE -->
+                            <button type="button" id="btnToggleInput" class="button-send" style="margin-top:10px; background: #1d4d82;">
+                                Tambah Barang Baru
+                            </button>
+
+
                         </div>
+
                     </div>
                     <div class="submission-right">
                         <div class="form-group">
