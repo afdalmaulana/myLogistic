@@ -399,7 +399,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <!-- <th>ID</th> -->
                             <th>Kode Uker</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
@@ -414,7 +414,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <?php while ($row = $stocks->fetch_assoc()): ?>
                                 <?php if ($row['jumlah'] > 0): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($row['id']) ?></td>
+                                        <!-- <td><?= htmlspecialchars($row['id']) ?></td> -->
                                         <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                         <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah']) ?></td>

@@ -73,7 +73,7 @@ if ($isAdminlog) {
 
 // Ambil data barang masuk dan keluar
 $stocksIn = $conn->query("SELECT * FROM barang_masuk WHERE $whereClause ORDER BY tanggal DESC");
-$resultOut = $conn->query("SELECT * FROM barang_keluar ORDER BY tanggal DESC");
+$resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER BY tanggal DESC");
 ?>
 
 <script>

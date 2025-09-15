@@ -651,10 +651,10 @@
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 10px 16px;
             transition: 0.3s;
-            font-size: 17px;
-            margin-top: 12px;
+            font-size: 14px;
+            margin-top: 6px;
         }
 
         .tab-invent {
