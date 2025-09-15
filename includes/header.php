@@ -591,17 +591,6 @@
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
-        .tabs button {
-            background-color: inherit;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 5px 12px;
-            transition: 0.3s;
-            font-size: 17px;
-            margin-top: 12px;
-        }
-
         /* Change background color of buttons on hover */
         .tabs button:hover {
             background-color: #2460a3ff;
@@ -623,17 +612,16 @@
         }
 
 
-
         /* Style the buttons inside the tab */
         .tab button {
             background-color: inherit;
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 10px 16px;
             transition: 0.3s;
-            font-size: 17px;
-            margin-top: 12px;
+            font-size: 14px;
+            margin-top: 6px;
         }
 
         /* Change background color of buttons on hover */
