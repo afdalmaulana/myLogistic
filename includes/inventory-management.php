@@ -528,6 +528,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <select name="divisi" class="list-input" required style="border-radius: 10px;">
                                 <option value="" disabled selected hidden>Choose</option>
                                 <option value="DJS">Petugas Transaksi</option>
+                                <option value="Operasional">Operasional</option>
                                 <option value="TELLER">TELLER</option>
                                 <option value="TELLER-Pertamina">TELLER PERTAMINA</option>
                                 <option value="CS">CS</option>
@@ -539,10 +540,12 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 <option value="CRR">CRR</option>
                                 <option value="BRIGUNA">BRIGUNA</option>
                                 <option value="KPR">KPR</option>
+                                <option value="Sekretaris">Sekretaris</option>
                                 <option value="KCP-Ratulangi">KCP Ratulangi</option>
                                 <option value="KCP-SlametRiyadi">KCP Slamet Riyadi</option>
                                 <option value="KCP-Latimojong">KCP Latimojong</option>
                                 <option value="KCP-YosSudarso">KCP Yos Sudarso</option>
+                                <option value="KCP-Sentral">KCP Sentral</option>
                                 <option value="KK-Taspen">KK Taspen</option>
                                 <option value="KPPN">KPPN</option>
                             </select>
