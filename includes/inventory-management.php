@@ -529,6 +529,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 <option value="" disabled selected hidden>Choose</option>
                                 <option value="DJS">Petugas Transaksi</option>
                                 <option value="TELLER">TELLER</option>
+                                <option value="TELLER-Pertamina">TELLER PERTAMINA</option>
                                 <option value="CS">CS</option>
                                 <option value="HC">Human Capital</option>
                                 <option value="LOG">Logistik</option>
