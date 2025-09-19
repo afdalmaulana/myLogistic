@@ -63,7 +63,7 @@
         }
 
         #main-content {
-            margin-left: 250px;
+            margin-left: 230px;
             padding: 40px 20px;
             flex-grow: 1;
             background-color: #f5f6fa;
@@ -96,7 +96,7 @@
             position: fixed;
             /* agar selalu di atas */
             top: 0;
-            left: 250px;
+            left: 230px;
             /* sesuaikan dengan lebar sidebar */
             right: 0;
             height: 80px;
@@ -125,7 +125,7 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 250px;
+            width: 230px;
             background-color: #ffffffff;
             color: white;
             padding: 2px 10px 10px 2px;
