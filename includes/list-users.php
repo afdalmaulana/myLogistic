@@ -5,6 +5,12 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once 'db_connect.php';
 
+if ($_SESSION['role'] !== 'admin') {
+    // Gak perlu pakai header jika sudah ada output, tampilkan pesan langsung dan stop
+    // echo "<h2>Maaf ini area terlarang, hanya orang ganteng yang bisa masuk</h2>";
+    include 'includes/403.php';
+    exit;
+}
 // Cek apakah user adalah admin atau cabang dengan hak khusus
 $isAdminOrCabang = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') ||
     (isset($_SESSION['kode_uker']) && $_SESSION['kode_uker'] === '0050');
@@ -182,8 +188,8 @@ if (!$list) {
                             <th>Kode Uker</th>
                             <th>Nama Unit Kerja</th>
                             <th>Jabatan</th>
-                            <th></th>
-                            <th></th>
+                            <!-- <th></th> -->
+                            <!-- <th></th> -->
                         </tr>
                     </thead>
                     <tbody>
