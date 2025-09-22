@@ -1193,7 +1193,8 @@
             border-radius: 8px;
             margin-top: 10px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            max-height: 340px;
+            /* max-height: 340px; */
+            max-height: 100%;
         }
 
         .form-input {

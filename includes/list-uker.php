@@ -5,6 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once 'db_connect.php';
 
+if ($_SESSION['role'] !== 'admin') {
+    // Gak perlu pakai header jika sudah ada output, tampilkan pesan langsung dan stop
+    // echo "<h2>Maaf ini area terlarang, hanya orang ganteng yang bisa masuk</h2>";
+    include 'includes/403.php';
+    exit;
+}
+
 $query = "SELECT * FROM unit_kerja ORDER BY kode_uker DESC";
 $uker = $conn->query($query);;
 ?>

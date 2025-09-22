@@ -291,9 +291,21 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                                             <?= htmlspecialchars($row['tanggal_nota']) ?>
                                         <?php endif; ?>
                                     </td>
-                                    <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
+                                    <?php if (!empty($row['tanggal_approve'])): ?>
+                                        <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
+                                    <?php else: ?>
+                                        <td></td>
+                                    <?php endif;
+                                    ?>
+                                    <!-- <td><?= htmlspecialchars($row['tanggal_approve']) ?></td> -->
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                    <td><?= htmlspecialchars($row['price']) ?></td>
+                                    <!-- <td><?= htmlspecialchars($row['price']) ?></td> -->
+                                    <?php if (!empty($row['price'])): ?>
+                                        <td><?= htmlspecialchars($row['price']) ?></td>
+                                    <?php else: ?>
+                                        <td></td>
+                                    <?php endif;
+                                    ?>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td>
                                         <?php if ($isAdminlog): ?>

@@ -4,10 +4,19 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once 'db_connect.php';
 
+
+
 $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
 $role = $_SESSION['role'] ?? '';
 $user = $_SESSION['user'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
+
+if ($_SESSION['user'] === '90173431') {
+    // Gak perlu pakai header jika sudah ada output, tampilkan pesan langsung dan stop
+    // echo "<h2>Maaf ini area terlarang, hanya orang ganteng yang bisa masuk</h2>";
+    include 'includes/403.php';
+    exit;
+}
 
 $isAdminlog = ($role === 'admin');
 $isBerwenang = in_array($idJabatan, ['JB1', 'JB2', 'JB3', 'JB5', 'JB6']);

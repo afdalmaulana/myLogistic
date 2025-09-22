@@ -3,7 +3,8 @@
 // Cek apakah user punya akses
 if ($_SESSION['role'] !== 'admin') {
     // Gak perlu pakai header jika sudah ada output, tampilkan pesan langsung dan stop
-    echo "<h2>Maaf ini area terlarang, hanya orang ganteng yang bisa masuk</h2>";
+    // echo "<h2>Maaf ini area terlarang, hanya orang ganteng yang bisa masuk</h2>";
+    include 'includes/403.php';
     exit;
 }
 
