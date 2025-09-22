@@ -205,6 +205,28 @@ if ($uker && $uker->num_rows > 0) {
     });
 </script>
 
+<script>
+    function toggleOutForm(type) {
+        const btnPermanent = document.getElementById('btnPermanent');
+        const btnBorrow = document.getElementById('btnBorrow');
+        const formPermanent = document.getElementById('formPermanent');
+        const formBorrow = document.getElementById('formBorrow');
+
+        if (type === 'permanent') {
+            formPermanent.style.display = 'block';
+            formBorrow.style.display = 'none';
+            btnPermanent.classList.add('active');
+            btnBorrow.classList.remove('active');
+        } else {
+            formPermanent.style.display = 'none';
+            formBorrow.style.display = 'block';
+            btnPermanent.classList.remove('active');
+            btnBorrow.classList.add('active');
+        }
+    }
+</script>
+
+
 
 <div class="dashboard-menu">
     <div class="content-heading">Inventory Management IT</div>
@@ -328,9 +350,13 @@ if ($uker && $uker->num_rows > 0) {
     </div>
 
     <div id="it_keluar" class="tabcontent-it">
-        <form action="computerOut.php" method="POST" onsubmit="return showLoading()">
-            <div class="body-content">
-                <p>Outgoing Stock</p>
+        <div class="body-content">
+            <p>Outgoing Stock</p>
+            <div class="sub-toggle" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button type="button" id="btnPermanent" class="button-options active" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('permanent')">Permanent</button>
+                <button type="button" id="btnBorrow" class="button-options" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('borrow')">Borrow</button>
+            </div>
+            <form id="formPermanent" action="computerOut.php" method="POST" onsubmit="return showLoading()">
                 <div class="form-input">
                     <div class="submission-left">
                         <div class="form-group">
@@ -396,97 +422,76 @@ if ($uker && $uker->num_rows > 0) {
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
-    </div>
-
-    <div id="logIt_masuk" class="tabcontent-it">
-        <div class="body-content">
-            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <p style="margin-bottom: 5px;">Log Record Masuk</p>
-                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
+            </form>
+            <form id="formBorrow" action="computerOut.php" method="POST" onsubmit="return showLoading()" style="display: none;">
+                <input type="hidden" name="status" value="borrow">
+                <div class="form-input">
+                    <div class="submission-left">
+                        <div class="form-group">
+                            <label>Pilih Nama Barang</label>
+                            <select name="merk_komputer" class="list-input" required style="border-radius: 10px;">
+                                <option value="" disabled selected hidden>Pilih Nama Barang</option>
+                                <?php if (!empty($stocksComputer)): ?>
+                                    <?php foreach ($stocksComputer as $item): ?>
+                                        <option value="<?= htmlspecialchars($item['merk_komputer']) ?>">
+                                            <?= htmlspecialchars($item['merk_komputer']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="" disabled>Tidak ada stok komputer</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div style="display: flex; flex-direction:row; gap:6px">
+                                <label>PN Pekerja</label>
+                                <label for=""><i style="font-size: 10px;color:red;"></i></label>
+                            </div>
+                            <input type="text" name="hostname_baru" class="list-input" placeholder="Input Here ...">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Choose Option</label>
+                            <select name="serial_number" class="list-input">
+                                <option value="" disabled selected hidden>Choose</option>
+                                <option value="pinjam">Pinjam</option>
+                                <option value="zoom">Zoom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="submission-right">
+                        <div class="form-group">
+                            <label for="">Choose Divisi</label>
+                            <select name="id_divisi" class="list-input" required style="border-radius: 10px;">
+                                <option value="" disabled selected hidden>Divisi</option>
+                                <?php foreach ($divisiList as $row): ?>
+                                    <option value="<?= $row['id_divisi']; ?>">
+                                        <?= htmlspecialchars($row['divisi']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nama Unit Kerja</label>
+                            <select name="kode_uker" class="list-input" required style="border-radius: 10px;">
+                                <option value="" disabled selected hidden>Pilih Unit Kerja</option>
+                                <?php foreach ($ukerList as $row): ?>
+                                    <option value="<?= $row['kode_uker']; ?>">
+                                        <?= htmlspecialchars($row['nama_uker']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Jumlah</label>
+                            <input type="number" name="jumlah" class="list-input" placeholder="Input Here ..." required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="submitBtn" class="button-send">Submit</button>
+                        </div>
+                    </div>
                 </div>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
-            </div>
+            </form>
 
-            <div class="table-container">
-                <table id="dataTable" style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Merk Komputer</th>
-                            <th>Hostname</th>
-                            <th>Serial Number</th>
-                            <th>Divisi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($stockItIn->num_rows > 0): ?>
-                            <?php while ($row = $stockItIn->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
-                                    <td><?= htmlspecialchars($row['hostname']) ?></td>
-                                    <td><?= htmlspecialchars($row['serial_number']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
-
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
-
-
-    <div id="logIt_keluar" class="tabcontent-it">
-        <div class="body-content">
-            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <p style="margin-bottom: 5px;">Log Record Keluar</p>
-                    <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
-                </div>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
-            </div>
-
-            <div class="table-container">
-                <table id="dataTable" style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Merk Komputer</th>
-                            <th>Hostname</th>
-                            <th>Serial Number / PN</th>
-                            <th>Divisi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($stockItOut->num_rows > 0): ?>
-                            <?php while ($row = $stockItOut->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
-                                    <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
-                                    <td><?= htmlspecialchars($row['serial_number']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
-
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
 </div>

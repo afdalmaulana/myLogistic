@@ -13,6 +13,10 @@ $id_divisi      = $_POST['id_divisi'] ?? '';
 $jumlah         = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
 $kode_uker      = $_POST['kode_uker'] ?? '';
 
+
+if (empty($hostname_baru)) {
+    $hostname_baru = '-';
+}
 // Validasi sederhana (hostname boleh kosong)
 if (empty($merk_komputer) || empty($serial_number) || empty($id_divisi) || $jumlah <= 0 || empty($kode_uker)) {
     header("Location: index.php?page=inventory-It&status=incomplete");

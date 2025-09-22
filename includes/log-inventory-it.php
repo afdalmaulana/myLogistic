@@ -21,6 +21,13 @@ LEFT JOIN divisi d ON bk.id_divisi = d.id_divisi
 ORDER BY bk.id DESC";
 $stockItOut = $conn->query($queryItStockKeluar);
 
+$listLogIT = [];
+if ($stockItOut && $stockItOut->num_rows > 0) {
+    while ($row = $stockItOut->fetch_assoc()) {
+        $listLogIT[] = $row;
+    }
+}
+
 //divisi
 $queryDivisi = "SELECT * FROM divisi ORDER BY id_divisi ASC";
 $divisi = $conn->query($queryDivisi);
@@ -237,7 +244,69 @@ if ($uker && $uker->num_rows > 0) {
             });
         });
 
+        document.querySelectorAll('.btn-return-logIt').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const merk = this.dataset.merk;
+                const jumlah = this.dataset.jumlah || 1;
+
+                Swal.fire({
+                    title: 'Konfirmasi Return',
+                    text: `Kembalikan barang ke stok untuk merk: ${merk}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Kembalikan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('returnBarangIT.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `id=${encodeURIComponent(id)}&merk=${encodeURIComponent(merk)}&jumlah=${encodeURIComponent(jumlah)}`
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Sukses', 'Barang berhasil dikembalikan ke stok.', 'success')
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat mengembalikan', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+                            });
+                    }
+                });
+            });
+        });
+
+
     });
+</script>
+
+<script>
+    function toggleOutForm(type) {
+        const btnPermanentLog = document.getElementById('btnPermanentLog');
+        const btnBorrowLog = document.getElementById('btnBorrowLog');
+        const formPermanentLog = document.getElementById('formPermanentLog');
+        const formBorrowLog = document.getElementById('formBorrowLog');
+
+        if (type === 'permanentLog') {
+            formPermanentLog.style.display = 'block';
+            formBorrowLog.style.display = 'none';
+            btnPermanentLog.classList.add('active');
+            btnBorrowLog.classList.remove('active');
+        } else {
+            formPermanentLog.style.display = 'none';
+            formBorrowLog.style.display = 'block';
+            btnPermanentLog.classList.remove('active');
+            btnBorrowLog.classList.add('active');
+        }
+    }
 </script>
 
 
@@ -305,33 +374,43 @@ if ($uker && $uker->num_rows > 0) {
                 <div>
                     <p style="margin-bottom: 5px;">Log Record Keluar</p>
                     <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
+                    <button type="button" id="btnPermanentLog" class="button-options active" style="padding:5px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('permanentLog')">Permanent</button>
+                    <button type="button" id="btnBorrowLog" class="button-options" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('borrowLog')">Borrow</button>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>
 
-            <div class="table-container">
+            <div class="table-container" id="formPermanentLog">
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
                             <th>Tanggal</th>
                             <th>Merk Komputer</th>
                             <th>Hostname</th>
-                            <th>Serial Number / PN</th>
+                            <th>Serial Number</th>
                             <th>Divisi</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($stockItOut->num_rows > 0): ?>
-                            <?php while ($row = $stockItOut->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
-                                    <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
-                                    <td><?= htmlspecialchars($row['serial_number']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
+                        <?php if (!empty($listLogIT)): ?>
+                            <?php foreach ($listLogIT as $row): ?>
+                                <?php if ($row['serial_number'] !== 'pinjam'): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                                        <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
+                                        <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
+                                        <td><?= htmlspecialchars($row['serial_number']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
+                                        <td>
+                                            <button class="btn-delete-logIt" data-id="<?= $row['id'] ?>" data-table="barangit_keluar" style="background:none; border:none;">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        </td>
 
-                                </tr>
-                            <?php endwhile; ?>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
                                 <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
@@ -340,6 +419,66 @@ if ($uker && $uker->num_rows > 0) {
                     </tbody>
                 </table>
             </div>
+
+            <div class="table-container" id="formBorrowLog" style="display: none;">
+                <table id="dataTable" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <?php foreach ($listLogIT as $row): ?>
+                                <?php if ($row['serial_number'] === 'pinjam'): ?>
+                                    <th>Done</th>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <th>Tanggal</th>
+                            <th>Merk Komputer</th>
+                            <th>PN</th>
+                            <th>Keterangan</th>
+                            <th>Divisi</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($listLogIT)): ?>
+                            <?php foreach ($listLogIT as $row): ?>
+                                <?php if ($row['serial_number'] === 'pinjam'): ?>
+                                    <tr>
+                                        <td>
+                                            <button class="btn-delete-logIt" data-id="<?= $row['id'] ?>" data-table="barangit_keluar" style="background:none; border:none;">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn-return-logIt"
+                                                data-id="<?= $row['id'] ?>"
+                                                data-merk="<?= htmlspecialchars($row['merk_komputer']) ?>"
+                                                data-jumlah="<?= isset($row['jumlah']) ? $row['jumlah'] : 1 ?>"
+                                                style="padding:4px;background-color:darkslateblue;color:white;border-radius:6px;">
+                                                Return
+                                            </button>
+                                        </td>
+
+                                        <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                                        <td><?= htmlspecialchars($row['merk_komputer']) ?></td>
+                                        <td><?= htmlspecialchars($row['hostname_baru']) ?></td>
+                                        <td><?= htmlspecialchars($row['serial_number']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama_divisi']) ?></td>
+
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Belum ada data barang keluar</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+
         </div>
     </div>
 
