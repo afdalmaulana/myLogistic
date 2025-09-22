@@ -69,7 +69,8 @@ include 'includes/navbar.php';
                 'log-inventory',
                 'list-users',
                 'inventory-It',
-                'list-uker'
+                'list-uker',
+                'log-inventory-it'
             ];
 
             if (in_array($page, $allowed_pages)) {

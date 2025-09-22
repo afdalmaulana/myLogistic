@@ -44,6 +44,9 @@ $currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
             <div>
                 <a href="index.php?page=inventory-It" class="menu-item">Inventory IT</a>
             </div>
+            <div>
+                <a href="index.php?page=log-inventory-it" class="menu-item">Log Inventory IT</a>
+            </div>
         <?php endif; ?>
     </div>
 </div>

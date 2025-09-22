@@ -8,22 +8,8 @@ $kodeUkerSession = $_SESSION['kode_uker'] ?? null;
 $isItorNot = (isset($_SESSION['id_jabatan']) && $_SESSION['id_jabatan'] === 'JB6');
 
 // Tabel stok
-$queryStock = "SELECT * FROM stok_barang_it ORDER BY id ASC";
+$queryStock = "SELECT * FROM stok_barang_it ORDER BY id DESC";
 $stocksIt = $conn->query($queryStock);
-
-//barang it masuk
-$queryItStockMasuk = "SELECT bk.*, d.divisi AS nama_divisi FROM barangit_masuk bk 
-LEFT JOIN divisi d ON bk.id_divisi = d.id_divisi
-ORDER BY bk.id ASC";
-$stockItIn = $conn->query($queryItStockMasuk);
-
-//barang it keluar
-$queryItStockKeluar = "SELECT bk.*,
-d.divisi AS nama_divisi
-FROM barangit_keluar bk
-LEFT JOIN divisi d ON bk.id_divisi = d.id_divisi
-ORDER BY bk.id ASC";
-$stockItOut = $conn->query($queryItStockKeluar);
 
 //divisi
 $queryDivisi = "SELECT * FROM divisi ORDER BY id_divisi ASC";
@@ -227,8 +213,6 @@ if ($uker && $uker->num_rows > 0) {
         <button class="tablink-it active" onclick="openIt(event, 'stocks')">STOCK</button>
         <button class="tablink-it" onclick="openIt(event, 'it_masuk')">RECORD INCOMING</button>
         <button class="tablink-it" onclick="openIt(event, 'it_keluar')">RECORD OUTGOING</button>
-        <button class="tablink-it" onclick="openIt(event, 'logIt_masuk')">LOG INGOING</button>
-        <button class="tablink-it" onclick="openIt(event, 'logIt_keluar')">LOG OUTGOING</button>
     </div>
 
     <div id="stocks" class="tabcontent-it" style="display: block;">
@@ -251,22 +235,24 @@ if ($uker && $uker->num_rows > 0) {
                     <tbody>
                         <?php if (!empty($stocksComputer)): ?>
                             <?php foreach ($stocksComputer as $item): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($item['merk_komputer']) ?></td>
-                                    <td><?= htmlspecialchars($item['hostname']) ?></td>
-                                    <td><?= htmlspecialchars($item['serial_number']) ?></td>
-                                    <td><?= htmlspecialchars($item['jumlah']) ?></td>
-                                    <td>
-                                        <button class="editStocksIT"
-                                            data-id="<?= $item['id'] ?>"
-                                            data-merk_komputer="<?= $item['merk_komputer'] ?>"
-                                            data-hostname="<?= $item['hostname'] ?>"
-                                            data-serial_number="<?= $item['serial_number'] ?>"
-                                            data-jumlah="<?= $item['jumlah'] ?>">
-                                            <i class="fa fa-edit" style="font-size:22px"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <?php if ($item['jumlah'] > 0): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($item['merk_komputer']) ?></td>
+                                        <td><?= htmlspecialchars($item['hostname']) ?></td>
+                                        <td><?= htmlspecialchars($item['serial_number']) ?></td>
+                                        <td><?= htmlspecialchars($item['jumlah']) ?></td>
+                                        <td>
+                                            <button class="editStocksIT"
+                                                data-id="<?= $item['id'] ?>"
+                                                data-merk_komputer="<?= $item['merk_komputer'] ?>"
+                                                data-hostname="<?= $item['hostname'] ?>"
+                                                data-serial_number="<?= $item['serial_number'] ?>"
+                                                data-jumlah="<?= $item['jumlah'] ?>">
+                                                <i class="fa fa-edit" style="font-size:22px"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
