@@ -374,8 +374,8 @@ if ($uker && $uker->num_rows > 0) {
                 <div>
                     <p style="margin-bottom: 5px;">Log Record Keluar</p>
                     <a href="export_barangKeluar.php" class="list-select" style="padding:5px; text-decoration:none;">Download Excel</a>
-                    <button type="button" id="btnPermanentLog" class="button-options active" style="padding:5px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('permanentLog')">Permanent</button>
-                    <button type="button" id="btnBorrowLog" class="button-options" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('borrowLog')">Borrow</button>
+                    <button type="button" id="btnPermanentLog" class="button-options active" style="padding:5px; border-radius:4px; background-color:royalblue; color:white;font-size:8px;" onclick="toggleOutForm('permanentLog')">Permanent</button>
+                    <button type="button" id="btnBorrowLog" class="button-options" style="padding:6px; border-radius:4px;font-size:8px; background-color:royalblue; color:white" onclick="toggleOutForm('borrowLog')">Borrow</button>
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input" style="width: 200px;">
             </div>

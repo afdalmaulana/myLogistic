@@ -353,8 +353,8 @@ if ($uker && $uker->num_rows > 0) {
         <div class="body-content">
             <p>Outgoing Stock</p>
             <div class="sub-toggle" style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button type="button" id="btnPermanent" class="button-options active" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('permanent')">Permanent</button>
-                <button type="button" id="btnBorrow" class="button-options" style="padding:6px; border-radius:4px; background-color:royalblue; color:white" onclick="toggleOutForm('borrow')">Borrow</button>
+                <button type="button" id="btnPermanent" class="button-options active" style="padding:6px; border-radius:4px;font-size:8px; background-color:royalblue; color:white" onclick="toggleOutForm('permanent')">Permanent</button>
+                <button type="button" id="btnBorrow" class="button-options" style="padding:6px; border-radius:4px;font-size:8px; background-color:royalblue; color:white" onclick="toggleOutForm('borrow')">Borrow</button>
             </div>
             <form id="formPermanent" action="computerOut.php" method="POST" onsubmit="return showLoading()">
                 <div class="form-input">
