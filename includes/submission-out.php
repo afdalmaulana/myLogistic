@@ -518,17 +518,17 @@ while ($row = $result->fetch_assoc()) {
             <div class="body-content">
                 <input type="text" onkeyup="searchRequest()" placeholder="Search ..." class="list-input-request">
                 <div class="table-container">
-                    <table id="dataTable-request" style="width:100%;">
+                    <table id="dataTable-request" style="width:100%;text-align:center">
                         <thead>
                             <tr>
-                                <th>Kode Pengajuan</th>
-                                <th>Kode Uker</th>
-                                <th>Tanggal Pengajuan</th>
-                                <th>Nama Barang</th>
+                                <th>Kode <br>Pengajuan</th>
+                                <th>Kode <br>Uker</th>
+                                <th>Tanggal <br>Pengajuan</th>
+                                <th>Nama <br>Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
-                                <th>Nama Anggaran</th>
-                                <th>Nominal Anggaran</th>
+                                <th>Nama <br>Anggaran</th>
+                                <th>Nominal <br>Anggaran</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -602,17 +602,17 @@ while ($row = $result->fetch_assoc()) {
             <div class="body-content">
                 <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
                 <div class="table-container">
-                    <table id="dataTable-incomplete" style="width:100%;">
+                    <table id="dataTable-incomplete" style="width:100%;text-align:center">
                         <thead>
                             <tr>
-                                <th>Kode Pengajuan</th>
-                                <th>Kode Uker</th>
-                                <th>Tanggal Pengajuan</th>
-                                <th>Nama Barang</th>
+                                <th>Kode<br> Pengajuan</th>
+                                <th>Kode<br>Uker</th>
+                                <th>Tanggal <br>Pengajuan</th>
+                                <th>Nama <br>Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
                                 <th>Sisa</th>
-                                <th>Harga Barang</th>
+                                <th>Harga <br>Barang</th>
                                 <th>Keterangan</th>
                                 <th>Proses</th>
                                 <th>Aksi</th>
@@ -678,7 +678,7 @@ while ($row = $result->fetch_assoc()) {
                             <?php endwhile; ?>
                             <?php if (!$hasData): ?>
                                 <tr>
-                                    <td colspan="8" style="text-align: center; padding: 20px; font-style: italic;">Belum ada data</td>
+                                    <td colspan="9" style="text-align: center; padding: 20px; font-style: italic;">Belum ada data</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
