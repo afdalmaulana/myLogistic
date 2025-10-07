@@ -11,6 +11,7 @@ $nama_barang = $_POST['nama_barang'] ?? '';
 // $harga_barang = $_POST['harga_barang'] ?? '';
 $jumlah = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
 $kode_uker = $_SESSION['kode_uker'] ?? null;
+$satuan = $_POST['satuan'] ?? '';
 // Validasi sederhana
 if (empty($nama_barang) || $jumlah <= 0 || empty($kode_uker)) {
     header("Location: index.php?page=stock-in&status=incomplete");
@@ -37,8 +38,8 @@ if ($stmt->execute()) {
         $update->execute();
     } else {
         // Barang belum ada → insert baru
-        $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, kode_uker) VALUES (?, ?, ?)");
-        $insert->bind_param("sis", $nama_barang, $jumlah, $kode_uker);
+        $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?)");
+        $insert->bind_param("siss", $nama_barang, $jumlah, $satuan, $kode_uker);
         $insert->execute();
     }
     // ==== END update stok_barang ====

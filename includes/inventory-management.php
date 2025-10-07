@@ -498,6 +498,14 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">
                         </div>
                         <div class="form-group">
+                            <label>Choose Box / Piece(s)</label>
+                            <select name="satuan" class="list-input" required style="border-radius: 10px;">
+                                <option value="" disabled selected hidden>Choose</option>
+                                <option value="dos">dos</option>
+                                <option value="pcs">pcs</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <button type="submit" class="button-send">Submit</button>
                         </div>
                     </div>
