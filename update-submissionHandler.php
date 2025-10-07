@@ -57,6 +57,7 @@ if (!$data) {
 $jumlah_asli = intval($data['jumlah']);
 $kode_uker = $data['kode_uker'];
 $nama_barang = $data['nama_barang'];
+$satuan = $data['satuan'];
 $tanggal_pengajuan = $data['tanggal_pengajuan'];
 $harga_barang = intval($data['harga_barang'] ?? 0);
 $sisa_jumlah = intval($data['sisa_jumlah'] ?? 0);
@@ -150,12 +151,12 @@ if ($status === 'approved') {
 
     if ($cekStok->num_rows > 0) {
         $updateStok = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ? AND kode_uker = ?");
-        $updateStok->bind_param("iss", $jumlah_masuk, $nama_barang, $kode_uker);
+        $updateStok->bind_param("isss", $jumlah_masuk, $satuan, $nama_barang, $kode_uker);
         $updateStok->execute();
         $updateStok->close();
     } else {
-        $insertStok = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, kode_uker) VALUES (?, ?, ?)");
-        $insertStok->bind_param("sis", $nama_barang, $jumlah_masuk, $kode_uker);
+        $insertStok = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?, ?)");
+        $insertStok->bind_param("siss", $nama_barang,  $jumlah_masuk, $satuan, $kode_uker);
         $insertStok->execute();
         $insertStok->close();
     }

@@ -15,22 +15,23 @@ $nama_barang = $_POST['nama_barang'] ?? '';
 $id_anggaran = $_POST['id_anggaran'] ?? '';
 $jumlah_anggaran = $_POST['jumlah_anggaran'] ?? '';
 $jumlah = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
+$satuan = $_POST['satuan'] ?? '';
 $kode_uker = $_SESSION['kode_uker'] ?? null; // ambil dari session
 
 // Validasi input
-if (empty($kode_pengajuan) || empty($tanggal_pengajuan) || empty($nama_barang) || empty($jumlah) || empty($jumlah_anggaran) || empty($id_anggaran) || empty($kode_uker)) {
+if (empty($kode_pengajuan) || empty($tanggal_pengajuan) || empty($nama_barang) || empty($jumlah) || empty($jumlah_anggaran) || empty($id_anggaran) || empty($satuan) || empty($kode_uker)) {
     header("Location: index.php?page=submission-in&status=incomplete");
     exit;
 }
 
 // Simpan ke database
-$sql = "INSERT INTO pengajuan (kode_pengajuan, tanggal_pengajuan, nama_barang,jumlah, jumlah_anggaran, id_anggaran,kode_uker)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO pengajuan (kode_pengajuan, tanggal_pengajuan, nama_barang,jumlah, jumlah_anggaran, id_anggaran, satuan, kode_uker)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 try {
     $stmt = $conn->prepare($sql);
     if (!$stmt) throw new Exception($conn->error);
-    $stmt->bind_param("sssisss", $kode_pengajuan, $tanggal_pengajuan, $nama_barang, $jumlah, $jumlah_anggaran, $id_anggaran, $kode_uker);
+    $stmt->bind_param("sssissss", $kode_pengajuan, $tanggal_pengajuan, $nama_barang, $jumlah, $jumlah_anggaran, $id_anggaran, $satuan,  $kode_uker);
 
     if (!$stmt->execute()) {
         throw new Exception($stmt->error);

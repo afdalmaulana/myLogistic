@@ -527,6 +527,7 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Nama <br>Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
+                                <th>Satuan</th>
                                 <th>Nama <br>Anggaran</th>
                                 <th>Nominal <br>Anggaran</th>
                                 <th>Keterangan</th>
@@ -562,6 +563,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
@@ -611,6 +613,7 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Nama <br>Barang</th>
                                 <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
                                 <th>Jumlah</th>
+                                <th>Satuan</th>
                                 <th>Sisa</th>
                                 <th>Harga <br>Barang</th>
                                 <th>Keterangan</th>
@@ -651,6 +654,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['price']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>

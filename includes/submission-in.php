@@ -94,8 +94,6 @@ $anggaran = $conn->query($queryAnggaran);
                         <label>Product Name</label>
                         <input type="text" name="nama_barang" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
-                </div>
-                <div class="submission-right">
                     <div class="form-group">
                         <label for="">Budget Name</label>
                         <select name="id_anggaran" class="list-input" required style="border-radius: 10px;">
@@ -109,6 +107,8 @@ $anggaran = $conn->query($queryAnggaran);
                             ?>
                         </select>
                     </div>
+                </div>
+                <div class="submission-right">
                     <div class="form-group">
                         <label>Amount of Budget</label>
                         <input type="text" name="jumlah_anggaran" id="jumlahAnggaran" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
@@ -116,6 +116,14 @@ $anggaran = $conn->query($queryAnggaran);
                     <div class="form-group">
                         <label>Input Quantity</label>
                         <input type="number" name="jumlah" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Choose Box / Piece(s)</label>
+                        <select name="satuan" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Choose</option>
+                            <option value="dos">dos</option>
+                            <option value="pcs">pcs</option>
+                        </select>
                     </div>
                     <div>
                         <button type="submit" id="submitBtn" class="button-send">Submit</button>

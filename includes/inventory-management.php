@@ -412,6 +412,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <th>Kode Uker</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
+                            <th>Satuan</th>
                             <?php if ($isAdminlog): ?>
                                 <th>Aksi</th>
                                 <th>Edit</th>
@@ -427,6 +428,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                         <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                         <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                        <td><?= htmlspecialchars($row['satuan']) ?></td>
 
                                         <?php if ($isAdminlog): ?>
                                             <td>
