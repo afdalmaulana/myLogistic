@@ -5,14 +5,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
+// $kode_pengajuan = $_POST['kode_pengajuan'] ?? '';
+$id = intval($_POST['id'] ?? 0);
 $status = $_POST['status'] ?? '';
 $price = $_POST['price'] ?? null;
 $jumlah = intval($_POST['jumlah'] ?? 0); // jumlah yang akan diforward atau disetujui
 $PNpekerja = isset($_SESSION['user']) ? $_SESSION['user'] : "";
 $namaPekerja = isset($_SESSION['nama_pekerja']) ? $_SESSION['nama_pekerja'] : 'BRI';
 
-if (!$kode_pengajuan) {
+if (!$id) {
     http_response_code(400);
     echo "Kode pengajuan tidak valid.";
     exit;
@@ -27,8 +28,8 @@ if (!in_array($status, $allowedStatuses)) {
 
 // DELETE
 if ($status === 'delete') {
-    $stmt = $conn->prepare("DELETE FROM pengajuan WHERE kode_pengajuan = ?");
-    $stmt->bind_param("s", $kode_pengajuan);
+    $stmt = $conn->prepare("DELETE FROM pengajuan WHERE id = ?");
+    $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
         echo "Pengajuan berhasil dihapus.";
     } else {
@@ -41,8 +42,8 @@ if ($status === 'delete') {
 }
 
 // Ambil data pengajuan dulu untuk kebutuhan lainnya
-$stmtSelect = $conn->prepare("SELECT * FROM pengajuan WHERE kode_pengajuan = ?");
-$stmtSelect->bind_param("s", $kode_pengajuan);
+$stmtSelect = $conn->prepare("SELECT * FROM pengajuan WHERE id = ?");
+$stmtSelect->bind_param("i", $id);
 $stmtSelect->execute();
 $result = $stmtSelect->get_result();
 $data = $result->fetch_assoc();
@@ -81,8 +82,8 @@ if ($status === 'forward') {
     $status_sisa = $sisa > 0 ? 'not done' : 'done';
     $keterangan = "Disetujui sejumlah " . number_format($jumlah, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.') . " Oleh " . $PNpekerja;
 
-    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, price = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-    $stmtUpdate->bind_param("ssissss", $status, $price, $jumlah, $sisa, $status_sisa, $keterangan, $kode_pengajuan);
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, price = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE id = ?");
+    $stmtUpdate->bind_param("ssisssi", $status, $price, $jumlah, $sisa, $status_sisa, $keterangan, $id);
     $stmtUpdate->execute();
     $stmtUpdate->close();
 
@@ -102,8 +103,8 @@ if ($status === 'approved') {
     }
 
     // Ambil tanggal_pengajuan dari tabel pengajuan
-    $stmtTanggal = $conn->prepare("SELECT tanggal_pengajuan FROM pengajuan WHERE kode_pengajuan = ?");
-    $stmtTanggal->bind_param("s", $kode_pengajuan);
+    $stmtTanggal = $conn->prepare("SELECT tanggal_pengajuan FROM pengajuan WHERE id = ?");
+    $stmtTanggal->bind_param("i", $id);
     $stmtTanggal->execute();
     $stmtTanggal->bind_result($tanggal_pengajuan);
     $stmtTanggal->fetch();
@@ -162,8 +163,8 @@ if ($status === 'approved') {
     }
 
     // Update status pengajuan (tidak menyimpan tanggal_approve ke tabel pengajuan)
-    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-    $stmtUpdate->bind_param("ss", $status, $kode_pengajuan);
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE id = ?");
+    $stmtUpdate->bind_param("si", $status, $id);
     $stmtUpdate->execute();
     $stmtUpdate->close();
 
@@ -245,8 +246,8 @@ if ($status === 'completed') {
     $keterangan = "Disetujui sejumlah " . number_format($jumlah_disetujui_akhir, 0, ',', '.') . " dari total " . number_format($jumlah_asli, 0, ',', '.');
     $status_final = 'approved'; // status tetap approved karena ini proses penyelesaian
 
-    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-    $stmtUpdate->bind_param("siisss", $status_final, $jumlah_disetujui_akhir, $sisa_baru, $status_sisa, $keterangan, $kode_pengajuan);
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, jumlah = ?, sisa_jumlah = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE id = ?");
+    $stmtUpdate->bind_param("siissi", $status_final, $jumlah_disetujui_akhir, $sisa_baru, $status_sisa, $keterangan, $id);
     $stmtUpdate->execute();
     $stmtUpdate->close();
 
@@ -258,8 +259,8 @@ if ($status === 'completed') {
 
 
 // =============== ✅ REJECT / COMPLETED / LAINNYA ===============
-$stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE kode_pengajuan = ?");
-$stmt->bind_param("ss", $status, $kode_pengajuan);
+$stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE id = ?");
+$stmt->bind_param("si", $status, $id);
 
 if ($stmt->execute()) {
     echo "Status berhasil diperbarui menjadi " . ucfirst($status) . ".";

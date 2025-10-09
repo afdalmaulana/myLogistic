@@ -200,7 +200,7 @@ while ($row = $result->fetch_assoc()) {
 
         // Fungsi untuk update posisi dan tampilkan menu sesuai status dan data tambahan
         function showGlobalMenu(btn) {
-            const kode = btn.dataset.kode;
+            const id = btn.dataset.id;
             const status = btn.dataset.status;
 
             // Ambil row terkait untuk cek data tambahan
@@ -221,10 +221,9 @@ while ($row = $result->fetch_assoc()) {
             // Tombol selesaikan muncul jika status approved, sisa_jumlah > 0 dan proses pending
             document.getElementById("btn-selesaikan").style.display = (status === "approved" && sisaJumlah > 0 && proses === "not done") ? "block" : "none";
 
-            // Inject data kode ke semua tombol aksi
-            ["btn-forward", "btn-approve", "btn-reject", "btn-selesaikan"].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.dataset.kode = kode;
+            ["btn-forward", "btn-approve", "btn-reject", "btn-selesaikan"].forEach(idBtn => {
+                const el = document.getElementById(idBtn);
+                if (el) el.dataset.id = id;
             });
         }
 
@@ -245,8 +244,8 @@ while ($row = $result->fetch_assoc()) {
 
         // Tombol Forward
         document.getElementById("btn-forward").addEventListener("click", () => {
-            const kode = document.getElementById("btn-forward").dataset.kode;
-            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const id = document.getElementById("btn-forward").dataset.id;
+            const row = document.querySelector(`.btn-action[data-id="${id}"]`).closest("tr");
             const totalJumlah = parseInt(row.children[5].innerText);
 
             Swal.fire({
@@ -276,7 +275,7 @@ while ($row = $result->fetch_assoc()) {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
                             body: new URLSearchParams({
-                                kode_pengajuan: kode,
+                                id: id,
                                 status: "forward",
                                 price: result.value.hargaBarang,
                                 jumlah: result.value.jumlahForward
@@ -296,7 +295,7 @@ while ($row = $result->fetch_assoc()) {
 
         // Tombol Approve
         document.getElementById("btn-approve").addEventListener("click", () => {
-            const kode = document.getElementById("btn-approve").dataset.kode;
+            const id = document.getElementById("btn-forward").dataset.id;
 
             Swal.fire({
                 title: 'Konfirmasi',
@@ -313,7 +312,7 @@ while ($row = $result->fetch_assoc()) {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
                             body: new URLSearchParams({
-                                kode_pengajuan: kode,
+                                id: id,
                                 status: "approved",
                             })
                         })
@@ -323,7 +322,7 @@ while ($row = $result->fetch_assoc()) {
                                 location.reload();
                             });
 
-                            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+                            const row = document.querySelector(`.btn-action[data-id="${id}"]`).closest("tr");
                             row.querySelector(".status-cell").innerText = "Approved";
                             row.querySelector(".btn-action").dataset.status = "approved";
                         }).catch(err => {
@@ -336,7 +335,7 @@ while ($row = $result->fetch_assoc()) {
 
         // Tombol Reject
         document.getElementById("btn-reject").addEventListener("click", () => {
-            const kode = document.getElementById("btn-reject").dataset.kode;
+            const id = document.getElementById("btn-reject").dataset.id;
 
             Swal.fire({
                 title: 'Konfirmasi',
@@ -353,7 +352,7 @@ while ($row = $result->fetch_assoc()) {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
                             body: new URLSearchParams({
-                                kode_pengajuan: kode,
+                                id: id,
                                 status: "rejected",
                             })
                         })
@@ -372,8 +371,8 @@ while ($row = $result->fetch_assoc()) {
                 Swal.fire("Akses Ditolak", "Hanya user logistik yang bisa menyelesaikan pengajuan ini.", "error");
                 return;
             }
-            const kode = document.getElementById("btn-selesaikan").dataset.kode;
-            const row = document.querySelector(`.btn-action[data-kode="${kode}"]`).closest("tr");
+            const id = document.getElementById("btn-selesaikan").dataset.id;
+            const row = document.querySelector(`.btn-action[data-id="${id}"]`).closest("tr");
             const sisaJumlah = parseInt(row.dataset.sisaJumlah || "0");
 
             Swal.fire({
@@ -398,7 +397,7 @@ while ($row = $result->fetch_assoc()) {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
                             body: new URLSearchParams({
-                                kode_pengajuan: kode,
+                                id: id,
                                 status: "completed",
                                 jumlah_selesai: result.value
                             })
@@ -418,12 +417,12 @@ while ($row = $result->fetch_assoc()) {
         // Tombol Delete
         document.querySelectorAll('.button-trash').forEach(button => {
             button.addEventListener('click', () => {
-                const kode = button.dataset.kode;
-                if (!kode) return;
+                const id = button.dataset.id;
+                if (!id) return;
 
                 Swal.fire({
                     title: `Hapus Pengajuan?`,
-                    text: `Yakin ingin menghapus kode pengajuan ${kode}?`,
+                    text: `Yakin ingin menghapus ID pengajuan ${id}?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Hapus',
@@ -437,7 +436,7 @@ while ($row = $result->fetch_assoc()) {
                                     'Content-Type': 'application/x-www-form-urlencoded'
                                 },
                                 body: new URLSearchParams({
-                                    kode_pengajuan: kode,
+                                    id: id,
                                     status: 'delete'
                                 })
                             })
@@ -521,6 +520,7 @@ while ($row = $result->fetch_assoc()) {
                     <table id="dataTable-request" style="width:100%;text-align:center">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Kode <br>Pengajuan</th>
                                 <th>Kode <br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
@@ -557,6 +557,8 @@ while ($row = $result->fetch_assoc()) {
                                 };
                             ?>
                                 <tr>
+
+                                    <td><?= htmlspecialchars($row['id']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
@@ -569,14 +571,15 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td>
                                         <?php if ($isAdmin || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
-                                            <button class="btn-action"
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
                                         <?php elseif ($status === 'pending'): ?>
-                                            <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                            <button class="button-trash"
+                                                data-id="<?= $row['id'] ?>" data-kode="<?= $row['kode_pengajuan'] ?>">
                                                 Hapus <i class="fa fa-trash-o"></i>
                                             </button>
                                         <?php else: ?>
@@ -607,6 +610,7 @@ while ($row = $result->fetch_assoc()) {
                     <table id="dataTable-incomplete" style="width:100%;text-align:center">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Kode<br> Pengajuan</th>
                                 <th>Kode<br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
@@ -648,6 +652,7 @@ while ($row = $result->fetch_assoc()) {
                             ?>
                                 <tr data-sisa-jumlah="<?= htmlspecialchars($row['sisa_jumlah']) ?>"
                                     data-proses="<?= htmlspecialchars($row['status_sisa']) ?>">
+                                    <td><?= htmlspecialchars($row['id']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
@@ -661,14 +666,14 @@ while ($row = $result->fetch_assoc()) {
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
                                         <?php if ($status === 'forward' && $isKanwil): ?>
-                                            <button class="btn-action"
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
                                         <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
-                                            <button class="btn-action"
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
                                                 style="font-size:24px; background: none; padding:10px; border:none">
@@ -745,7 +750,7 @@ while ($row = $result->fetch_assoc()) {
                                     </td>
                                     <?php if ($isAdmin): ?>
                                         <td>
-                                            <button class="button-trash" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                            <button class="button-trash" data-id="<?= $row['id'] ?>" data-kode="<?= $row['kode_pengajuan'] ?>">
                                                 <i class="fa fa-trash-o"></i>
                                             </button>
                                         </td>
