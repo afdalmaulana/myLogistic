@@ -559,7 +559,11 @@ while ($row = $result->fetch_assoc()) {
 
         <div id="request" class="tabscontent">
             <div class="body-content">
-                <input type="text" onkeyup="searchRequest()" placeholder="Search ..." class="list-input-request">
+                <div style="display: flex; gap:12px">
+                    <input type="text" onkeyup="searchRequest()" placeholder="Search ..." class="list-input-request">
+                    <a href="export_pengajuan.php" class="list-select" style="padding:6px;margin-bottom:2px; text-decoration:none;">Download Excel</a>
+                </div>
+
                 <div class="table-container">
                     <table id="dataTable-request" style="width:100%;text-align:center">
                         <thead>
