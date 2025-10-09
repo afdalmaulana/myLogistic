@@ -670,7 +670,10 @@ while ($row = $result->fetch_assoc()) {
 
         <div id="incomplete" class="tabscontent">
             <div class="body-content">
-                <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
+                <div style="display: flex; gap:12px">
+                    <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
+                    <a href="export_pengajuanIncomplete.php" class="list-select" style="padding:6px;margin-bottom:2px; text-decoration:none;">Download Excel</a>
+                </div>
                 <div class="table-container">
                     <table id="dataTable-incomplete" style="width:100%;text-align:center">
                         <thead>
