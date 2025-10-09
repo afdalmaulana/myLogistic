@@ -38,7 +38,7 @@ if ($isAdmin || $isKanwil) {
         SELECT p.*, a.nama_anggaran 
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
-        ORDER BY p.kode_pengajuan DESC
+        ORDER BY p.tanggal_pengajuan DESC
     ";
 } elseif ($isLogistikSudirman || $isSudirmanAccess) {
     // Logistik Sudirman hanya bisa lihat unit Sudirman
@@ -48,7 +48,7 @@ if ($isAdmin || $isKanwil) {
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
         WHERE p.kode_uker IN ($inClause)
-        ORDER BY p.kode_pengajuan DESC
+        ORDER BY p.tanggal_pengajuan DESC
     ";
 } elseif ($isLogistikAhmadYani || $isAyaniAccess) {
     // Logistik Ahmad Yani hanya bisa lihat unit Ahmad Yani
@@ -58,7 +58,7 @@ if ($isAdmin || $isKanwil) {
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
         WHERE p.kode_uker IN ($inClause)
-        ORDER BY p.kode_pengajuan DESC
+        ORDER BY p.tanggal_pengajuan DESC
     ";
 } elseif ($isLogistikTamalanrea || $isTamalanreaAccess) {
     // Logistik Tamalanrea hanya bisa melihat uker Tamalanrea
@@ -68,7 +68,7 @@ if ($isAdmin || $isKanwil) {
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
         WHERE p.kode_uker IN ($inClause)
-        ORDER BY p.kode_pengajuan DESC
+        ORDER BY p.tanggal_pengajuan DESC
     ";
 } else {
     // User biasa hanya bisa lihat pengajuan dari unit sendiri
@@ -78,7 +78,7 @@ if ($isAdmin || $isKanwil) {
         FROM pengajuan p
         LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
         WHERE p.kode_uker = '$kodeUkerEscaped'
-        ORDER BY p.kode_pengajuan DESC
+        ORDER BY p.tanggal_pengajuan DESC
     ";
 }
 
@@ -198,6 +198,50 @@ while ($row = $result->fetch_assoc()) {
     document.addEventListener("DOMContentLoaded", () => {
         const globalMenu = document.getElementById("global-actions");
 
+
+        document.querySelectorAll(".btn-detail").forEach(button => {
+            button.addEventListener("click", () => {
+                const data = button.dataset;
+
+                function getStatusClass(status) {
+                    switch (status.toLowerCase()) {
+                        case 'pending':
+                            return 'status-pending';
+                        case 'approved':
+                            return 'status-approved';
+                        case 'rejected':
+                            return 'status-rejected';
+                        case 'forward':
+                            return 'status-forward';
+                        default:
+                            return '';
+                    }
+                }
+
+                const statusClass = getStatusClass(data.status);
+
+
+                Swal.fire({
+                    title: `Detail Pengajuan`,
+                    html: `
+                    <table style="text-align:left; width:100%;">
+                        <tr><td><strong>ID</strong></td><td>: ${data.id}</td></tr>
+                        <tr><td><strong>Kode Pengajuan</strong></td><td>: ${data.kode}</td></tr>
+                        <tr><td><strong>Kode Uker</strong></td><td>: ${data.kodeUker}</td></tr>
+                        <tr><td><strong>Tanggal Pengajuan</strong></td><td>: ${data.tanggal}</td></tr>
+                        <tr><td><strong>Nama Barang</strong></td><td>: ${data.namaBarang}</td></tr>
+                         <tr><td class="status-cell"><strong>Status</strong></td><td class="${statusClass}">: ${data.status}</td></tr>
+                        <tr><td><strong>Jumlah</strong></td><td>: ${data.jumlah} ${data.satuan}</td></tr>
+                        <tr><td><strong>Anggaran</strong></td><td>: ${data.anggaran}</td></tr>
+                        <tr><td><strong>Nominal</strong></td><td>: ${data.nominal}</td></tr>
+                        <tr><td><strong>Keterangan</strong></td><td>: ${data.keterangan}</td></tr>
+                    </table>
+                `,
+                    width: 600,
+                    confirmButtonText: 'Tutup'
+                });
+            });
+        });
         // Fungsi untuk update posisi dan tampilkan menu sesuai status dan data tambahan
         function showGlobalMenu(btn) {
             const id = btn.dataset.id;
@@ -525,13 +569,14 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Kode <br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
                                 <th>Nama <br>Barang</th>
-                                <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
-                                <th>Jumlah</th>
-                                <th>Satuan</th>
-                                <th>Nama <br>Anggaran</th>
-                                <th>Nominal <br>Anggaran</th>
-                                <th>Keterangan</th>
-                                <th>Aksi</th>
+                                <!-- <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th> -->
+                                <!-- <th>Jumlah</th> -->
+                                <!-- <th>Satuan</th> -->
+                                <!-- <th>Nama <br>Anggaran</th> -->
+                                <!-- <th>Nominal <br>Anggaran</th> -->
+                                <!-- <th>Keterangan</th> -->
+                                <!-- <th>Aksi</th> -->
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -563,31 +608,47 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                    <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
-                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['satuan']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
-                                    <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td>
-                                    <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                    <!-- <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['jumlah']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['satuan']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
                                     <td>
+                                        <button class="btn-detail"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-kode="<?= $row['kode_pengajuan'] ?>"
+                                            data-kode-uker="<?= $row['kode_uker'] ?>"
+                                            data-tanggal="<?= $row['tanggal_pengajuan'] ?>"
+                                            data-nama-barang="<?= $row['nama_barang'] ?>"
+                                            data-status="<?= $status ?>"
+                                            data-jumlah="<?= $row['jumlah'] ?>"
+                                            data-satuan="<?= $row['satuan'] ?>"
+                                            data-anggaran="<?= $row['nama_anggaran'] ?>"
+                                            data-nominal="<?= $row['jumlah_anggaran'] ?>"
+                                            data-keterangan="<?= $row['keterangan'] ?>"
+                                            style="padding:6px 10px; margin-right: 8px;">Detail</button>
+
                                         <?php if ($isAdmin || $isKanwil || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
                                             <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
-                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                style="font-size:24px; background: none; padding:10px; border:none; cursor: pointer;">
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
                                         <?php elseif ($status === 'pending'): ?>
                                             <button class="button-trash"
-                                                data-id="<?= $row['id'] ?>" data-kode="<?= $row['kode_pengajuan'] ?>">
+                                                data-id="<?= $row['id'] ?>" data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                style="padding:6px 10px;">
                                                 Hapus <i class="fa fa-trash-o"></i>
                                             </button>
                                         <?php else: ?>
-                                            <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled>
+                                            <button style="font-size:24px; background: none; padding:10px; border:none; cursor: not-allowed;" class="btn-disabled" disabled>
                                                 <i class="fa fa-ellipsis-v"></i>
                                             </button>
                                         <?php endif; ?>
                                     </td>
+
                                 </tr>
                             <?php endwhile; ?>
 
