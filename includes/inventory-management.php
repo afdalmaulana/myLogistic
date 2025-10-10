@@ -32,41 +32,37 @@ $isLogistikSudirman = ($user === '00344250');
 $isLogistikAhmadYani = ($user === '00203119');
 
 // Tangani filter_uker dari GET dan simpan di session
+// Ambil filter dari GET, lalu simpan ke SESSION
 if (isset($_GET['filter_uker'])) {
     $_SESSION['filter_uker'] = $_GET['filter_uker'];
 }
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
-// Tentukan WHERE clause berdasarkan role dan user
-if ($isAdminlog) {
-    // Admin bisa lihat semua, atau filter jika ada
+// Tentukan kondisi WHERE berdasarkan role
+if ($isAdminlog || $isBerwenang) {
+    // Admin atau berwenang bisa lihat semua, atau sesuai filter
     $whereClause = (!empty($filterUker)) ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'" : "1";
-} else if ($isLogistikAhmadYani) {
-    $allowedUkerList = "'" . implode("','", $ahmadYaniCodes) . "'";
-    if (!empty($filterUker) && in_array($filterUker, $ahmadYaniCodes)) {
-        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
-    } else {
-        $whereClause = "kode_uker IN ($allowedUkerList)";
-    }
-} else if ($isLogistikSudirman) {
+} elseif ($isLogistikSudirman) {
     $allowedUkerList = "'" . implode("','", $sudirmanCodes) . "'";
-    if (!empty($filterUker) && in_array($filterUker, $sudirmanCodes)) {
-        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
-    } else {
-        $whereClause = "kode_uker IN ($allowedUkerList)";
-    }
-} else if ($isLogistikTamalanrea) {
+    $whereClause = (!empty($filterUker) && in_array($filterUker, $sudirmanCodes))
+        ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'"
+        : "kode_uker IN ($allowedUkerList)";
+} elseif ($isLogistikAhmadYani) {
+    $allowedUkerList = "'" . implode("','", $ahmadYaniCodes) . "'";
+    $whereClause = (!empty($filterUker) && in_array($filterUker, $ahmadYaniCodes))
+        ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'"
+        : "kode_uker IN ($allowedUkerList)";
+} elseif ($isLogistikTamalanrea) {
     $allowedUkerList = "'" . implode("','", $tamalanreaCodes) . "'";
-    if (!empty($filterUker) && in_array($filterUker, $tamalanreaCodes)) {
-        $whereClause = "kode_uker = '" . $conn->real_escape_string($filterUker) . "'";
-    } else {
-        $whereClause = "kode_uker IN ($allowedUkerList)";
-    }
+    $whereClause = (!empty($filterUker) && in_array($filterUker, $tamalanreaCodes))
+        ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'"
+        : "kode_uker IN ($allowedUkerList)";
 } else {
-    // User biasa hanya bisa lihat kode_uker dari sessionnya
+    // User biasa hanya bisa lihat miliknya
     $kodeUkerEsc = $conn->real_escape_string($kodeUkerSession);
     $whereClause = "kode_uker = '$kodeUkerEsc'";
 }
+
 
 // Query data stok dan barang masuk berdasarkan where clause
 $queryStock = "SELECT * FROM stok_barang WHERE $whereClause ORDER BY id ASC";
@@ -368,29 +364,34 @@ if ($stokResult && $stokResult->num_rows > 0) {
         <div class="body-content">
             <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <?php if ($isBerwenang): ?>
+                    <?php if ($isAdminlog || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
                         <form method="GET" style="display: inline-block;">
                             <input type="hidden" name="page" value="inventory-management">
                             <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
                                 <option value="">Filter Kode Uker</option>
                                 <?php
-                                $allowedCodes = [];
+                                if ($isAdminlog) {
+                                    // Admin: lihat semua kode uker
+                                    $query = "SELECT DISTINCT kode_uker FROM stok_barang ORDER BY kode_uker";
+                                } else {
+                                    // Khusus logistik: tampilkan kode uker sesuai akses
+                                    if ($isLogistikSudirman) {
+                                        $allowedCodes = $sudirmanCodes;
+                                    } elseif ($isLogistikAhmadYani) {
+                                        $allowedCodes = $ahmadYaniCodes;
+                                    } elseif ($isLogistikTamalanrea) {
+                                        $allowedCodes = $tamalanreaCodes;
+                                    } else {
+                                        $allowedCodes = [];
+                                    }
 
-                                if ($isLogistikSudirman) {
-                                    $allowedCodes = $sudirmanCodes;
-                                } elseif ($isLogistikAhmadYani) {
-                                    $allowedCodes = $ahmadYaniCodes;
-                                } elseif ($isLogistikTamalanrea) {
-                                    $allowedCodes = $tamalanreaCodes;
+                                    if (!empty($allowedCodes)) {
+                                        $codesList = "'" . implode("','", $allowedCodes) . "'";
+                                        $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE kode_uker IN ($codesList) ORDER BY kode_uker";
+                                    } else {
+                                        $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE 1=0";
+                                    }
                                 }
-
-                                $query = "SELECT DISTINCT kode_uker FROM barang_masuk";
-                                if (!empty($allowedCodes)) {
-                                    // Filter hanya kode yang diperbolehkan
-                                    $codesList = "'" . implode("','", $allowedCodes) . "'";
-                                    $query .= " WHERE kode_uker IN ($codesList)";
-                                }
-                                $query .= " ORDER BY kode_uker";
 
                                 $ukerQuery = $conn->query($query);
                                 while ($uker = $ukerQuery->fetch_assoc()):
@@ -399,8 +400,9 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 endwhile;
                                 ?>
                             </select>
-                        <?php endif; ?>
                         </form>
+                    <?php endif; ?>
+
                 </div>
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
