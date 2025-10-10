@@ -119,7 +119,7 @@ while ($row = $result->fetch_assoc()) {
     }
 
     // Hitung incomplete
-    if (in_array($status, ['approved', 'forward']) && $status_sisa === 'not done') {
+    if (in_array($status, ['approved', 'forward'])) {
         $incompleteCount++;
     }
 

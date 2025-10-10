@@ -15,8 +15,7 @@ $kodeUker = $_SESSION['kode_uker'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $kode_uker = $_SESSION['kode_uker'] ?? '';
-$filter = "WHERE (LOWER(status) = 'forward' OR LOWER(status) = 'approved') 
-           AND LOWER(status_sisa) = 'not done'";
+$filter = "WHERE (LOWER(status) = 'forward' OR LOWER(status) = 'approved')";
 
 
 
