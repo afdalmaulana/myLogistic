@@ -678,7 +678,7 @@ while ($row = $result->fetch_assoc()) {
                     <table id="dataTable-incomplete" style="width:100%;text-align:center">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <!-- <th>ID</th> -->
                                 <th>Kode<br> Pengajuan</th>
                                 <th>Kode<br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
@@ -720,7 +720,7 @@ while ($row = $result->fetch_assoc()) {
                             ?>
                                 <tr data-sisa-jumlah="<?= htmlspecialchars($row['sisa_jumlah']) ?>"
                                     data-proses="<?= htmlspecialchars($row['status_sisa']) ?>">
-                                    <td><?= htmlspecialchars($row['id']) ?></td>
+                                    <!-- <td><?= htmlspecialchars($row['id']) ?></td> -->
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>

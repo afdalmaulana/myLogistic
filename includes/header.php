@@ -1161,7 +1161,7 @@
             /* border: 1px solid #ffffff; */
             overflow: auto;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            white-space: normal;
             vertical-align: middle;
         }
 
