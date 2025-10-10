@@ -689,7 +689,7 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Sisa</th>
                                 <th>Harga <br>Barang</th>
                                 <th>Keterangan</th>
-                                <th>Proses</th>
+                                <th style="cursor:pointer;" onclick="toggleSortProses()">Proses <span id="sortArrowProses">↓</span></th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

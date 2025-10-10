@@ -215,7 +215,7 @@
                 return (statusA === "forward" ? -1 : 1) - (statusB === "forward" ? -1 : 1);
             } else {
                 // Pending sebelum Forward
-                return (statusA === "pending" ? -1 : 1) - (statusB === "pending" ? -1 : 1);
+                return (statusA === "approved" ? -1 : 1) - (statusB === "approved" ? -1 : 1);
             }
         });
 
@@ -225,5 +225,29 @@
         document.getElementById("sortArrow").textContent = sortAsc ? "↑" : "↓";
 
         sortAsc = !sortAsc;
+    }
+    let sortAscProses = true;
+
+    function toggleSortProses() {
+        const table = document.getElementById("dataTable-incomplete");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+            const prosesA = a.cells[11].innerText.trim().toLowerCase(); // Kolom Proses
+            const prosesB = b.cells[11].innerText.trim().toLowerCase();
+
+            if (sortAscProses) {
+                return (prosesA === "done" ? -1 : 1) - (prosesB === "done" ? -1 : 1);
+            } else {
+                return (prosesA === "not done" ? -1 : 1) - (prosesB === "not done" ? -1 : 1);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+
+        document.getElementById("sortArrowProses").textContent = sortAscProses ? "↑" : "↓";
+
+        sortAscProses = !sortAscProses;
     }
 </script>
