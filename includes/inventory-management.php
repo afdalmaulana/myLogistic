@@ -39,7 +39,7 @@ if (isset($_GET['filter_uker'])) {
 $filterUker = $_SESSION['filter_uker'] ?? '';
 
 // Tentukan kondisi WHERE berdasarkan role
-if ($isAdminlog || $isBerwenang) {
+if ($isAdminlog) {
     // Admin atau berwenang bisa lihat semua, atau sesuai filter
     $whereClause = (!empty($filterUker)) ? "kode_uker = '" . $conn->real_escape_string($filterUker) . "'" : "1";
 } elseif ($isLogistikSudirman) {

@@ -119,7 +119,7 @@ while ($row = $result->fetch_assoc()) {
     }
 
     // Hitung incomplete
-    if (in_array($status, ['approved', 'forward'])) {
+    if ($status === 'forward' || ($status === 'approved' && $sisa_jumlah > 0)) {
         $incompleteCount++;
     }
 
@@ -411,7 +411,7 @@ while ($row = $result->fetch_assoc()) {
         // Tombol Selesaikan (baru)
 
         document.getElementById("btn-selesaikan").addEventListener("click", () => {
-            if (!isLogistikAyani && !isLogistikSudirman) {
+            if (!isLogistikAyani && !isLogistikSudirman && !isLogistikTamalanrea) {
                 Swal.fire("Akses Ditolak", "Hanya user logistik yang bisa menyelesaikan pengajuan ini.", "error");
                 return;
             }

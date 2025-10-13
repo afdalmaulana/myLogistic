@@ -38,7 +38,7 @@ if ($stmt->execute()) {
         $update->execute();
     } else {
         // Barang belum ada → insert baru
-        $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?)");
+        $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?, ?)");
         $insert->bind_param("siss", $nama_barang, $jumlah, $satuan, $kode_uker);
         $insert->execute();
     }
