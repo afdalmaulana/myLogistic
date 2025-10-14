@@ -105,6 +105,10 @@ $dashboardRecent = [
         'actions' => [
             ['title' => 'New Submission', 'link' => 'index.php?page=submission-in'],
             ['title' => 'Add New Item', 'link' => 'index.php?page=inventory-management'],
+        ],
+        'action-non' => [
+            ['title' => 'Add New Item', 'link' => 'index.php?page=inventory-management'],
+            ['title' => 'View Log', 'link' => 'index.php?page=log-inventory'],
         ]
     ],
     [
@@ -145,9 +149,19 @@ $dashboardRecent = [
                     <div>
                         <div class="dashboard-title"><?= $item['heading'] ?></div>
                         <?php if (!empty($item['actions'])): ?>
-                            <?php foreach ($item['actions'] as $a): ?>
-                                <a href="<?= $a['link'] ?>" class="dashboard-title btnRecent"><?= $a['title'] ?></a>
-                            <?php endforeach; ?>
+                            <?php if ($_SESSION['id_jabatan'] === 'JB4' || $_SESSION['id_jabatan'] === 'JB7'): ?>
+                                <?php if (!empty($item['actions'])): ?>
+                                    <?php foreach ($item['actions'] as $a): ?>
+                                        <a href="<?= $a['link'] ?>" class="dashboard-title btnRecent"><?= $a['title'] ?></a>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <?php if (!empty($item['action-non'])): ?>
+                                    <?php foreach ($item['action-non'] as $a): ?>
+                                        <a href="<?= $a['link'] ?>" class="dashboard-title btnRecent"><?= $a['title'] ?></a>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         <?php else: ?>
                             <div>
                                 <?php if ($resultRecent->num_rows > 0): ?>

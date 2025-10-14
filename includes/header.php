@@ -219,6 +219,10 @@
             flex-direction: column;
         }
 
+        .recent-update {
+            font-size: 13px;
+        }
+
         .btnRecent {
             display: block;
             text-align: left;
