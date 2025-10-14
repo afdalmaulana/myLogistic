@@ -27,7 +27,7 @@ $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
 $tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
 // Identifikasi user logistik berdasarkan user ID
-$isLogistikTamalanrea = ($user === '00220631');
+$isLogistikTamalanrea = ($user === '00220631' || $user === '00028145');
 $isLogistikSudirman = ($user === '00344250');
 $isLogistikAhmadYani = ($user === '00203119');
 
