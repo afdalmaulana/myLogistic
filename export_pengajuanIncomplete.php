@@ -38,19 +38,38 @@ $sudirmanCodes = ['0334', '1548', '3050', '3411', '3581', '3582', '3810', '3811'
 $ahmadYaniCodes = ['0050', '1074', '0664', '2086', '2051', '2054', '1436'];
 $tamalanreaCodes = ['0403', '7442', '4987', '3823', '3818', '3806', '3419', '3057', '2085', '1831', '1814', '1709', '1554'];
 
-if ($isLogistikSudirman) {
+// Query dasar dengan JOIN ke tabel anggaran
+$baseQuery = "
+    SELECT p.*, a.nama_anggaran
+    FROM pengajuan p
+    LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
+    WHERE (LOWER(p.status) = 'approved' OR LOWER(p.status) = 'rejected')
+";
+
+// Tambahkan filter berdasarkan role
+if ($isAdmin || $isKanwil) {
+    // Admin dan Kanwil lihat semua data
+    // Tidak ada filter tambahan
+} elseif ($isLogistikSudirman) {
     $allowed = "'" . implode("','", $sudirmanCodes) . "'";
-    $filter .= " AND kode_uker IN ($allowed)";
+    $baseQuery .= " AND p.kode_uker IN ($allowed)";
 } elseif ($isLogistikAhmadYani) {
     $allowed = "'" . implode("','", $ahmadYaniCodes) . "'";
-    $filter .= " AND kode_uker IN ($allowed)";
+    $baseQuery .= " AND p.kode_uker IN ($allowed)";
 } elseif ($isLogistikTamalanrea) {
     $allowed = "'" . implode("','", $tamalanreaCodes) . "'";
-    $filter .= " AND kode_uker IN ($allowed)";
+    $baseQuery .= " AND p.kode_uker IN ($allowed)";
+} else {
+    // User biasa hanya lihat pengajuan unitnya sendiri
+    $kodeUkerEscaped = $conn->real_escape_string($kodeUker);
+    $baseQuery .= " AND p.kode_uker = '$kodeUkerEscaped'";
 }
 
-$query = "SELECT * FROM pengajuan $filter ORDER BY tanggal_pengajuan DESC";
-$result = $conn->query($query);
+// Tambahkan urutan
+$baseQuery .= " ORDER BY p.tanggal_pengajuan DESC";
+
+// Eksekusi query
+$result = $conn->query($baseQuery);
 
 // Output tabel Excel
 echo "<table border='1'>";
@@ -65,6 +84,7 @@ echo "<tr>
         <th>Satuan</th>
         <th>Sisa</th>
         <th>Harga Barang</th>
+        <th>Nama Anggaran</th>
         <th>Keterangan</th>
         <th>Proses</th>
       </tr>";
@@ -81,6 +101,7 @@ while ($row = $result->fetch_assoc()) {
         <td>{$row['satuan']}</td>
         <td>{$row['sisa_jumlah']}</td>
         <td>{$row['price']}</td>
+        <td>{$row['nama_anggaran']}</td>
         <td>{$row['keterangan']}</td>
         <td>{$row['status_sisa']}</td>
     </tr>";
