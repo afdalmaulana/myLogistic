@@ -766,17 +766,23 @@ while ($row = $result->fetch_assoc()) {
 
         <div id="approved" class="tabscontent">
             <div class="body-content">
-                <input type="text" onkeyup="searchApproved()" placeholder="Search ..." class="list-input-complete">
+                <div style="display: flex; gap:12px">
+                    <input type="text" onkeyup="searchApproved()" placeholder="Search ..." class="list-input-complete">
+                    <a href="export_pengajuanApproved.php" class="list-select" style="padding:6px;margin-bottom:2px; text-decoration:none;">Download Excel</a>
+                </div>
                 <div class="table-container">
                     <table id="dataTable-complete" style="width:100%;">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Kode Pengajuan</th>
                                 <th>Kode Uker</th>
                                 <th>Tanggal Pengajuan</th>
                                 <th>Nama Barang</th>
                                 <th>Status</th>
                                 <th>Jumlah</th>
+                                <th>Satuan</th>
+                                <th>Anggaran</th>
                                 <th>Keterangan</th>
                                 <?php if ($isAdmin): ?>
                                     <th>Aksi</th>
@@ -803,12 +809,15 @@ while ($row = $result->fetch_assoc()) {
                                 };
                             ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['id']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['satuan']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
                                     <td style="background: none;">
                                         <?php if ($status === 'approved'): ?>
                                             <div style="font-size:12px;">Pengajuan disetujui</div>
