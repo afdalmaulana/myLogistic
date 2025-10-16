@@ -926,12 +926,12 @@ while ($row = $result->fetch_assoc()) {
                                             data-keterangan="<?= $row['keterangan'] ?>"
                                             style="padding:6px 10px; margin-right: 8px;">Detail</button>
                                         <?php if ($status === 'forward' && $isKanwil): ?>
-                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
+                                            <!-- <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
-                                            </button>
+                                            </button> -->
                                         <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
                                             <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
