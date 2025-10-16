@@ -276,4 +276,29 @@
 
         sortAsc = !sortAsc;
     }
+
+    let sortForwardProses = true;
+
+    function toggleSortForwardProses() {
+        const table = document.getElementById("dataTable-forward");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+            const prosesA = a.cells[8].innerText.trim().toLowerCase();
+            const prosesB = b.cells[8].innerText.trim().toLowerCase();
+
+            if (sortForwardProses) {
+                return (prosesA === "not done" ? -1 : 1) - (prosesB === "not done" ? -1 : 1);
+            } else {
+                return (prosesA === "done" ? -1 : 1) - (prosesB === "done" ? -1 : 1);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+
+        document.getElementById("sortArrowProsesForward").textContent = sortForwardProses ? "↑" : "↓";
+
+        sortForwardProses = !sortForwardProses;
+    }
 </script>

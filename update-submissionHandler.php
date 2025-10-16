@@ -256,6 +256,25 @@ if ($status === 'completed') {
     exit;
 }
 
+// =============== ✅ REJECTED ===============
+if ($status === 'rejected') {
+    $status_sisa = 'done';
+    $keterangan = "Pengajuan ditolak oleh $namaPekerja.";
+
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, status_sisa = ?, keterangan = ?, updated_at = NOW() WHERE id = ?");
+    $stmtUpdate->bind_param("sssi", $status, $status_sisa, $keterangan, $id);
+
+    if ($stmtUpdate->execute()) {
+        echo "Pengajuan berhasil ditolak.";
+    } else {
+        http_response_code(500);
+        echo "Gagal menolak pengajuan.";
+    }
+
+    $stmtUpdate->close();
+    $conn->close();
+    exit;
+}
 
 
 // =============== ✅ REJECT / COMPLETED / LAINNYA ===============

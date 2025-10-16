@@ -4,7 +4,7 @@ session_start();
 
 // Set headers for Excel download
 header("Content-Type: application/vnd.ms-excel");
-header("Content-Disposition: attachment; filename=request_pengajuan_incomplete.xls");
+header("Content-Disposition: attachment; filename=request_pengajuan_forward.xls");
 header("Pragma: no-cache");
 header("Expires: 0");
 
@@ -15,7 +15,7 @@ $kodeUker = $_SESSION['kode_uker'] ?? '';
 $idJabatan = $_SESSION['id_jabatan'] ?? '';
 
 $kode_uker = $_SESSION['kode_uker'] ?? '';
-$filter = "WHERE (LOWER(status) = 'approved')";
+// $filter = "WHERE (LOWER(status) = 'forward' OR LOWER(status) = 'approved')";
 
 
 
@@ -43,7 +43,7 @@ $baseQuery = "
     SELECT p.*, a.nama_anggaran
     FROM pengajuan p
     LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
-    WHERE (LOWER(p.status) = 'approved')
+    WHERE (LOWER(p.status) = 'forward')
 ";
 
 // Tambahkan filter berdasarkan role
@@ -74,7 +74,6 @@ $result = $conn->query($baseQuery);
 // Output tabel Excel
 echo "<table border='1'>";
 echo "<tr>
-        <th>ID</th>
         <th>Kode Pengajuan</th>
         <th>Kode Uker</th>
         <th>Tanggal Pengajuan</th>
@@ -91,7 +90,6 @@ echo "<tr>
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>
-        <td>{$row['id']}</td>
         <td>{$row['kode_pengajuan']}</td>
         <td>{$row['kode_uker']}</td>
         <td>{$row['tanggal_pengajuan']}</td>

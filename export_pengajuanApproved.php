@@ -38,7 +38,9 @@ $baseQuery = "
     FROM pengajuan p
     LEFT JOIN anggaran a ON p.id_anggaran = a.id_anggaran
     WHERE (LOWER(p.status) = 'approved' OR LOWER(p.status) = 'rejected')
+    AND (LOWER(p.status_sisa) = 'done') 
 ";
+
 
 // Tambahkan filter berdasarkan role
 if ($isAdmin || $isKanwil) {
@@ -81,6 +83,9 @@ echo "<tr>
       </tr>";
 
 while ($row = $result->fetch_assoc()) {
+    $status = strtolower($row['status']);
+    $keteranganStatus = $status === 'approved' ? 'Pengajuan disetujui' : ($status === 'rejected' ? 'Pengajuan ditolak' : '');
+
     echo "<tr>
         <td>{$row['id']}</td>
         <td>{$row['kode_pengajuan']}</td>
@@ -91,7 +96,8 @@ while ($row = $result->fetch_assoc()) {
         <td>{$row['jumlah']}</td>
         <td>{$row['satuan']}</td>
         <td>{$row['nama_anggaran']}</td>
-        <td>{$row['keterangan']}</td>
+        <td>{$keteranganStatus}</td>
     </tr>";
 }
+
 echo "</table>";

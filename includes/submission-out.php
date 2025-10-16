@@ -85,6 +85,7 @@ if ($isAdmin || $isKanwil) {
 
 $result = $conn->query($query);
 $requestCount = 0;
+$forwardCount = 0;
 $incompleteCount = 0;
 $completeCount = 0;
 
@@ -119,7 +120,11 @@ while ($row = $result->fetch_assoc()) {
     }
 
     // Hitung incomplete
-    if ($status === 'forward' || ($status === 'approved' && $sisa_jumlah > 0)) {
+    if ($status === 'forward') {
+        $forwardCount++;
+    }
+
+    if ($status === 'approved' && $sisa_jumlah > 0) {
         $incompleteCount++;
     }
 
@@ -235,6 +240,51 @@ while ($row = $result->fetch_assoc()) {
                         <tr><td><strong>Anggaran</strong></td><td>: ${data.anggaran}</td></tr>
                         <tr><td><strong>Nominal</strong></td><td>: ${data.nominal}</td></tr>
                         <tr><td><strong>Keterangan</strong></td><td>: ${data.keterangan}</td></tr>
+                    </table>
+                `,
+                    width: 600,
+                    confirmButtonText: 'Tutup'
+                });
+            });
+        });
+
+        document.querySelectorAll(".btn-detailForward").forEach(button => {
+            button.addEventListener("click", () => {
+                const data = button.dataset;
+
+                function getStatusClass(status) {
+                    switch (status.toLowerCase()) {
+                        case 'pending':
+                            return 'status-pending';
+                        case 'approved':
+                            return 'status-approved';
+                        case 'rejected':
+                            return 'status-rejected';
+                        case 'forward':
+                            return 'status-forward';
+                        default:
+                            return '';
+                    }
+                }
+
+                const statusClass = getStatusClass(data.status);
+
+
+                Swal.fire({
+                    title: `Detail Pengajuan`,
+                    html: `
+                    <table style="text-align:left; width:100%;">
+                        <tr><td><strong>ID</strong></td><td style="font-size:12px;">: ${data.id}</td></tr>
+                        <tr><td><strong>Kode Pengajuan</strong></td><td style="font-size:12px;">: ${data.kode}</td></tr>
+                        <tr><td><strong>Kode Uker</strong></td><td style="font-size:12px;">: ${data.kodeUker}</td></tr>
+                        <tr><td><strong>Tanggal Pengajuan</strong></td><td style="font-size:12px;">: ${data.tanggal}</td></tr>
+                        <tr><td><strong>Nama Barang</strong></td><td style="font-size:12px;">: ${data.namaBarang}</td></tr>
+                         <tr><td class="status-cell"><strong>Status</strong></td><td style="font-size:12px;" class="${statusClass}">: ${data.status}</td></tr>
+                        <tr><td><strong>Jumlah</strong></td><td style="font-size:12px;">: ${data.jumlah} ${data.satuan}</td></tr>
+                        <tr><td><strong>Sisa</strong></td><td style="font-size:12px;">: ${data.sisa_jumlah}</td></tr>
+                        <tr><td><strong>Harga Barang</strong></td><td style="font-size:12px;">: ${data.price}</td></tr>
+                        <tr><td><strong>Anggaran</strong></td><td style="font-size:12px;">: ${data.anggaran}</td></tr>
+                        <tr><td><strong>Keterangan</strong></td><td style="font-size:12px;">: ${data.keterangan}</td></tr>
                     </table>
                 `,
                     width: 600,
@@ -550,6 +600,7 @@ while ($row = $result->fetch_assoc()) {
         <?php else: ?>
             <div class="tabs">
                 <button class="tabslinks active" onclick="openTab(event, 'request')">Request <span class="badge"><?= $requestCount ?></span></button>
+                <button class="tabslinks" onclick="openTab(event, 'forward')">Forward <span class="badge"><?= $forwardCount ?></span></button>
                 <button class="tabslinks" onclick="openTab(event, 'incomplete')">Incomplete <span class="badge"><?= $incompleteCount ?></span></button>
                 <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></span></button>
             </div>
@@ -618,7 +669,7 @@ while ($row = $result->fetch_assoc()) {
                                     <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
-                                    <td>
+                                    <td style="display:flex; flex-direction:row; justify-content: center; align-items: center; gap: 8px; flex-wrap: nowrap;">
                                         <button class="btn-detail"
                                             data-id="<?= $row['id'] ?>"
                                             data-kode="<?= $row['kode_pengajuan'] ?>"
@@ -668,6 +719,119 @@ while ($row = $result->fetch_assoc()) {
             </div>
         </div>
 
+        <div id="forward" class="tabscontent">
+            <div class="body-content">
+                <div style="display: flex; gap:12px">
+                    <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
+                    <a href="export_pengajuanForward.php" class="list-select" style="padding:6px;margin-bottom:2px; text-decoration:none;">Download Excel</a>
+                </div>
+                <div class="table-container">
+                    <table id="dataTable-forward" style="width:100%;text-align:center">
+                        <thead>
+                            <tr>
+                                <!-- <th>ID</th> -->
+                                <th>Kode<br> Pengajuan</th>
+                                <th>Kode<br>Uker</th>
+                                <th>Tanggal <br>Pengajuan</th>
+                                <th>Nama <br>Barang</th>
+                                <!-- <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th> -->
+                                <th>Status</th>
+                                <th>Jumlah</th>
+                                <th>Satuan</th>
+                                <th>Sisa</th>
+                                <!-- <th>Harga <br>Barang</th> -->
+                                <!-- <th>Anggaran</th> -->
+                                <!-- <th>Keterangan</th> -->
+                                <th style="cursor:pointer;" onclick="toggleSortForwardProses()">Proses <span id="sortArrowProsesForward">↓</span></th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $result->data_seek(0);
+                            $hasData = false;
+                            while ($row = $result->fetch_assoc()):
+                                $status = strtolower($row['status']);
+                                $status_sisa = strtolower($row['status_sisa'] ?? '');
+                                if (!in_array($status, ['forward'])) continue;
+                                // if (!in_array($status, ['approved', 'forward'])) continue;
+                                // if (!in_array($status_sisa, ['not done', 'done'])) continue;
+                                // if ($status === 'approved' && $status_sisa === 'done') continue;
+
+                                if ($isLogistikSudirman && !in_array($row['kode_uker'], $sudirmanCodes)) continue;
+                                if ($isLogistikAhmadYani && !in_array($row['kode_uker'], $ahmadYaniCodes)) continue;
+                                if ($isLogistikTamalanrea && !in_array($row['kode_uker'], $tamalanreaCodes)) continue;
+                                $hasData = true;
+                                $class = match ($status) {
+                                    'pending' => 'status-pending',
+                                    'approved' => 'status-approved',
+                                    'rejected' => 'status-rejected',
+                                    'forward' => 'status-forward',
+                                    'not done' => 'status-notdone',
+                                    default => '',
+                                };
+                            ?>
+                                <tr data-sisa-jumlah="<?= htmlspecialchars($row['sisa_jumlah']) ?>"
+                                    data-proses="<?= htmlspecialchars($row['status_sisa']) ?>">
+                                    <!-- <td><?= htmlspecialchars($row['id']) ?></td> -->
+                                    <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
+                                    <td><?= htmlspecialchars($row['kode_uker']) ?></td>
+                                    <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                    <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= htmlspecialchars($row['satuan']) ?></td>
+                                    <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
+                                    <!-- <td><?= htmlspecialchars($row['price']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
+                                    <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
+                                    <td style="display:flex; flex-direction:row; justify-content: center; align-items: center; gap: 8px; flex-wrap: nowrap;">
+                                        <button class="btn-detailForward"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-kode="<?= $row['kode_pengajuan'] ?>"
+                                            data-kode-uker="<?= $row['kode_uker'] ?>"
+                                            data-tanggal="<?= $row['tanggal_pengajuan'] ?>"
+                                            data-nama-barang="<?= $row['nama_barang'] ?>"
+                                            data-status="<?= $status ?>"
+                                            data-jumlah="<?= $row['jumlah'] ?>"
+                                            data-satuan="<?= $row['satuan'] ?>"
+                                            data-sisa_jumlah="<?= $row['sisa_jumlah'] ?>"
+                                            data-price="<?= $row['price'] ?>"
+                                            data-anggaran="<?= $row['nama_anggaran'] ?>"
+                                            data-keterangan="<?= $row['keterangan'] ?>"
+                                            style="padding:6px 10px; margin-right: 8px;">Detail</button>
+                                        <?php if ($status === 'forward' && $isKanwil): ?>
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>"
+                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                        <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>"
+                                                style="font-size:24px; background: none; padding:10px; border:none">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                        <?php else: ?>
+                                            <button style="font-size:24px; background: none; padding:10px; border:none" class="btn-disabled" disabled><i class="fa fa-ellipsis-v"></i></button>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                            <?php if (!$hasData): ?>
+                                <tr>
+                                    <td colspan="9" style="text-align: center; padding: 20px; font-style: italic;">Belum ada data</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div id="incomplete" class="tabscontent">
             <div class="body-content">
                 <div style="display: flex; gap:12px">
@@ -683,13 +847,16 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Kode<br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
                                 <th>Nama <br>Barang</th>
-                                <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th>
+                                <!-- <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th> -->
+                                <th>Status</th>
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Sisa</th>
                                 <th>Harga <br>Barang</th>
+                                <th>Anggaran</th>
                                 <th>Keterangan</th>
-                                <th style="cursor:pointer;" onclick="toggleSortProses()">Proses <span id="sortArrowProses">↓</span></th>
+                                <th>Proses</th>
+                                <!-- <th style="cursor:pointer;" onclick="toggleSortProses()">Proses <span id="sortArrowProses">↓</span></th> -->
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -701,7 +868,7 @@ while ($row = $result->fetch_assoc()) {
                                 $status = strtolower($row['status']);
                                 $status_sisa = strtolower($row['status_sisa'] ?? '');
 
-                                if (!in_array($status, ['approved', 'forward'])) continue;
+                                if (!in_array($status, ['approved'])) continue;
                                 if (!in_array($status_sisa, ['not done', 'done'])) continue;
                                 if ($status === 'approved' && $status_sisa === 'done') continue;
 
@@ -730,6 +897,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['price']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
                                     <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td>
@@ -783,6 +951,7 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Anggaran</th>
+                                <th>Proses</th>
                                 <th>Keterangan</th>
                                 <?php if ($isAdmin): ?>
                                     <th>Aksi</th>
@@ -818,6 +987,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
+                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
                                     <td style="background: none;">
                                         <?php if ($status === 'approved'): ?>
                                             <div style="font-size:12px;">Pengajuan disetujui</div>
