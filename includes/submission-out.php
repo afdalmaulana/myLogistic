@@ -779,7 +779,7 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Kode Uker</th>
                                 <th>Tanggal Pengajuan</th>
                                 <th>Nama Barang</th>
-                                <th>Status</th>
+                                <th style="cursor:pointer;" onclick="toggleSortComplete()">Status <span id="sortArrowComplete">↓</span></th>
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Anggaran</th>

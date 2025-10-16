@@ -234,8 +234,8 @@
         const rows = Array.from(tbody.rows);
 
         rows.sort((a, b) => {
-            const prosesA = a.cells[11].innerText.trim().toLowerCase(); // Kolom Proses
-            const prosesB = b.cells[11].innerText.trim().toLowerCase();
+            const prosesA = a.cells[10].innerText.trim().toLowerCase(); // Kolom Proses
+            const prosesB = b.cells[10].innerText.trim().toLowerCase();
 
             if (sortAscProses) {
                 return (prosesA === "done" ? -1 : 1) - (prosesB === "done" ? -1 : 1);
@@ -249,5 +249,31 @@
         document.getElementById("sortArrowProses").textContent = sortAscProses ? "↑" : "↓";
 
         sortAscProses = !sortAscProses;
+    }
+
+    let sortCompleteStatus = true;
+
+    function toggleSortComplete() {
+        const table = document.getElementById("dataTable-complete");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+            const statusA = a.cells[5].innerText.trim().toLowerCase();
+            const statusB = b.cells[5].innerText.trim().toLowerCase();
+
+            if (sortAsc) {
+                return (statusA === "approved" ? -1 : 1) - (statusB === "approved" ? -1 : 1);
+            } else {
+                return (statusA === "rejected" ? -1 : 1) - (statusB === "rejected" ? -1 : 1);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row)); // re-append sorted rows
+
+        // Ubah arah panah
+        document.getElementById("sortArrowComplete").textContent = sortAsc ? "↑" : "↓";
+
+        sortAsc = !sortAsc;
     }
 </script>
