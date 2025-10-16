@@ -183,26 +183,80 @@ while ($row = $result->fetch_assoc()) {
 
         // Cek hash di URL dan buka tab sesuai
         const hashPengajuan = window.location.hash;
-        const allowedTabs = ['request', 'incomplete', 'approved'];
+        const allowedTabs = ['request', 'forward', 'incomplete', 'approved'];
         if (hashPengajuan) {
             let tabName = hashPengajuan.substring(1);
             if (!allowedTabs.includes(tabName)) {
-                tabName = 'incomplete';
+                tabName = 'forward';
             }
             openTab(null, tabName);
         } else {
-            openTab(null, 'incomplete');
+            openTab(null, 'forward');
         }
 
         // Optional: expose openTab ke global (jika dipakai di HTML onclick)
         window.openTab = openTab;
     });
 
+    //button approval kanwil
+    document.addEventListener('DOMContentLoaded', function() {
+        function getSelectedIds() {
+            const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        function handleBulkAction(action) {
+            const selectedIds = getSelectedIds();
+            if (selectedIds.length === 0) {
+                Swal.fire('Peringatan', 'Pilih minimal satu pengajuan terlebih dahulu.', 'warning');
+                return;
+            }
+
+            const actionText = action === 'approve' ? 'Approve' : 'Reject';
+
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: `Yakin ingin ${actionText} ${selectedIds.length} pengajuan terpilih?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: `Ya, ${actionText}`,
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim data dengan format URL-encoded, seperti tombol tunggal
+                    fetch("update-submissionHandler.php", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: new URLSearchParams({
+                                ids: selectedIds.join(','), // Kirim sebagai string dipisah koma
+                                status: action === 'approve' ? 'approved' : 'rejected'
+                            })
+                        })
+                        .then(res => res.text())
+                        .then(msg => {
+                            Swal.fire('Sukses', msg, 'success').then(() => {
+                                location.reload();
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            Swal.fire('Error', 'Terjadi kesalahan saat menghubungi server.', 'error');
+                        });
+                }
+            });
+        }
+
+        document.getElementById('approve-selected')?.addEventListener('click', () => handleBulkAction('approve'));
+        document.getElementById('reject-selected')?.addEventListener('click', () => handleBulkAction('reject'));
+    });
+
+
 
     //BUTTON ACTION
     document.addEventListener("DOMContentLoaded", () => {
         const globalMenu = document.getElementById("global-actions");
-
 
         document.querySelectorAll(".btn-detail").forEach(button => {
             button.addEventListener("click", () => {
@@ -670,12 +724,14 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Tanggal <br>Pengajuan</th>
                                 <th>Nama <br>Barang</th>
                                 <!-- <th style="cursor:pointer;" onclick="toggleSortStatus()">Status <span id="sortArrow">↓</span></th> -->
-                                <!-- <th>Jumlah</th> -->
+                                <th>Jumlah</th>
                                 <!-- <th>Satuan</th> -->
                                 <!-- <th>Nama <br>Anggaran</th> -->
                                 <!-- <th>Nominal <br>Anggaran</th> -->
                                 <!-- <th>Keterangan</th> -->
                                 <!-- <th>Aksi</th> -->
+                                <th></th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -709,11 +765,13 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <!-- <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status']) ?></td> -->
-                                    <!-- <td><?= htmlspecialchars($row['jumlah']) ?></td> -->
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <!-- <td><?= htmlspecialchars($row['satuan']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['jumlah_anggaran']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
+                                    <td></td>
+                                    <td></td>
                                     <td style="display:flex; flex-direction:row; justify-content: center; align-items: center; gap: 8px; flex-wrap: nowrap;">
                                         <button class="btn-detail"
                                             data-id="<?= $row['id'] ?>"
@@ -770,11 +828,23 @@ while ($row = $result->fetch_assoc()) {
                     <input type="text" onkeyup="searchIncomplete()" placeholder="Search ..." class="list-input-incomplete">
                     <a href="export_pengajuanForward.php" class="list-select" style="padding:6px;margin-bottom:2px; text-decoration:none;">Download Excel</a>
                 </div>
+
+                <?php if ($isKanwil): ?>
+                    <div style="margin: 10px 0; display: flex; gap: 10px;">
+                        <button id="approve-selected" class="list-select">Approve</button>
+                        <button id="reject-selected" class="list-select">Reject</button>
+                    </div>
+                <?php endif; ?>
+
+
                 <div class="table-container">
                     <table id="dataTable-forward" style="width:100%;text-align:center">
                         <thead>
                             <tr>
                                 <!-- <th>ID</th> -->
+                                <?php if ($isAdmin || $isKanwil): ?>
+                                    <th></th>
+                                <?php endif; ?>
                                 <th>Kode<br> Pengajuan</th>
                                 <th>Kode<br>Uker</th>
                                 <th>Tanggal <br>Pengajuan</th>
@@ -819,6 +889,14 @@ while ($row = $result->fetch_assoc()) {
                                 <tr data-sisa-jumlah="<?= htmlspecialchars($row['sisa_jumlah']) ?>"
                                     data-proses="<?= htmlspecialchars($row['status_sisa']) ?>">
                                     <!-- <td><?= htmlspecialchars($row['id']) ?></td> -->
+                                    <?php if ($isAdmin): ?>
+                                        <td>
+                                            <?php if (strtolower($row['status']) === 'forward' && $isKanwil): ?>
+                                                <input type="checkbox" class="row-checkbox" value="<?= $row['id'] ?>">
+                                            <?php endif; ?>
+                                        </td>
+                                    <?php endif; ?>
+
                                     <td><?= htmlspecialchars($row['kode_pengajuan']) ?></td>
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal_pengajuan']) ?></td>
