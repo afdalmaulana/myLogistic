@@ -381,6 +381,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                             <th>Tanggal</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
+                            <th>Satuan</th>
                             <th>Divisi</th>
                             <th></th>
                         </tr>
@@ -392,6 +393,7 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
                                     <td><?= htmlspecialchars($row['divisi']) ?></td>
                                     <td>
                                         <?php if ($isAdminlog): ?>
