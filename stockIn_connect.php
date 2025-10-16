@@ -19,9 +19,9 @@ if (empty($nama_barang) || $jumlah <= 0 || empty($kode_uker)) {
 }
 
 // Simpan ke tabel barang_masuk
-$sql = "INSERT INTO barang_masuk (tanggal, nama_barang, jumlah, kode_uker) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO barang_masuk (tanggal, nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssis", $tanggal, $nama_barang, $jumlah, $kode_uker);
+$stmt->bind_param("ssiss", $tanggal, $nama_barang, $jumlah, $satuan, $kode_uker);
 
 if ($stmt->execute()) {
 

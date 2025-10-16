@@ -430,7 +430,8 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                         <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                         <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                        <td><?= htmlspecialchars($row['satuan']) ?></td>
+                                        <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
+
 
                                         <?php if ($isAdminlog): ?>
                                             <td>
