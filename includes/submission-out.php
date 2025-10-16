@@ -292,6 +292,51 @@ while ($row = $result->fetch_assoc()) {
                 });
             });
         });
+
+        document.querySelectorAll(".btn-detailIncomplete").forEach(button => {
+            button.addEventListener("click", () => {
+                const data = button.dataset;
+
+                function getStatusClass(status) {
+                    switch (status.toLowerCase()) {
+                        case 'pending':
+                            return 'status-pending';
+                        case 'approved':
+                            return 'status-approved';
+                        case 'rejected':
+                            return 'status-rejected';
+                        case 'forward':
+                            return 'status-forward';
+                        default:
+                            return '';
+                    }
+                }
+
+                const statusClass = getStatusClass(data.status);
+
+
+                Swal.fire({
+                    title: `Detail Pengajuan`,
+                    html: `
+                    <table style="text-align:left; width:100%;">
+                        <tr><td><strong>ID</strong></td><td style="font-size:12px;">: ${data.id}</td></tr>
+                        <tr><td><strong>Kode Pengajuan</strong></td><td style="font-size:12px;">: ${data.kode}</td></tr>
+                        <tr><td><strong>Kode Uker</strong></td><td style="font-size:12px;">: ${data.kodeUker}</td></tr>
+                        <tr><td><strong>Tanggal Pengajuan</strong></td><td style="font-size:12px;">: ${data.tanggal}</td></tr>
+                        <tr><td><strong>Nama Barang</strong></td><td style="font-size:12px;">: ${data.namaBarang}</td></tr>
+                         <tr><td class="status-cell"><strong>Status</strong></td><td style="font-size:12px;" class="${statusClass}">: ${data.status}</td></tr>
+                        <tr><td><strong>Jumlah</strong></td><td style="font-size:12px;">: ${data.jumlah} ${data.satuan}</td></tr>
+                        <tr><td><strong>Sisa</strong></td><td style="font-size:12px;">: ${data.sisa_jumlah}</td></tr>
+                        <tr><td><strong>Harga Barang</strong></td><td style="font-size:12px;">: ${data.price}</td></tr>
+                        <tr><td><strong>Anggaran</strong></td><td style="font-size:12px;">: ${data.anggaran}</td></tr>
+                        <tr><td><strong>Keterangan</strong></td><td style="font-size:12px;">: ${data.keterangan}</td></tr>
+                    </table>
+                `,
+                    width: 600,
+                    confirmButtonText: 'Tutup'
+                });
+            });
+        });
         // Fungsi untuk update posisi dan tampilkan menu sesuai status dan data tambahan
         function showGlobalMenu(btn) {
             const id = btn.dataset.id;
@@ -786,6 +831,7 @@ while ($row = $result->fetch_assoc()) {
                                     <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
                                     <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
+
                                     <td style="display:flex; flex-direction:row; justify-content: center; align-items: center; gap: 8px; flex-wrap: nowrap;">
                                         <button class="btn-detailForward"
                                             data-id="<?= $row['id'] ?>"
@@ -852,9 +898,9 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Sisa</th>
-                                <th>Harga <br>Barang</th>
+                                <!-- <th>Harga <br>Barang</th>
                                 <th>Anggaran</th>
-                                <th>Keterangan</th>
+                                <th>Keterangan</th> -->
                                 <th>Proses</th>
                                 <!-- <th style="cursor:pointer;" onclick="toggleSortProses()">Proses <span id="sortArrowProses">↓</span></th> -->
                                 <th>Aksi</th>
@@ -896,11 +942,26 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['sisa_jumlah']) ?></td>
-                                    <td><?= htmlspecialchars($row['price']) ?></td>
-                                    <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
-                                    <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                    <!-- <td><?= htmlspecialchars($row['price']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['nama_anggaran']) ?></td> -->
+                                    <!-- <td><?= htmlspecialchars($row['keterangan']) ?></td> -->
                                     <td class="status-cell <?= $class ?>"><?= htmlspecialchars($row['status_sisa']) ?></td>
-                                    <td>
+
+                                    <td style="display:flex; flex-direction:row; justify-content: center; align-items: center; gap: 8px; flex-wrap: nowrap;">
+                                        <button class="btn-detailIncomplete"
+                                            data-id="<?= $row['id'] ?>"
+                                            data-kode="<?= $row['kode_pengajuan'] ?>"
+                                            data-kode-uker="<?= $row['kode_uker'] ?>"
+                                            data-tanggal="<?= $row['tanggal_pengajuan'] ?>"
+                                            data-nama-barang="<?= $row['nama_barang'] ?>"
+                                            data-status="<?= $status ?>"
+                                            data-jumlah="<?= $row['jumlah'] ?>"
+                                            data-satuan="<?= $row['satuan'] ?>"
+                                            data-sisa_jumlah="<?= $row['sisa_jumlah'] ?>"
+                                            data-price="<?= $row['price'] ?>"
+                                            data-anggaran="<?= $row['nama_anggaran'] ?>"
+                                            data-keterangan="<?= $row['keterangan'] ?>"
+                                            style="padding:6px 10px; margin-right: 8px;">Detail</button>
                                         <?php if ($status === 'forward' && $isKanwil): ?>
                                             <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
