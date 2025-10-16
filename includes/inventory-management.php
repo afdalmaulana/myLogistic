@@ -94,7 +94,6 @@ if ($stokResult && $stokResult->num_rows > 0) {
     }
 }
 ?>
-
 <?php if (isset($_GET['status'])): ?>
     <script src="../js/sweetalert.all.min.js"></script>
     <script>
@@ -139,7 +138,6 @@ if ($stokResult && $stokResult->num_rows > 0) {
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-
         // Fungsi buka tab
         function openInvent(evt, tabName) {
             var i, tabcontentinvent, tablinks;
@@ -207,6 +205,110 @@ if ($stokResult && $stokResult->num_rows > 0) {
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+        document.querySelectorAll('.btn-keluarkan').forEach(button => {
+  button.addEventListener('click', function () {
+    const id = this.dataset.id;
+    const namaBarang = this.dataset.nama_barang;
+    const satuan = this.dataset.satuan;
+    const kodeUker = this.dataset.kode_uker;
+    const jumlah = this.dataset.jumlah;
+
+    Swal.fire({
+      title: 'Record Outgoing Items',
+      html: `
+        <table style="text-align:left; width:100%; margin-bottom: 15px;">
+          <tr><td><strong>ID</strong></td><td style="font-size:12px;">: ${id}</td></tr>
+          <tr><td><strong>Nama Barang</strong></td><td style="font-size:12px;">: ${namaBarang}</td></tr>
+          <tr><td><strong>Kode Uker</strong></td><td style="font-size:12px;">: ${kodeUker}</td></tr>
+          <tr><td><strong>Jumlah</strong></td><td style="font-size:12px;">: ${jumlah}</td></tr>
+          <tr><td><strong>Satuan</strong></td><td style="font-size:12px;">: ${satuan}</td></tr>
+          <tr><td><strong>Note</strong></td><td style="font-size:12px;">: Barang keluar sesuai dengan satuan yang di stock</td></tr>
+        </table>
+
+        <input id="jumlah" type="number" min="1" class="swal2-input" placeholder="Jumlah keluar" style="margin-top:10px;">
+
+        <label for="divisi" style="text-align:left; width:50%; margin-top:15px; display:block;">Departement</label>
+        <select id="divisi" class="swal2-select" style="width:50%; padding: 6px 10px; border-radius: 8px; margin-top: 5px;">
+          <option value="" disabled selected hidden>Choose</option>
+          <option value="DJS">Petugas Transaksi</option>
+          <option value="Operasional">Operasional</option>
+          <option value="TELLER">TELLER</option>
+          <option value="TELLER-Pertamina">TELLER PERTAMINA</option>
+          <option value="CS">CS</option>
+          <option value="HC">Human Capital</option>
+          <option value="LOG">Logistik</option>
+          <option value="ADK">Petugas Operasional Kredit</option>
+          <option value="RMFT">RMFT</option>
+          <option value="RMSME">RMSME</option>
+          <option value="CRR">CRR</option>
+          <option value="BRIGUNA">BRIGUNA</option>
+          <option value="KPR">KPR</option>
+          <option value="Sekretaris">Sekretaris</option>
+          <option value="KCP-Ratulangi">KCP Ratulangi</option>
+          <option value="KCP-SlametRiyadi">KCP Slamet Riyadi</option>
+          <option value="KCP-Latimojong">KCP Latimojong</option>
+          <option value="KCP-YosSudarso">KCP Yos Sudarso</option>
+          <option value="KCP-Sentral">KCP Sentral</option>
+          <option value="KK-Taspen">KK Taspen</option>
+          <option value="KPPN">KPPN</option>
+        </select>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Keluarkan',
+      preConfirm: () => {
+        const jumlah = document.getElementById('jumlah').value;
+        const divisi = document.getElementById('divisi').value;
+
+        if (!jumlah || jumlah <= 0) {
+          Swal.showValidationMessage('Jumlah keluar harus lebih dari 0');
+          return false;
+        }
+        if (!divisi) {
+          Swal.showValidationMessage('Departement harus dipilih');
+          return false;
+        }
+        return { jumlah, divisi };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data = {
+          nama_barang: namaBarang,
+          jumlah: result.value.jumlah,
+          satuan: satuan,
+          divisi: result.value.divisi
+        };
+
+        fetch('stockOut_connect.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(data)
+})
+.then(response => response.json())
+.then(res => {
+    if (res.status === 'success') {
+        Swal.fire({
+            title: 'Berhasil!',
+            text: res.message,
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            didClose: () => location.reload()
+        });
+    } else {
+        Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+    }
+})
+.catch(() => {
+    Swal.fire('Gagal', 'Tidak dapat menghubungi server', 'error');
+});
+      }
+    });
+  });
+});
+
+
         document.querySelectorAll('.btn-delete-stock').forEach(function(button) {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
@@ -410,7 +512,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
-                            <!-- <th>ID</th> -->
+                            <th>ID</th>
                             <th>Kode Uker</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
@@ -419,6 +521,12 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 <th>Aksi</th>
                                 <th>Edit</th>
                             <?php endif; ?>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+
+
                         </tr>
                     </thead>
                     <tbody>
@@ -426,7 +534,16 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <?php while ($row = $stocks->fetch_assoc()): ?>
                                 <?php if ($row['jumlah'] > 0): ?>
                                     <tr>
-                                        <!-- <td><?= htmlspecialchars($row['id']) ?></td> -->
+                                        <td>
+    <button class="btn-keluarkan"
+        data-id="<?= $row['id'] ?>"
+        data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
+        data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
+        data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?> " data-jumlah="<?= $row['jumlah'] ?>">
+        
+        Keluarkan
+    </button></td>
+                                        <td><?= htmlspecialchars($row['id']) ?></td>
                                         <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                         <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah']) ?></td>

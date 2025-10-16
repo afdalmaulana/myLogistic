@@ -2,21 +2,22 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require 'db_connect.php';
+require_once 'db_connect.php';
+
+header('Content-Type: application/json'); // Set JSON header
 
 $tanggal = date("Y-m-d");
 $nama_barang = $_POST['nama_barang'] ?? '';
 $jumlah = $_POST['jumlah'] ?? '';
 $divisi = $_POST['divisi'] ?? '';
 $kode_uker = $_SESSION['kode_uker'] ?? null;
+$satuan = $_POST['satuan'] ?? '';
 
-// Validasi input
 if (empty($tanggal) || empty($nama_barang) || empty($jumlah) || empty($divisi) || empty($kode_uker)) {
-    header("Location: index.php?page=stock-in&status=incomplete");
+    echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
     exit;
 }
 
-// Cek apakah stok barang tersedia di stok_barang
 $cek = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ?");
 $cek->bind_param("s", $nama_barang);
 $cek->execute();
@@ -28,35 +29,30 @@ if ($result->num_rows > 0) {
     $jumlah_keluar = intval($jumlah);
 
     if ($stok_sekarang >= $jumlah_keluar) {
-        // Jalankan transaksi agar lebih aman
         $conn->begin_transaction();
 
         try {
-            // 1. Kurangi stok
             $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah - ? WHERE nama_barang = ?");
             $update->bind_param("is", $jumlah_keluar, $nama_barang);
             $update->execute();
 
-            // 2. Catat ke barang_keluar
-            $insert = $conn->prepare("INSERT INTO barang_keluar (tanggal, nama_barang, jumlah, divisi, kode_uker) VALUES (?, ?, ?, ?, ?)");
-            $insert->bind_param("sssss", $tanggal, $nama_barang, $jumlah, $divisi, $kode_uker);
+            $insert = $conn->prepare("INSERT INTO barang_keluar (tanggal, nama_barang, jumlah, satuan, divisi, kode_uker) VALUES (?, ?, ?, ?, ?, ?)");
+            $insert->bind_param("ssssss", $tanggal, $nama_barang, $jumlah, $satuan, $divisi, $kode_uker);
             $insert->execute();
 
-            // 3. Commit transaksi jika berhasil
             $conn->commit();
-            header("Location: index.php?page=inventory-management&status=success");
+
+            echo json_encode(['status' => 'success', 'message' => 'Barang berhasil dikeluarkan']);
         } catch (Exception $e) {
-            // Rollback jika ada error
             $conn->rollback();
-            header("Location: index.php?page=inventory-management&status=error");
+            echo json_encode(['status' => 'error', 'message' => 'Terjadi kesalahan pada server']);
         }
     } else {
-        // Stok tidak cukup
-        header("Location: index.php?page=inventory-management&status=outstock");
+        echo json_encode(['status' => 'error', 'message' => 'Stok tidak cukup']);
     }
 } else {
-    // Barang tidak ditemukan di stok_barang
-    header("Location: index.php?page=inventory-management&status=notfound");
+    echo json_encode(['status' => 'error', 'message' => 'Barang tidak ditemukan']);
 }
 
 $conn->close();
+exit;
