@@ -250,7 +250,7 @@ if ($status === 'completed') {
             tanggal, tanggal_approve, tanggal_nota, price, nama_barang, jumlah, kode_uker, satuan
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmtMasuk->bind_param("sssisis", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $data['price'], $nama_barang, $jumlah_baru, $kode_uker, $satuan);
+    $stmtMasuk->bind_param("sssisiss", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $data['price'], $nama_barang, $jumlah_baru, $kode_uker, $satuan);
     $stmtMasuk->execute();
     $stmtMasuk->close();
 
