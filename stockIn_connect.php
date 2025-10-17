@@ -3,18 +3,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require 'db_connect.php';
-// Ambil data form
-$tanggal = date('Y-m-d') ?? '';
-// $tanggal_nota = $_POST['tanggal_nota'] ?? '';
-// $nomor_nota = $_POST['nomor_nota'] ?? '';
+
+header('Content-Type: application/json'); // ✅ Kirim JSON response
+
+$tanggal = date('Y-m-d');
 $nama_barang = $_POST['nama_barang'] ?? '';
-// $harga_barang = $_POST['harga_barang'] ?? '';
-$jumlah = intval($_POST['jumlah'] ?? 0); // pastikan jumlah angka
+$jumlah = intval($_POST['jumlah'] ?? 0);
 $kode_uker = $_SESSION['kode_uker'] ?? null;
 $satuan = $_POST['satuan'] ?? '';
-// Validasi sederhana
+
 if (empty($nama_barang) || $jumlah <= 0 || empty($kode_uker)) {
-    header("Location: index.php?page=stock-in&status=incomplete");
+    echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
     exit;
 }
 
@@ -24,30 +23,31 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssiss", $tanggal, $nama_barang, $jumlah, $satuan, $kode_uker);
 
 if ($stmt->execute()) {
-
-    // ==== ✅ Update stok_barang ====
+    // Cek stok_barang
     $cek = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ? AND kode_uker = ?");
     $cek->bind_param("ss", $nama_barang, $kode_uker);
     $cek->execute();
     $cek->store_result();
 
     if ($cek->num_rows > 0) {
-        // Barang sudah ada → update jumlah
         $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ? AND kode_uker = ?");
         $update->bind_param("iss", $jumlah, $nama_barang, $kode_uker);
         $update->execute();
     } else {
-        // Barang belum ada → insert baru
         $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?, ?)");
         $insert->bind_param("siss", $nama_barang, $jumlah, $satuan, $kode_uker);
         $insert->execute();
     }
-    // ==== END update stok_barang ====
 
-    // Tampilkan pesan sukses
-    header("Location: index.php?page=inventory-management&status=success");;
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Stok berhasil ditambahkan!'
+    ]);
 } else {
-    header("Location: index.php?page=inventory-management&status=error");
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Gagal menambahkan ke database.'
+    ]);
 }
 
 $stmt->close();
