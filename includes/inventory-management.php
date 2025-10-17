@@ -650,277 +650,282 @@ if ($stokResult && $stokResult->num_rows > 0) {
 
 <div class="dashboard-menu">
     <div class="content-heading">Inventory Management</div>
-    <div><i>Manage your inventory, track incoming, and outgoing</i></div>
+    <!-- <div><i>Manage your inventory, track incoming, and outgoing</i></div>
     <div class="tab-invent">
         <button class="tablink-invent active" onclick="openInvent(event, 'stocks')">STOCK</button>
-        <button class="tablink-invent" onclick="openInvent(event, 'formBarang_masuk')">RECORD INCOMING</button>
-        <!-- <button class="tablink-invent" onclick="openInvent(event, 'formBarang_keluar')">RECORD OUTGOING</button> -->
-    </div>
+         <button class="tablink-invent" onclick="openInvent(event, 'formBarang_masuk')">RECORD INCOMING</button> -->
+    <!-- <button class="tablink-invent" onclick="openInvent(event, 'formBarang_keluar')">RECORD OUTGOING</button> -->
+</div>
 
-    <div id="stocks" class="tabcontent-invent" style="display: block;">
-        <div class="body-content">
-            <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <?php if ($isAdminlog || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
-                        <form method="GET" style="display: inline-block;">
-                            <input type="hidden" name="page" value="inventory-management">
-                            <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
-                                <option value="">Filter Kode Uker</option>
-                                <?php
-                                if ($isAdminlog) {
-                                    // Admin: lihat semua kode uker
-                                    $query = "SELECT DISTINCT kode_uker FROM stok_barang ORDER BY kode_uker";
+<!-- <div id="stocks" class="tabcontent-invent" style="display: block;"> INI YANG PAKE TAB-->
+<div id="stocks">
+    <div class="body-content">
+        <div style="display: flex;flex-direction:row;justify-content:space-between">
+            <div><i>Manage your inventory, track incoming, and outgoing</i></div>
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+        </div>
+        <div class="sub-menu" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <?php if ($isAdminlog || $isLogistikSudirman || $isLogistikAhmadYani || $isLogistikTamalanrea): ?>
+                    <form method="GET" style="display: inline-block;">
+                        <input type="hidden" name="page" value="inventory-management">
+                        <select name="filter_uker" onchange="this.form.submit()" class="list-select" style="padding: 5px;">
+                            <option value="">Filter Kode Uker</option>
+                            <?php
+                            if ($isAdminlog) {
+                                // Admin: lihat semua kode uker
+                                $query = "SELECT DISTINCT kode_uker FROM stok_barang ORDER BY kode_uker";
+                            } else {
+                                // Khusus logistik: tampilkan kode uker sesuai akses
+                                if ($isLogistikSudirman) {
+                                    $allowedCodes = $sudirmanCodes;
+                                } elseif ($isLogistikAhmadYani) {
+                                    $allowedCodes = $ahmadYaniCodes;
+                                } elseif ($isLogistikTamalanrea) {
+                                    $allowedCodes = $tamalanreaCodes;
                                 } else {
-                                    // Khusus logistik: tampilkan kode uker sesuai akses
-                                    if ($isLogistikSudirman) {
-                                        $allowedCodes = $sudirmanCodes;
-                                    } elseif ($isLogistikAhmadYani) {
-                                        $allowedCodes = $ahmadYaniCodes;
-                                    } elseif ($isLogistikTamalanrea) {
-                                        $allowedCodes = $tamalanreaCodes;
-                                    } else {
-                                        $allowedCodes = [];
-                                    }
-
-                                    if (!empty($allowedCodes)) {
-                                        $codesList = "'" . implode("','", $allowedCodes) . "'";
-                                        $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE kode_uker IN ($codesList) ORDER BY kode_uker";
-                                    } else {
-                                        $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE 1=0";
-                                    }
+                                    $allowedCodes = [];
                                 }
 
-                                $ukerQuery = $conn->query($query);
-                                while ($uker = $ukerQuery->fetch_assoc()):
-                                    $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
-                                    echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
-                                endwhile;
-                                ?>
-                            </select>
-                        </form>
-                    <?php endif; ?>
+                                if (!empty($allowedCodes)) {
+                                    $codesList = "'" . implode("','", $allowedCodes) . "'";
+                                    $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE kode_uker IN ($codesList) ORDER BY kode_uker";
+                                } else {
+                                    $query = "SELECT DISTINCT kode_uker FROM stok_barang WHERE 1=0";
+                                }
+                            }
 
-                </div>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
+                            $ukerQuery = $conn->query($query);
+                            while ($uker = $ukerQuery->fetch_assoc()):
+                                $selected = ($filterUker === $uker['kode_uker']) ? 'selected' : '';
+                                echo "<option value=\"{$uker['kode_uker']}\" $selected>{$uker['kode_uker']}</option>";
+                            endwhile;
+                            ?>
+                        </select>
+                    </form>
+                <?php endif; ?>
+
             </div>
-            <div class="table-container">
-                <div><button class="btn-add-new-items">Add New Stock Items</button></div>
-                <table id="dataTable" style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Kode Uker</th>
-                            <th>Nama Barang</th>
-                            <th>Jumlah</th>
-                            <th>Satuan</th>
-                            <th></th>
-                            <?php if ($isAdminlog): ?>
-                                <th>Aksi</th>
-                                <th>Edit</th>
-                            <?php endif; ?>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($stocks->num_rows > 0): ?>
-                            <?php while ($row = $stocks->fetch_assoc()): ?>
-                                <?php if ($row['jumlah'] > 0): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($row['id']) ?></td>
-                                        <td><?= htmlspecialchars($row['kode_uker']) ?></td>
-                                        <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                                        <td><?= htmlspecialchars($row['jumlah']) ?></td>
-                                        <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
-                                        <td>
-                                            <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; justify-content: center;">
-                                                <!-- Tombol Hapus -->
-                                                <div class="tooltip-wrapper">
-                                                    <button class="btn-delete-stock"
-                                                        data-id="<?= $row['id'] ?>"
-                                                        style="background: none; border: none; font-size: 16px;"
-                                                        title="Hapus">
-                                                        <i class="fa fa-trash" style="color: red;"></i>
-                                                    </button>
-                                                    <div class="tooltiptext">Delete item</div>
-                                                </div>
 
-                                                <!-- Tombol Keluarkan dengan Tooltip -->
-                                                <div class="tooltip-wrapper">
-                                                    <button class="btn-keluarkan"
-                                                        data-id="<?= $row['id'] ?>"
-                                                        data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
-                                                        data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
-                                                        data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
-                                                        data-jumlah="<?= $row['jumlah'] ?>">
-                                                        <i class="fa fa-mail-forward"></i>
-                                                    </button>
-                                                    <div class="tooltiptext">Use item</div>
-                                                </div>
-
-                                                <!-- Tombol Tambah -->
-                                                <div class="tooltip-wrapper">
-                                                    <button class="btn-add-stock"
-                                                        data-id="<?= $row['id'] ?>"
-                                                        data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
-                                                        data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
-                                                        data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
-                                                        data-jumlah="<?= $row['jumlah'] ?>">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                    <div class="tooltiptext">Add ttem</div>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <?php if ($isAdminlog): ?>
-                                            <td>
-                                                <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
-                                                    <i class="fa fa-trash" style="color:red;"></i>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button class="editStocks"
-                                                    data-id="<?= $row['id'] ?>"
-                                                    data-nama_barang="<?= $row['nama_barang'] ?>"
-                                                    data-jumlah="<?= $row['jumlah'] ?>">
-                                                    <i class="fa fa-edit" style="font-size:22px"></i>
-                                                </button>
-                                            </td>
-                                        <?php endif; ?>
-                                    </tr>
-                                <?php endif; ?>
-
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="3" style="text-align:center;">Belum ada data stok barang</td>
-                            </tr>
+        </div>
+        <div class="table-container">
+            <div><button class="btn-add-new-items">Add New Stock Items</button></div>
+            <table id="dataTable" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kode Uker</th>
+                        <th>Nama Barang</th>
+                        <th>Jumlah</th>
+                        <th>Satuan</th>
+                        <th></th>
+                        <?php if ($isAdminlog): ?>
+                            <th>Aksi</th>
+                            <th>Edit</th>
                         <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($stocks->num_rows > 0): ?>
+                        <?php while ($row = $stocks->fetch_assoc()): ?>
+                            <?php if ($row['jumlah'] > 0): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['id']) ?></td>
+                                    <td><?= htmlspecialchars($row['kode_uker']) ?></td>
+                                    <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                    <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                                    <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
+                                    <td>
+                                        <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; justify-content: center;">
+                                            <!-- Tombol Hapus -->
+                                            <div class="tooltip-wrapper">
+                                                <button class="btn-delete-stock"
+                                                    data-id="<?= $row['id'] ?>"
+                                                    style="background: none; border: none; font-size: 16px;"
+                                                    title="Hapus">
+                                                    <i class="fa fa-trash" style="color: red;"></i>
+                                                </button>
+                                                <div class="tooltiptext">Delete item</div>
+                                            </div>
+
+                                            <!-- Tombol Keluarkan dengan Tooltip -->
+                                            <div class="tooltip-wrapper">
+                                                <button class="btn-keluarkan"
+                                                    data-id="<?= $row['id'] ?>"
+                                                    data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
+                                                    data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
+                                                    data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
+                                                    data-jumlah="<?= $row['jumlah'] ?>">
+                                                    <i class="fa fa-mail-forward"></i>
+                                                </button>
+                                                <div class="tooltiptext">Use item</div>
+                                            </div>
+
+                                            <!-- Tombol Tambah -->
+                                            <div class="tooltip-wrapper">
+                                                <button class="btn-add-stock"
+                                                    data-id="<?= $row['id'] ?>"
+                                                    data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
+                                                    data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
+                                                    data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
+                                                    data-jumlah="<?= $row['jumlah'] ?>">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                                <div class="tooltiptext">Add ttem</div>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <?php if ($isAdminlog): ?>
+                                        <td>
+                                            <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
+                                                <i class="fa fa-trash" style="color:red;"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="editStocks"
+                                                data-id="<?= $row['id'] ?>"
+                                                data-nama_barang="<?= $row['nama_barang'] ?>"
+                                                data-jumlah="<?= $row['jumlah'] ?>">
+                                                <i class="fa fa-edit" style="font-size:22px"></i>
+                                            </button>
+                                        </td>
+                                    <?php endif; ?>
+                                </tr>
+                            <?php endif; ?>
+
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" style="text-align:center;">Belum ada data stok barang</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-    <div id="formBarang_masuk" class="tabcontent-invent">
-        <form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
-            <div class="body-content">
-                <p>Incoming Stock</p>
-                <div class="form-input">
-                    <div class="submission-left">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <!-- SELECT BARANG -->
-                            <select id="selectBarang" class="list-input" style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Pilih Barang yang Sudah Ada</option>
-                                <?php
-                                if (!empty($stokBarangList)) {
-                                    foreach ($stokBarangList as $row) {
-                                        echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
-                                    }
+<div id="formBarang_masuk" class="tabcontent-invent">
+    <form action="stockIn_connect.php" method="POST" onsubmit="return showLoading()">
+        <div class="body-content">
+            <p>Incoming Stock</p>
+            <div class="form-input">
+                <div class="submission-left">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <!-- SELECT BARANG -->
+                        <select id="selectBarang" class="list-input" style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Pilih Barang yang Sudah Ada</option>
+                            <?php
+                            if (!empty($stokBarangList)) {
+                                foreach ($stokBarangList as $row) {
+                                    echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
                                 }
-                                ?>
-                            </select>
+                            }
+                            ?>
+                        </select>
 
-                            <!-- INPUT BARANG BARU -->
-                            <input type="text" id="inputBarangBaru" class="list-input" placeholder="Masukkan Nama Barang Baru" style="display:none; margin-top:10px;">
+                        <!-- INPUT BARANG BARU -->
+                        <input type="text" id="inputBarangBaru" class="list-input" placeholder="Masukkan Nama Barang Baru" style="display:none; margin-top:10px;">
 
-                            <!-- TOMBOL TOGGLE -->
-                            <button type="button" id="btnToggleInput" class="button-send" style="margin-top:10px; background: #1d4d82;">
-                                Tambah Barang Baru
-                            </button>
+                        <!-- TOMBOL TOGGLE -->
+                        <button type="button" id="btnToggleInput" class="button-send" style="margin-top:10px; background: #1d4d82;">
+                            Tambah Barang Baru
+                        </button>
 
-
-                        </div>
 
                     </div>
-                    <div class="submission-right">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">
-                        </div>
-                        <div class="form-group">
-                            <label>Choose Type</label>
-                            <select name="satuan" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Choose</option>
-                                <option value="dos">dos</option>
-                                <option value="pcs">pcs</option>
-                                <option value="pcs">ikat</option>
-                                <option value="pcs">rim</option>
-                                <option value="pcs">bungkus</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="button-send">Submit</button>
-                        </div>
+
+                </div>
+                <div class="submission-right">
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="jumlah" class="list-input" placeholder="Masukkan Jumlah">
+                    </div>
+                    <div class="form-group">
+                        <label>Choose Type</label>
+                        <select name="satuan" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Choose</option>
+                            <option value="dos">dos</option>
+                            <option value="pcs">pcs</option>
+                            <option value="pcs">ikat</option>
+                            <option value="pcs">rim</option>
+                            <option value="pcs">bungkus</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="button-send">Submit</button>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 
-    <div id="formBarang_keluar" class="tabcontent-invent">
-        <form action="stockOut_connect.php" method="POST" onsubmit="return showLoading()">
-            <div class="body-content">
-                <p>Outgoing Stock</p>
-                <!-- <div><i>* Tanggal Otomatis mengikut hari ini</i></div> -->
-                <div class="form-input">
-                    <div class="submission-left">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Choose</option>
-                                <?php
-                                if (!empty($stokBarangList)) {
-                                    foreach ($stokBarangList as $row) {
-                                        echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
-                                    }
-                                } else {
-                                    echo '<option value="" disabled>Belum ada barang tersedia</option>';
+<div id="formBarang_keluar" class="tabcontent-invent">
+    <form action="stockOut_connect.php" method="POST" onsubmit="return showLoading()">
+        <div class="body-content">
+            <p>Outgoing Stock</p>
+            <!-- <div><i>* Tanggal Otomatis mengikut hari ini</i></div> -->
+            <div class="form-input">
+                <div class="submission-left">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <select name="nama_barang" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Choose</option>
+                            <?php
+                            if (!empty($stokBarangList)) {
+                                foreach ($stokBarangList as $row) {
+                                    echo '<option value="' . htmlspecialchars($row['nama_barang']) . '">' . htmlspecialchars($row['nama_barang']) . '</option>';
                                 }
-                                ?>
-                            </select>
-                            <div class="form-group">
-                                <label for="">Quantity</label>
-                                <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="submission-right">
+                            } else {
+                                echo '<option value="" disabled>Belum ada barang tersedia</option>';
+                            }
+                            ?>
+                        </select>
                         <div class="form-group">
-                            <label>Departement</label>
-                            <select name="divisi" class="list-input" required style="border-radius: 10px;">
-                                <option value="" disabled selected hidden>Choose</option>
-                                <option value="DJS">Petugas Transaksi</option>
-                                <option value="Operasional">Operasional</option>
-                                <option value="TELLER">TELLER</option>
-                                <option value="TELLER-Pertamina">TELLER PERTAMINA</option>
-                                <option value="CS">CS</option>
-                                <option value="HC">Human Capital</option>
-                                <option value="LOG">Logistik</option>
-                                <option value="ADK">Petugas Operasional Kredit</option>
-                                <option value="RMFT">RMFT</option>
-                                <option value="RMSME">RMSME</option>
-                                <option value="CRR">CRR</option>
-                                <option value="BRIGUNA">BRIGUNA</option>
-                                <option value="KPR">KPR</option>
-                                <option value="Sekretaris">Sekretaris</option>
-                                <option value="KCP-Ratulangi">KCP Ratulangi</option>
-                                <option value="KCP-SlametRiyadi">KCP Slamet Riyadi</option>
-                                <option value="KCP-Latimojong">KCP Latimojong</option>
-                                <option value="KCP-YosSudarso">KCP Yos Sudarso</option>
-                                <option value="KCP-Sentral">KCP Sentral</option>
-                                <option value="KK-Taspen">KK Taspen</option>
-                                <option value="KPPN">KPPN</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" id="submitBtn" class="button-send">Submit</button>
+                            <label for="">Quantity</label>
+                            <input type="number" name="jumlah" class="list-input" placeholder="Jumlah" required>
                         </div>
                     </div>
                 </div>
+                <div class="submission-right">
+                    <div class="form-group">
+                        <label>Departement</label>
+                        <select name="divisi" class="list-input" required style="border-radius: 10px;">
+                            <option value="" disabled selected hidden>Choose</option>
+                            <option value="DJS">Petugas Transaksi</option>
+                            <option value="Operasional">Operasional</option>
+                            <option value="TELLER">TELLER</option>
+                            <option value="TELLER-Pertamina">TELLER PERTAMINA</option>
+                            <option value="CS">CS</option>
+                            <option value="HC">Human Capital</option>
+                            <option value="LOG">Logistik</option>
+                            <option value="ADK">Petugas Operasional Kredit</option>
+                            <option value="RMFT">RMFT</option>
+                            <option value="RMSME">RMSME</option>
+                            <option value="CRR">CRR</option>
+                            <option value="BRIGUNA">BRIGUNA</option>
+                            <option value="KPR">KPR</option>
+                            <option value="Sekretaris">Sekretaris</option>
+                            <option value="KCP-Ratulangi">KCP Ratulangi</option>
+                            <option value="KCP-SlametRiyadi">KCP Slamet Riyadi</option>
+                            <option value="KCP-Latimojong">KCP Latimojong</option>
+                            <option value="KCP-YosSudarso">KCP Yos Sudarso</option>
+                            <option value="KCP-Sentral">KCP Sentral</option>
+                            <option value="KK-Taspen">KK Taspen</option>
+                            <option value="KPPN">KPPN</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="submitBtn" class="button-send">Submit</button>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 </div>
