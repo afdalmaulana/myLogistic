@@ -24,20 +24,35 @@ $stmt->bind_param("ssiss", $tanggal, $nama_barang, $jumlah, $satuan, $kode_uker)
 
 if ($stmt->execute()) {
     // Cek stok_barang
-    $cek = $conn->prepare("SELECT jumlah FROM stok_barang WHERE nama_barang = ? AND kode_uker = ?");
+    // Cek apakah barang sudah ada berdasarkan nama_barang dan kode_uker
+    $cek = $conn->prepare("SELECT jumlah, satuan FROM stok_barang WHERE nama_barang = ? AND kode_uker = ?");
     $cek->bind_param("ss", $nama_barang, $kode_uker);
     $cek->execute();
-    $cek->store_result();
+    $result = $cek->get_result();
 
-    if ($cek->num_rows > 0) {
-        $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ? AND kode_uker = ?");
-        $update->bind_param("iss", $jumlah, $nama_barang, $kode_uker);
-        $update->execute();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        if ($row['satuan'] !== $satuan) {
+            // Satuan beda, tolak input
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Satuan barang berbeda dengan yang sudah ada di stok. Harap pengecekan kembali'
+            ]);
+            exit;
+        } else {
+            // Satuan sama, update jumlah
+            $update = $conn->prepare("UPDATE stok_barang SET jumlah = jumlah + ? WHERE nama_barang = ? AND kode_uker = ?");
+            $update->bind_param("iss", $jumlah, $nama_barang, $kode_uker);
+            $update->execute();
+        }
     } else {
+        // Barang belum ada, insert baru
         $insert = $conn->prepare("INSERT INTO stok_barang (nama_barang, jumlah, satuan, kode_uker) VALUES (?, ?, ?, ?)");
         $insert->bind_param("siss", $nama_barang, $jumlah, $satuan, $kode_uker);
         $insert->execute();
     }
+
 
     echo json_encode([
         'status' => 'success',

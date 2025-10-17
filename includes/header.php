@@ -1015,6 +1015,24 @@
             transition: 0.3s ease-in-out;
         }
 
+        .btn-add-new-items {
+            background: none;
+            border: 2px solid #153E76;
+            font-size: 12px;
+            /* color: red; */
+            padding: 2px 10px 2px 10px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-add-new-items:hover {
+            background: #153E76;
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
+
         /* Tooltip Wrapper */
         .tooltip-wrapper {
             position: relative;

@@ -422,6 +422,87 @@ if ($stokResult && $stokResult->num_rows > 0) {
             });
         });
 
+        document.querySelectorAll('.btn-add-new-items').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const namaBarang = this.dataset.nama_barang;
+                const satuan = this.dataset.satuan;
+                const kodeUker = this.dataset.kode_uker;
+                Swal.fire({
+                    title: 'Add Items',
+                    html: `
+              <table style="text-align:left; width:100%; margin-bottom: 15px;">
+                 <input id="swal-namaBarang" type="text" min="1" class="swal2-input" placeholder="Input Nama Barang" style="margin-top:10px; width:60%;">
+                  <input id="quantityItems" type="number" min="1" class="swal2-input" placeholder="Input Jumlah" style="margin-top:10px; width:60%;">
+                  <select id="swal-satuan" class="swal2-select" style="width:60%; padding: 6px 10px; border-radius: 8px; margin-top: 5px;">
+                <option value="" disabled selected hidden>Choose Type</option>
+                <option value="dos">dos</option>
+                                <option value="pcs">pcs</option>
+                                <option value="ikat">ikat</option>
+                                <option value="rim">rim</option>
+                                <option value="bungkus">bungkus</option>
+              </select>
+              </table>
+
+            `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Add New Items',
+                    preConfirm: () => {
+                        const namaBarang = document.getElementById('swal-namaBarang').value;
+                        const quantityItems = parseInt(document.getElementById('quantityItems').value);
+                        const satuanItem = document.getElementById('swal-satuan').value;
+
+                        if (isNaN(quantityItems) || quantityItems <= 0) {
+                            Swal.showValidationMessage('Jumlah tambahan stock harus lebih dari 0');
+                            return false;
+                        }
+
+                        return {
+                            nama_barang: namaBarang,
+                            jumlah: quantityItems,
+                            satuan: satuanItem
+
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = {
+                            nama_barang: result.value.nama_barang,
+                            jumlah: result.value.jumlah,
+                            satuan: result.value.satuan,
+                        };
+
+                        fetch('stockIn_connect.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: new URLSearchParams(data)
+                            })
+                            .then(response => response.json())
+                            .then(res => {
+                                if (res.status === 'success') {
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: res.message,
+                                        icon: 'success',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        showConfirmButton: false,
+                                        didClose: () => location.reload()
+                                    });
+                                } else {
+                                    Swal.fire('Gagal', res.message || 'Terjadi kesalahan', 'error');
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire('Gagal', 'Tidak dapat menghubungi server', 'error');
+                            });
+                    }
+                });
+            });
+        });
+
 
         document.querySelectorAll('.btn-delete-stock').forEach(function(button) {
             button.addEventListener('click', function() {
@@ -623,6 +704,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
                 <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari ... " class="list-input">
             </div>
             <div class="table-container">
+                <div><button class="btn-add-new-items">Add New Stock Items</button></div>
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
