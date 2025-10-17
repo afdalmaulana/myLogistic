@@ -281,16 +281,19 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                                     <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td>
-                                        <?php if (empty($row['tanggal_nota'])): ?>
-                                            Input Tanggal Nota
-                                            <button style="background: none; border: none" class="btn-edit-nota"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-current="<?= $row['tanggal_nota'] ?>">
-                                                <i class="fa fa-edit" style="font-size:16px;color:red"></i>
-                                            </button>
-                                        <?php else: ?>
-                                            <?= htmlspecialchars($row['tanggal_nota']) ?>
-                                        <?php endif; ?>
+                                        <div style="display: flex;flex-direction:row">
+                                            <?php if (empty($row['tanggal_nota'])): ?>
+                                                Tanggal Nota
+                                                <button style="background: none; border: none" class="btn-edit-nota"
+                                                    data-id="<?= $row['id'] ?>"
+                                                    data-current="<?= $row['tanggal_nota'] ?>">
+                                                    <i class="fa fa-edit" style="font-size:16px;color:red"></i>
+                                                </button>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($row['tanggal_nota']) ?>
+                                            <?php endif; ?>
+                                        </div>
+
                                     </td>
                                     <?php if (!empty($row['tanggal_approve'])): ?>
                                         <td><?= htmlspecialchars($row['tanggal_approve']) ?></td>
