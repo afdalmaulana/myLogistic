@@ -378,11 +378,13 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                 <table id="dataTable" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
+                            <th>Kode Uker</th>
                             <th>Tanggal</th>
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
                             <th>Satuan</th>
                             <th>Divisi</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -390,13 +392,16 @@ $resultOut = $conn->query("SELECT * FROM barang_keluar WHERE $whereClause ORDER 
                         <?php if ($resultOut && $resultOut->num_rows > 0): ?>
                             <?php while ($row = $resultOut->fetch_assoc()): ?>
                                 <tr>
+                                    <td><?= htmlspecialchars($row['kode_uker']) ?></td>
                                     <td><?= htmlspecialchars($row['tanggal']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_barang']) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
                                     <td><?= htmlspecialchars($row['divisi']) ?></td>
                                     <td>
-                                        <?php if ($isAdminlog): ?>
+
+                                    </td>
+                                    <td><?php if ($isAdminlog): ?>
                                             <button class="btn-delete" data-id="<?= $row['id'] ?>" data-table="barang_keluar" style="background:none; border:none;">
                                                 <i class="fa fa-trash" style="color:red;"></i>
                                             </button>
