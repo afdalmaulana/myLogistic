@@ -851,9 +851,9 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <option value="" disabled selected hidden>Choose</option>
                             <option value="dos">dos</option>
                             <option value="pcs">pcs</option>
-                            <option value="pcs">ikat</option>
-                            <option value="pcs">rim</option>
-                            <option value="pcs">bungkus</option>
+                            <option value="ikat">ikat</option>
+                            <option value="rim">rim</option>
+                            <option value="bungkus">bungkus</option>
                         </select>
                     </div>
                     <div class="form-group">

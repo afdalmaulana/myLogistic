@@ -109,10 +109,10 @@ function processApproval($conn, $id)
     // Insert barang_masuk
     $stmtMasuk = $conn->prepare("
         INSERT INTO barang_masuk (
-            tanggal, tanggal_approve, tanggal_nota, price, nama_barang, jumlah, kode_uker
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            tanggal, tanggal_approve, tanggal_nota, price, nama_barang, jumlah, kode_uker, satuan
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmtMasuk->bind_param("sssisis", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $price, $nama_barang, $jumlah_masuk, $kode_uker);
+    $stmtMasuk->bind_param("sssisiss", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $price, $nama_barang, $jumlah_masuk, $kode_uker, $satuan);
     $stmtMasuk->execute();
     $stmtMasuk->close();
 
@@ -247,10 +247,10 @@ if ($status === 'completed') {
     // Insert barang_masuk
     $stmtMasuk = $conn->prepare("
         INSERT INTO barang_masuk (
-            tanggal, tanggal_approve, tanggal_nota, price, nama_barang, jumlah, kode_uker
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            tanggal, tanggal_approve, tanggal_nota, price, nama_barang, jumlah, kode_uker, satuan
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmtMasuk->bind_param("sssisis", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $data['price'], $nama_barang, $jumlah_baru, $kode_uker);
+    $stmtMasuk->bind_param("sssisis", $tanggal_pengajuan, $tanggal_approve, $tanggal_nota, $data['price'], $nama_barang, $jumlah_baru, $kode_uker, $satuan);
     $stmtMasuk->execute();
     $stmtMasuk->close();
 

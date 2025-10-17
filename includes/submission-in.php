@@ -118,11 +118,14 @@ $anggaran = $conn->query($queryAnggaran);
                         <input type="number" name="jumlah" class="list-input" placeholder="Input here ..." style="border-radius: 10px;">
                     </div>
                     <div class="form-group">
-                        <label>Choose Box / Piece(s)</label>
+                        <label>Choose Type</label>
                         <select name="satuan" class="list-input" required style="border-radius: 10px;">
                             <option value="" disabled selected hidden>Choose</option>
                             <option value="dos">dos</option>
                             <option value="pcs">pcs</option>
+                            <option value="ikat">ikat</option>
+                            <option value="rim">rim</option>
+                            <option value="bungkus">bungkus</option>
                         </select>
                     </div>
                     <div>
