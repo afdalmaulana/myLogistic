@@ -998,7 +998,70 @@
             transition: 0.3s ease-in-out;
         }
 
+        .btn-add-stock {
+            background: none;
+            border: 2px solid #153E76;
+            font-size: 12px;
+            /* color: red; */
+            padding: 2px 10px 2px 10px;
+            border-radius: 10px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-decoration: none;
+        }
 
+        .btn-add-stock:hover {
+            background: #153E76;
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
+
+        /* Tooltip Wrapper */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Tooltip Box */
+        .tooltiptext {
+            visibility: hidden;
+            width: 80px;
+            background-color: #cbcbcbff;
+            color: #030303ff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 6px 8px;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        /* Show on Hover */
+        .tooltip-wrapper:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Tombol Keluarkan */
+        .btn-keluarkan {
+            background: none;
+            border: 2px solid #597615ff;
+            font-size: 12px;
+            padding: 2px 10px 2px 10px;
+            border-radius: 10px;
+            color: #597615ff;
+            cursor: pointer;
+        }
+
+        .btn-keluarkan:hover {
+            background-color: #597615ff;
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
 
         .button-save {
             background: none;

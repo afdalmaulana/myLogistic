@@ -283,7 +283,7 @@ if ($stokResult && $stokResult->num_rows > 0) {
               </select>
             `,
                     showCancelButton: true,
-                    confirmButtonText: 'Keluarkan',
+                    confirmButtonText: 'Use Items',
                     preConfirm: () => {
                         const jumlahKeluar = parseInt(document.getElementById('jumlahKeluar').value);
                         const jumlahTersediaInt = parseInt(jumlahTersedia);
@@ -444,14 +444,14 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                 },
                                 body: 'id=' + encodeURIComponent(id)
                             })
-                            .then(response => response.text())
+                            .then(response => response.json())
                             .then(data => {
-                                if (data.trim() === 'success') {
+                                if (data.status === 'success') {
                                     Swal.fire('Dihapus!', 'Data berhasil dihapus.', 'success').then(() => {
-                                        location.reload(); // Atau: hapus baris langsung tanpa reload
+                                        location.reload();
                                     });
                                 } else {
-                                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+                                    Swal.fire('Gagal!', data.message || 'Terjadi kesalahan saat menghapus.', 'error');
                                 }
                             })
                             .catch(error => {
@@ -631,15 +631,12 @@ if ($stokResult && $stokResult->num_rows > 0) {
                             <th>Nama Barang</th>
                             <th>Jumlah</th>
                             <th>Satuan</th>
+                            <th></th>
                             <?php if ($isAdminlog): ?>
                                 <th>Aksi</th>
                                 <th>Edit</th>
                             <?php endif; ?>
                             <th></th>
-                            <th></th>
-                            <th></th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -653,27 +650,47 @@ if ($stokResult && $stokResult->num_rows > 0) {
                                         <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                         <td><?= isset($row['satuan']) ? htmlspecialchars($row['satuan']) : '' ?></td>
                                         <td>
-                                            <button class="btn-keluarkan"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
-                                                data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
-                                                data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?> " data-jumlah="<?= $row['jumlah'] ?>">
+                                            <div style="display: flex; flex-direction: row; gap: 8px; align-items: center; justify-content: center;">
+                                                <!-- Tombol Hapus -->
+                                                <div class="tooltip-wrapper">
+                                                    <button class="btn-delete-stock"
+                                                        data-id="<?= $row['id'] ?>"
+                                                        style="background: none; border: none; font-size: 16px;"
+                                                        title="Hapus">
+                                                        <i class="fa fa-trash" style="color: red;"></i>
+                                                    </button>
+                                                    <div class="tooltiptext">Delete item</div>
+                                                </div>
 
-                                                USE ITEMS
-                                            </button>
+                                                <!-- Tombol Keluarkan dengan Tooltip -->
+                                                <div class="tooltip-wrapper">
+                                                    <button class="btn-keluarkan"
+                                                        data-id="<?= $row['id'] ?>"
+                                                        data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
+                                                        data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
+                                                        data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
+                                                        data-jumlah="<?= $row['jumlah'] ?>">
+                                                        <i class="fa fa-mail-forward"></i>
+                                                    </button>
+                                                    <div class="tooltiptext">Use item</div>
+                                                </div>
+
+                                                <!-- Tombol Tambah -->
+                                                <div class="tooltip-wrapper">
+                                                    <button class="btn-add-stock"
+                                                        data-id="<?= $row['id'] ?>"
+                                                        data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
+                                                        data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
+                                                        data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?>"
+                                                        data-jumlah="<?= $row['jumlah'] ?>">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                    <div class="tooltiptext">Add ttem</div>
+                                                </div>
+
+                                            </div>
                                         </td>
                                         <td></td>
-                                        <td>
-                                            <button class="btn-add-stock"
-                                                data-id="<?= $row['id'] ?>"
-                                                data-nama_barang="<?= htmlspecialchars($row['nama_barang']) ?>"
-                                                data-satuan="<?= htmlspecialchars($row['satuan']) ?>"
-                                                data-kode_uker="<?= htmlspecialchars($row['kode_uker']) ?> " data-jumlah="<?= $row['jumlah'] ?>">
-
-                                                ADD STOCK
-                                            </button>
-                                        </td>
-
                                         <?php if ($isAdminlog): ?>
                                             <td>
                                                 <button class="btn-delete-stock" data-id="<?= $row['id'] ?>" style="background:none; border:none;" title="Hapus">
