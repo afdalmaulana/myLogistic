@@ -693,7 +693,7 @@ while ($row = $result->fetch_assoc()) {
         <h4 style="font-weight: 800; font-size:28px;">Submission Overview</h4>
         <?php if ($isKanwil): ?>
             <div class="tabs">
-                <button class="tabslinks" onclick="openTab(event, 'forward')">Request <span class="badge"><?= $incompleteCount ?></span></button>
+                <button class="tabslinks" onclick="openTab(event, 'forward')">Request <span class="badge"><?= $forwardCount ?></span></button>
                 <button class="tabslinks" onclick="openTab(event, 'approved')">Complete <span class="badge"><?= $completeCount ?></span></button>
             </div>
         <?php else: ?>
