@@ -31,7 +31,7 @@ if (isset($_POST['ids'])) {
     }
 }
 
-$allowedStatuses = ['pending', 'forward', 'approved', 'rejected', 'delete', 'completed'];
+$allowedStatuses = ['pending', 'forward', 'approved', 'rejected', 'delete', 'completed', 'return'];
 if (!in_array($status, $allowedStatuses)) {
     http_response_code(400);
     echo "Status tidak valid.";
@@ -288,6 +288,29 @@ if ($status === 'rejected' && empty($bulkIds)) {
     $conn->close();
     exit;
 }
+
+// HANDLE STATUS RETURN
+if ($status === 'return') {
+    $newStatus = 'pending';  // ganti status return jadi forward di DB
+    $keterangan = "Pengajuan dikembalikan oleh $namaPekerja.";
+    $newStatus_sisa = null;
+    $newSisa_jumlah = null;
+
+    $stmtUpdate = $conn->prepare("UPDATE pengajuan SET status = ?, keterangan = ?, status_sisa = ?, sisa_jumlah = ?, updated_at = NOW() WHERE id = ?");
+    $stmtUpdate->bind_param("ssiss", $newStatus, $keterangan, $newStatus_sisa, $newSisa_jumlah, $id);
+
+    if ($stmtUpdate->execute()) {
+        echo "Pengajuan berhasil dikembalikan ke PPO.";
+    } else {
+        http_response_code(500);
+        echo "Gagal mengembalikan status pengajuan.";
+    }
+
+    $stmtUpdate->close();
+    $conn->close();
+    exit;
+}
+
 
 // UPDATE STATUS LAINNYA (pending, dll)
 $stmt = $conn->prepare("UPDATE pengajuan SET status = ?, updated_at = NOW() WHERE id = ?");

@@ -607,6 +607,44 @@ while ($row = $result->fetch_assoc()) {
             });
         });
 
+
+        // BUTTON RETURN
+        document.querySelectorAll(".btn-return").forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.dataset.id;
+
+                Swal.fire({
+                    title: 'Konfirmasi Return Pengajuan',
+                    text: "Kembalikan pengajuan ke PPO?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Return',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("update-submissionHandler.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: new URLSearchParams({
+                                    id: id,
+                                    status: "return",
+                                })
+                            })
+                            .then(res => res.text())
+                            .then(msg => {
+                                Swal.fire('Berhasil', msg, 'success').then(() => location.reload());
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                Swal.fire('Error', 'Terjadi kesalahan saat update', 'error');
+                            });
+                    }
+                });
+            });
+        });
+
         // Tombol Delete
         document.querySelectorAll('.button-trash').forEach(button => {
             button.addEventListener('click', () => {
@@ -926,12 +964,12 @@ while ($row = $result->fetch_assoc()) {
                                             data-keterangan="<?= $row['keterangan'] ?>"
                                             style="padding:6px 10px; margin-right: 8px;">Detail</button>
                                         <?php if ($status === 'forward' && $isKanwil): ?>
-                                            <!-- <button class="btn-action" data-id="<?= $row['id'] ?>"
+                                            <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
                                                 data-status="<?= $status ?>"
                                                 style="font-size:24px; background: none; padding:10px; border:none">
                                                 <i class="fa fa-ellipsis-v"></i>
-                                            </button> -->
+                                            </button>
                                         <?php elseif ($status === 'approved' && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
                                             <button class="btn-action" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
@@ -1090,10 +1128,12 @@ while ($row = $result->fetch_assoc()) {
                                 <th>Jumlah</th>
                                 <th>Satuan</th>
                                 <th>Anggaran</th>
-                                <th>Proses</th>
+                                <!-- <th>Proses</th> -->
                                 <th>Keterangan</th>
                                 <?php if ($isAdmin): ?>
-                                    <th>Aksi</th>
+                                    <th colspan="2" style="text-align:center; vertical-align: middle;">Aksi</th>
+                                <?php else: ?>
+                                    <th colspan="2" style="text-align:center; vertical-align: middle;"></th>
                                 <?php endif; ?>
                             </tr>
                         </thead>
@@ -1126,7 +1166,7 @@ while ($row = $result->fetch_assoc()) {
                                     <td><?= htmlspecialchars($row['jumlah']) ?></td>
                                     <td><?= htmlspecialchars($row['satuan']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_anggaran']) ?></td>
-                                    <td><?= htmlspecialchars($row['status_sisa']) ?></td>
+                                    <!-- <td><?= htmlspecialchars($row['status_sisa']) ?></td> -->
                                     <td style="background: none;">
                                         <?php if ($status === 'approved'): ?>
                                             <div style="font-size:12px;">Pengajuan disetujui</div>
@@ -1134,12 +1174,35 @@ while ($row = $result->fetch_assoc()) {
                                             <div style="font-size:12px;">Pengajuan ditolak</div>
                                         <?php endif; ?>
                                     </td>
-                                    <?php if ($isAdmin): ?>
+
+                                    <!-- <?php if ($status === "rejected" && ($isLogistikAhmadYani || $isLogistikSudirman || $isLogistikTamalanrea)): ?>
+                                        <td>
+                                            <button class="btn-return" data-id="<?= $row['id'] ?>"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>">Kembalikan
+                                            </button>
+                                        </td>
+                                    <?php else: ?>
+                                        <td>
+                                        </td>
+                                    <?php endif; ?> -->
+
+
+                                    <?php if ($status === "rejected" && ($isAdmin)): ?>
+                                        <td>
+                                            <button class="btn-return" data-id="<?= $row['id'] ?>"
+                                                data-kode="<?= $row['kode_pengajuan'] ?>"
+                                                data-status="<?= $status ?>">Kembalikan
+                                            </button>
+                                        </td>
                                         <td>
                                             <button class="button-trash" data-id="<?= $row['id'] ?>" data-kode="<?= $row['kode_pengajuan'] ?>">
                                                 <i class="fa fa-trash-o"></i>
                                             </button>
                                         </td>
+                                    <?php else: ?>
+                                        <td></td>
+                                        <td></td>
                                     <?php endif; ?>
                                 </tr>
                             <?php endwhile; ?>
