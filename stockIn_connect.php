@@ -12,7 +12,7 @@ $jumlah = intval($_POST['jumlah'] ?? 0);
 $kode_uker = $_SESSION['kode_uker'] ?? null;
 $satuan = $_POST['satuan'] ?? '';
 
-if (empty($nama_barang) || $jumlah <= 0 || empty($kode_uker)) {
+if (empty($nama_barang) || $jumlah <= 0 || empty($kode_uker) || empty($satuan)) {
     echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
     exit;
 }
