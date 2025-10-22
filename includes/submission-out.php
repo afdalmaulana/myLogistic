@@ -1192,7 +1192,7 @@ while ($row = $result->fetch_assoc()) {
                                         <td>
                                             <button class="btn-return" data-id="<?= $row['id'] ?>"
                                                 data-kode="<?= $row['kode_pengajuan'] ?>"
-                                                data-status="<?= $status ?>">Kembalikan
+                                                data-status="<?= $status ?>">Return
                                             </button>
                                         </td>
                                         <td>

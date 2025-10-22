@@ -992,6 +992,23 @@
             text-decoration: none;
         }
 
+        .btn-return {
+            background: none;
+            border: 2px solid #597615ff;
+            font-size: 12px;
+            /* color: red; */
+            padding: 2px 5px 2px 5px;
+            border-radius: 5px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-return:hover {
+            background: #597615ff;
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
+
         .btn-detailIncomplete:hover {
             background: #153E76;
             color: white;
